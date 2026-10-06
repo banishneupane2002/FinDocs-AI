@@ -1,0 +1,29 @@
+# Environment variables & secrets (CRITICAL - DO NOT COMMIT API KEYS)
+.env
+.env.*
+!.env.example
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# LanceDB vector database (generated locally by INGEST.PY)
+lancedb_data/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
