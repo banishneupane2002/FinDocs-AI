@@ -38,7 +38,11 @@ STOP_WORDS = {
     'कसले', 'कसलाई', 'कसको', 'कुन', 'कहाँ', 'किन', 'सक्छ', 'सक्छन्', 'सक्ने',
     'what', 'is', 'the', 'provision', 'regarding', 'tell', 'me', 'about', 
     'rules', 'regulation', 'how', 'much', 'does', 'cost', 'to', 'into', 'and', 'from', 'system',
-    'for', 'in', 'on', 'at', 'by', 'with', 'a', 'an', 'who', 'can'
+    'for', 'in', 'on', 'at', 'by', 'with', 'a', 'an', 'who', 'can',
+    'was', 'were', 'across', 'all', 'total', 'number', 'of', 'as', 'does', 'did',
+    'has', 'have', 'had', 'each', 'between', 'during', 'bank', 'banks', 'banking',
+    'financial', 'institution', 'institutions', 'report', 'reports', 'annual', 'per', 'used',
+    'their', 'which', 'will', 'would', 'could'
 }
 
 def normalize_devanagari(text):
@@ -54,6 +58,8 @@ def normalize_devanagari(text):
     t = t.replace('\u094d\u093e', '\u093e')
     # Harmonize common banking spelling variations: बैंकिङ / बैंकिंग / बैङ्किङ -> बैंकिङ्ग
     t = re.sub(r'बैं[किङ्क]+[ङङ्गग]', 'बैंकिङ्ग', t)
+    # Harmonize Hindi-style candra transliterations to standard Nepali Devanagari
+    t = t.replace('वॉलेट', 'वालेट').replace('वॉ', 'वा')
     return t
 
 def extract_meaningful_keywords(text):
@@ -68,7 +74,9 @@ def extract_meaningful_keywords(text):
         keywords.add(w_lower)
         # English plural stemming (e.g. atms -> atm, banks -> bank, limits -> limit)
         if w_lower.endswith('s') and len(w_lower) > 3:
-            keywords.add(w_lower[:-1])
+            base_s = w_lower[:-1]
+            if base_s not in STOP_WORDS:
+                keywords.add(base_s)
         # Map common legacy font acronyms
         if w_lower in ('ussd', 'यूएसएसडी'):
             keywords.add('ग्क्क्म्')
@@ -80,86 +88,97 @@ def extract_meaningful_keywords(text):
                     keywords.add(base)
                     keywords.add(base.replace('ः', ''))
                     keywords.add(base.replace(':', ''))
+        # Normalize Visarga
         keywords.add(w.replace('ः', ''))
         keywords.add(w.replace(':', ''))
 
     return {k for k in keywords if k.lower() not in STOP_WORDS and len(k) > 2}
 
-def hybrid_search(user_query, table, model, selected_doc="All Documents", top_k=4):
-    df_all = table.to_pandas()
-    if selected_doc and selected_doc != "All Documents":
-        df_all = df_all[df_all['source'] == selected_doc].copy()
+def hybrid_search(user_query, table, model, translated_terms="", selected_doc="All Documents", top_k=6):
+    k_const = 30  # Standard RRF constant
 
-    N = len(df_all)
-    if N == 0:
-        return []
-
-    df_all['norm_text'] = df_all['text'].apply(normalize_devanagari)
-
-    # 1. Broad Vector Search (Top 60)
-    query_vector = model.encode(user_query).tolist()
-    search_q = table.search(query_vector)
+    # 1. Primary Dense Search (Direct Query Intent)
+    d_pri = {}
+    q_vec = model.encode(user_query).tolist()
+    search_q = table.search(q_vec)
     if selected_doc and selected_doc != "All Documents":
         search_q = search_q.where(f"source = '{selected_doc}'")
-    vec_candidates = search_q.limit(min(60, N)).to_pandas()
+    for rank, (_, row) in enumerate(search_q.limit(80).to_pandas().iterrows(), 1):
+        k = (row['source'], int(row['page']), row['text'][:60])
+        d_pri[k] = (rank, row)
 
-    # 2. Extract Meaningful Keywords
-    keywords = extract_meaningful_keywords(user_query)
+    # 2. Translated Dense Search (Cross-Lingual Bridge)
+    d_trans = {}
+    if translated_terms and translated_terms.strip():
+        t_vec = model.encode(translated_terms).tolist()
+        search_t = table.search(t_vec)
+        if selected_doc and selected_doc != "All Documents":
+            search_t = search_t.where(f"source = '{selected_doc}'")
+        for rank, (_, row) in enumerate(search_t.limit(80).to_pandas().iterrows(), 1):
+            k = (row['source'], int(row['page']), row['text'][:60])
+            d_trans[k] = (rank, row)
 
-    # 3. Direct Keyword Matching across full corpus
-    def make_key(row):
-        return (row['source'], int(row['page']), row['text'][:60])
+    # 3. Primary Sparse Inverted Index Search (Exact Native Term Matching)
+    s_pri = {}
+    kw_pri = extract_meaningful_keywords(user_query)
+    clean_pri_fts = " ".join([re.sub(r'[^\w\u0900-\u097F]', '', w) for w in kw_pri if len(w) > 1])
+    if clean_pri_fts.strip():
+        try:
+            search_fts1 = table.search(clean_pri_fts)
+            if selected_doc and selected_doc != "All Documents":
+                search_fts1 = search_fts1.where(f"source = '{selected_doc}'")
+            for rank, (_, row) in enumerate(search_fts1.limit(80).to_pandas().iterrows(), 1):
+                k = (row['source'], int(row['page']), row['text'][:60])
+                s_pri[k] = (rank, row)
+        except Exception:
+            pass
 
-    candidates_dict = {}
-    for _, row in vec_candidates.iterrows():
-        k = make_key(row)
-        candidates_dict[k] = {
-            'row': row,
-            'distance': row.get('_distance', 1.0)
-        }
+    # 4. Translated Sparse Inverted Index Search (Exact Target Term Matching)
+    s_trans = {}
+    if translated_terms and translated_terms.strip():
+        kw_trans = extract_meaningful_keywords(translated_terms)
+        clean_trans_fts = " ".join([re.sub(r'[^\w\u0900-\u097F]', '', w) for w in kw_trans if len(w) > 1])
+        if clean_trans_fts.strip():
+            try:
+                search_fts2 = table.search(clean_trans_fts)
+                if selected_doc and selected_doc != "All Documents":
+                    search_fts2 = search_fts2.where(f"source = '{selected_doc}'")
+                for rank, (_, row) in enumerate(search_fts2.limit(80).to_pandas().iterrows(), 1):
+                    k = (row['source'], int(row['page']), row['text'][:60])
+                    s_trans[k] = (rank, row)
+            except Exception:
+                pass
 
-    if keywords:
-        for _, row in df_all.iterrows():
-            text = row['norm_text']
-            if any(kw in text for kw in keywords):
-                k = make_key(row)
-                if k not in candidates_dict:
-                    candidates_dict[k] = {
-                        'row': row,
-                        'distance': None
-                    }
+    # 5. Multi-Channel Weighted Reciprocal Rank Fusion (RRF)
+    all_keys = set(d_pri.keys()) | set(d_trans.keys()) | set(s_pri.keys()) | set(s_trans.keys())
+    if not all_keys:
+        return []
 
-    # 4. Hybrid Scoring
-    scored = []
-    for k, item in candidates_dict.items():
-        row = item['row']
-        dist = item['distance']
-        sem_score = (1.0 / (1.0 + dist)) if dist is not None else 0.35
+    fused_results = []
+    for k in all_keys:
+        dp = d_pri[k][0] if k in d_pri else 999
+        dt = d_trans[k][0] if k in d_trans else 999
+        sp = s_pri[k][0] if k in s_pri else 999
+        st = s_trans[k][0] if k in s_trans else 999
 
-        kw_score = 0.0
-        text = normalize_devanagari(row['text'])
-        for kw in keywords:
-            kw_re = re.compile(re.escape(kw), re.IGNORECASE)
-            count = len(kw_re.findall(text))
-            if count > 0:
-                doc_freq = sum(1 for t in df_all['norm_text'] if kw.lower() in t.lower())
-                idf = math.log((N + 1) / (doc_freq + 1))
-                kw_score += (min(count, 3) * 0.5 + 1.0) * idf
+        row = (d_pri.get(k) or s_pri.get(k) or d_trans.get(k) or s_trans.get(k))[1]
 
-        total_score = sem_score + kw_score
-        scored.append({
+        # Multi-Channel Weighted RRF:
+        # Primary dense (1.0), Primary sparse exact tokens (1.2), Cross-lingual auxiliary (0.6 each)
+        rrf_score = (1.0 / (k_const + dp)) + (1.2 / (k_const + sp)) + (0.6 / (k_const + dt)) + (0.6 / (k_const + st))
+        fused_results.append({
             'source': row['source'],
             'page': int(row['page']),
             'text': row['text'],
-            'score': total_score
+            'score': rrf_score
         })
 
-    scored.sort(key=lambda x: x['score'], reverse=True)
+    fused_results.sort(key=lambda x: x['score'], reverse=True)
 
-    # Diversity re-ranking: prevent identical cross-edition duplicate tables from monopolizing top slots
+    # 6. Diversity re-ranking: prevent duplicate pages across directive editions
     diverse_results = []
     seen_word_sets = []
-    for item in scored:
+    for item in fused_results:
         wset = set(re.findall(r'[\u0900-\u097F\w]+', item['text'].lower()))
         is_dup = False
         for st in seen_word_sets:
@@ -183,34 +202,46 @@ def expand_query_crosslingual(q, client):
     """Bidirectional cross-lingual query expansion for English & Nepali banking documents."""
     clean_q = q.strip().lower()
     if clean_q in st.session_state.translation_cache:
-        return f"{q} {st.session_state.translation_cache[clean_q]}"
+        return st.session_state.translation_cache[clean_q]
 
-    # If the user query is already written in Nepali Devanagari, preserve pure Devanagari search
-    # to avoid polluting sparse keyword ranking with broad English buzzwords (e.g. from Annual Reports).
     is_nepali = sum(1 for c in q if '\u0900' <= c <= '\u097f') >= max(len(q.replace(' ', '')), 1) * 0.3
+
     if is_nepali:
-        return q
+        sys_instruction = (
+            "You are a specialized bilingual terminology engine for Nepal Rastra Bank reports and directives.\n"
+            "The user question is in Nepali. Translate the core banking entities and financial metrics into their official English terminology (for finding tables in English Annual Reports):\n"
+            "- विकास बैंक -> Development Banks, DBs\n"
+            "- वित्त कम्पनी -> Finance Companies, FCs\n"
+            "- इन्टरनेट बैंकिङ -> Internet Banking\n"
+            "- मोबाइल बैंकिङ -> Mobile Banking\n"
+            "- वञ्चित क्षेत्र कर्जा -> Deprived Sector Lending\n"
+            "- आधार दर -> Base Rate\n"
+            "- तनाव परीक्षण -> Stress Testing, Liquidity Shock\n"
+            "- शीघ्र सुधारात्मक कारबाही -> Prompt Corrective Action, PCA\n"
+            "- निष्कृय कर्जा -> Non-Performing Loans, NPL\n"
+            "Output 3-5 comma-separated English terms, nothing else."
+        )
+    else:
+        sys_instruction = (
+            "Translate all key banking subjects, services, and regulatory concepts from the question into official Nepal Rastra Bank (NRB) Nepali terms.\n"
+            "Always use official Nepali Devanagari terms:\n"
+            "- wallet -> वालेट (NOT वॉलेट)\n"
+            "- banking -> बैंकिङ्ग (NOT बैंकिंग)\n"
+            "- payment -> भुक्तानी (NOT पेमेन्ट)\n"
+            "- agent -> आधिकारिक प्रतिनिधि, एजेन्ट\n"
+            "- cash deposit -> नगद जम्मा\n"
+            "- cash withdrawal -> नगद झिक्ने, नगद प्राप्त\n"
+            "- blacklisting -> कालोसूची, फुकुवा\n"
+            "- self-declaration -> स्वघोषणा\n"
+            "- USSD -> ग्क्क्म्, USSD\n"
+            "Return 3-6 comma-separated Nepali terms in Devanagari script only, nothing else."
+        )
 
     try:
         res = client.chat.completions.create(
             model=MODEL_NAME,
             messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a specialized bilingual terminology engine for Nepal Rastra Bank (NRB) regulations, directives, and reports. "
-                        "Translate key banking/regulatory concepts into their official NRB terminology: "
-                        "- Corporate governance -> संस्थागत सुशासन "
-                        "- Cash withdrawal / cash out via agent -> एजेन्टमार्फत नगद प्राप्त, नगद झिक्ने, आधिकारिक प्रतिनिधि "
-                        "- Digital wallet -> वालेट "
-                        "- Branchless banking -> शाखारहित बैंकिङ्ग सेवा, व्यावसायिक आधिकारिक प्रतिनिधि "
-                        "- USSD -> यूएसएसडी, ग्क्क्म् "
-                        "- Cooling-off period -> फुकुवा, कालोसूची "
-                        "- Self-declaration -> स्वघोषणा "
-                        "Output 3-5 official Nepali regulatory terms. "
-                        "Return ONLY the comma-separated terms, nothing else."
-                    )
-                },
+                {"role": "system", "content": sys_instruction},
                 {"role": "user", "content": q}
             ],
             temperature=0.0,
@@ -218,9 +249,9 @@ def expand_query_crosslingual(q, client):
         )
         terms = res.choices[0].message.content.strip()
         st.session_state.translation_cache[clean_q] = terms
-        return f"{q} {terms}"
+        return terms
     except Exception:
-        return q
+        return ""
 
 # 2. Cached Resources (Loads heavy ML models once into RAM)
 @st.cache_resource
@@ -342,9 +373,9 @@ if active_query:
         st.markdown(active_query)
 
     # 2. Cross-Lingual Dual-Pass Hybrid Retrieval
-    search_query = expand_query_crosslingual(active_query, groq_client)
+    translated_terms = expand_query_crosslingual(active_query, groq_client)
     live_table = get_live_table()
-    results = hybrid_search(search_query, live_table, embedding_model, selected_doc=selected_doc, top_k=5)
+    results = hybrid_search(active_query, live_table, embedding_model, translated_terms=translated_terms, selected_doc=selected_doc, top_k=6)
 
     context_text = ""
     sources_list = []
@@ -382,7 +413,7 @@ Context from files:
                     {"role": "user", "content": active_query}
                 ],
                 temperature=0.1,
-                max_tokens=450,
+                max_tokens=900,
                 stream=True
             )
 

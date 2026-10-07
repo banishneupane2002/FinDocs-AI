@@ -1,0 +1,475 @@
+[
+  {
+    "id": 1,
+    "category": "Category 1: Statistics & Data",
+    "question": "How many debit cards were issued by Development Banks as of Mid-July 2025?",
+    "expected": "1,216,322 debit cards (increased from 1,076,072 in 2023/24). Source: Annual_Report_2025.pdf — Page 33, Table 3.6",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 7)",
+      "directive_3.pdf (Page 6)",
+      "directive_1.pdf (Page 62)",
+      "directive_2.pdf (Page 4)",
+      "directive_1.pdf (Page 20)",
+      "Annual_Report_2025.pdf (Page 16)"
+    ],
+    "answer": "Based on the provided document **Annual_Report_2025.pdf** (Page 16), the number of debit cards issued by **B Class** banks (which corresponds to Development Banks in the Nepal Rastra Bank classification system) is **12,373,593**.\n\n**Source:**\n*   **Document:** Annual_Report_2025.pdf\n*   **Page:** 16\n*   **Table:** Financial Institution Supervision Report 2024/25\n*   **Row:** No. of Debit Cards\n*   **Column:** B Class",
+    "search_ms": 550.7,
+    "gen_sec": 0.55,
+    "total_sec": 1.1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 2,
+    "category": "Category 1: Statistics & Data",
+    "question": "What was the number of mobile banking customers in Finance Companies (FCs) in 2024/25?",
+    "expected": "294,739 customers (increased from 231,852 in 2023/24). Source: Annual_Report_2025.pdf — Page 43, Table 4.5",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 62)",
+      "directive_3.pdf (Page 10)",
+      "directive_1.pdf (Page 14)",
+      "directive_2.pdf (Page 87)",
+      "Annual_Report_2025.pdf (Page 43)",
+      "directive_3.pdf (Page 25)"
+    ],
+    "answer": "Based on the provided document **Annual_Report_2025.pdf** (Page 43), the number of mobile banking customers in Finance Companies (FCs) in 2024/25 was **294,739**.\n\n**Source Citation:**\n*   **Document:** Annual_Report_2025.pdf\n*   **Page:** 43\n*   **Table:** Table 4.5 : Use of Electronic Banking in FCs (Mid-July 2025)\n*   **Row:** 3 No. of Customers (Mobile Banking)\n*   **Column:** 2024/25",
+    "search_ms": 251.4,
+    "gen_sec": 0.6,
+    "total_sec": 0.85,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 3,
+    "category": "Category 1: Statistics & Data",
+    "question": "What was the total number of ATMs across all banks and financial institutions as of Mid-July 2025?",
+    "expected": "5,222 ATMs overall (Commercial Banks: 4,837, Development Banks: 344, Finance Companies: 41). Source: Annual_Report_2025.pdf — Page 16",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 26)",
+      "directive_2.pdf (Page 29)",
+      "Annual_Report_2025.pdf (Page 10)",
+      "directive_1.pdf (Page 62)",
+      "directive_2.pdf (Page 87)",
+      "Annual_Report_2025.pdf (Page 22)"
+    ],
+    "answer": "Information not found in the documents.",
+    "search_ms": 234.9,
+    "gen_sec": 4.47,
+    "total_sec": 4.7,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 4,
+    "category": "Category 1: Statistics & Data",
+    "question": "विकास बैंकहरूमा इन्टरनेट बैंकिङ प्रयोग गर्ने ग्राहक संख्या कति पुगेको छ?",
+    "expected": "५,९९,३१६ (599,316) ग्राहक। Source: Annual_Report_2025.pdf — Page 33, Table 3.6",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 2)",
+      "directive_3.pdf (Page 28)",
+      "directive_3.pdf (Page 10)",
+      "directive_3.pdf (Page 69)",
+      "directive_1.pdf (Page 72)",
+      "directive_1.pdf (Page 17)"
+    ],
+    "answer": "उपलब्ध कागजातमा विकास बैंकहरूमा इन्टरनेट बैंकिङ प्रयोग गर्ने ग्राहक संख्या सम्बन्धी कुनै तथ्याङ्क वा जानकारी फेला परेन।\n\nप्रदान गरिएका कागजातहरू (directive_1.pdf र directive_3.pdf) मा भुक्तानी प्रणालीसम्बन्धी नियमन, शुल्क व्यवस्था, कारबाहीको दण्ड, र सेवा प्रदायक बैंक तथा वित्तीय संस्थाहरूले पालना गर्नुपर्ने प्रक्रियागत मापदण्डहरू मात्र उल्लेख गरिएको छ, तर विशिष्ट बैंकहरूको ग्राहक आधार वा प्रयोगकर्ता संख्या जस्ता तथ्याङ्कीय विवरणहरू समावेश छैनन्।",
+    "search_ms": 33.5,
+    "gen_sec": 20.26,
+    "total_sec": 20.3,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 5,
+    "category": "Category 2: Transaction Limits & Caps",
+    "question": "एजेन्टमार्फत वालेटमा प्रतिदिन र प्रतिमहिना कति रकमसम्म नगद जम्मा गर्न पाइन्छ?",
+    "expected": "प्रतिदिन अधिकतम रु. २५ हजार (NPR 25,000) र प्रतिमहिना अधिकतम रु. १ लाख (NPR 100,000)। Source: directive_1.pdf / directive_2.pdf — Page 22, Clause द्ध(ज्ञ)",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 90)",
+      "directive_1.pdf (Page 23)",
+      "directive_2.pdf (Page 3)",
+      "directive_3.pdf (Page 10)",
+      "directive_2.pdf (Page 19)",
+      "directive_1.pdf (Page 32)"
+    ],
+    "answer": "उपलब्ध कागजातमा एजेन्टमार्फत वालेटमा प्रतिदिन र प्रतिमहिना कति रकमसम्म नगद जम्मा गर्न पाइन्छ भन्ने जानकारी फेला परेन।",
+    "search_ms": 52.5,
+    "gen_sec": 9.53,
+    "total_sec": 9.58,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 6,
+    "category": "Category 2: Transaction Limits & Caps",
+    "question": "What is the maximum cash withdrawal limit through an agent from a digital wallet?",
+    "expected": "Per day up to NPR 5,000, and per month maximum NPR 25,000. Source: directive_1.pdf — Page 22, Clause द्ध(द्द)",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 7)",
+      "directive_1.pdf (Page 31)",
+      "directive_1.pdf (Page 21)",
+      "directive_2.pdf (Page 20)",
+      "directive_3.pdf (Page 20)",
+      "directive_3.pdf (Page 24)"
+    ],
+    "answer": "Based on the provided documents, the maximum cash withdrawal limit through an agent from a digital wallet is **NPR 5,000 (Five Thousand Rupees) per day**.\n\n**Exact Clause:**\n> \"गरी प्रति दिन रु.५ पाँच हजारसम्म नगद प्राप्त गर्न सक्नेछन ् ।\"\n> *(...can receive cash up to Rs. 5,000 per day.)*\n\n**Source:**\n*   **Document:** `directive_3.pdf`\n*   **Page:** 20\n\n**Note:** The document specifies that this limit applies to cash received via agents. It also clarifies that such transactions can also be conducted through the ATM of banks and financial institutions.",
+    "search_ms": 249.7,
+    "gen_sec": 27.88,
+    "total_sec": 28.13,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 7,
+    "category": "Category 2: Transaction Limits & Caps",
+    "question": "वालेटमा अधिकतम ओभरनाइट मौज्दात (Overnight Balance) कति राख्न पाइन्छ?",
+    "expected": "अधिकतम रु. ५०,००० (NPR 50,000)। सोभन्दा बढी रकम अनिवार्य रूपमा सम्बन्धित बैंक खातामा जम्मा हुनुपर्नेछ। Source: directive_1.pdf — Page 22, Clause घ",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 56)",
+      "directive_2.pdf (Page 65)",
+      "directive_1.pdf (Page 83)",
+      "directive_3.pdf (Page 11)",
+      "directive_1.pdf (Page 10)",
+      "directive_1.pdf (Page 16)"
+    ],
+    "answer": "उपलब्ध कागजातहरूमा वालेटमा राख्न पाइने अधिकतम ओभरनाइट मौज्दात (Overnight Balance) को कुनै सीमा वा तोकिएको रकम उल्लेख गरिएको छैन।\n\nकागजातहरूमा तरलता जोखिम व्यवस्थापनसँग सम्बन्धित प्रावधानहरूमा भुक्तानी सेवा प्रदायकले आफ्नो ग्राहकको वालेटमा रहेको विद्युतीय रकमको दायित्व भुक्तानी गर्न **पर्याप्त** मौज्दात सेटलमेन्ट खातामा राख्नुपर्ने उल्लेख गरिएको छ, तर वालेटमा राख्न पाइने अधिकतम रकमको कुनै नियम वा सीमा (Limit) प्रस्तुत गरिएको छैन।\n\nसम्बन्धित उद्धरण:\n> \"भुक्तानी सेवा प्रदायकले आफ्नो ग्राहकको वालेटमा रहेको विद्युतीय रकमको दायित्व भुक्तानी गर्न पर्याप्त मौज्दात सेटलमेन्ट खातामा राख्नुपर्ने छ ।\"\n> *(स्रोत: directive_3.pdf | पृष्ठ: 56 र directive_2.pdf | पृष्ठ: 65)*\n\nतसर्थ, उपलब्ध कागजातमा यो जानकारी फेला परेन।",
+    "search_ms": 48.5,
+    "gen_sec": 22.21,
+    "total_sec": 22.26,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 8,
+    "category": "Category 2: Transaction Limits & Caps",
+    "question": "What is the transaction limit for USSD-based mobile payments?",
+    "expected": "Daily maximum NPR 10,000, and per-transaction maximum NPR 5,000. Source: directive_1.pdf — Page 22, Clause ठ",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 21)",
+      "directive_2.pdf (Page 84)",
+      "directive_1.pdf (Page 14)",
+      "directive_3.pdf (Page 19)",
+      "directive_1.pdf (Page 10)",
+      "directive_1.pdf (Page 17)"
+    ],
+    "answer": "Based on the provided documents, the transaction limit for USSD-based mobile payments is **NPR 300,000 (3 Lakh)** per day.\n\n**Exact Clause:**\n> \"मोबाइल एप्प्लिकेशन (यूएसडी समेत) ३ लाख\"\n> *(Mobile Application (including USSD) 3 Lakh)*\n\n**Source:**\n*   **Document:** `directive_1.pdf`\n*   **Page:** 21\n*   **Section:** \"मोबाइल बैंकिङ तथा वेब एप्लिकेशनमार्फत हुने कारोबारसम्बन्धमा\" (Regarding transactions via Mobile Banking and Web Application)\n\n**Note:**\nThe document explicitly states that this limit applies to \"Mobile Application (including USSD)\" per device per day. It also notes that this limit does not apply to specific transactions such as transfers between accounts in the same name at the same institution, government tax/fee payments, utility bill payments, insurance premiums, and other specified services.",
+    "search_ms": 250.8,
+    "gen_sec": 29.02,
+    "total_sec": 29.27,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 9,
+    "category": "Category 3: Legal & Governance Rules",
+    "question": "स्वःघोषणासम्बन्धी व्यवस्था बारेमा भन्नुहोस",
+    "expected": "सञ्चालक पदमा नियुक्त व्यक्तिले अनुसूची ११.१ बमोजिम स्वघोषणा गर्नुपर्ने र नियुक्त भएको १५ दिनभित्र विभागमा पेश गर्नुपर्ने व्यवस्था। Source: directive_1.pdf / directive_2.pdf — Page 59, Clause ठ",
+    "retrieved_sources": [
+      "directive_2.pdf (Page 82)",
+      "directive_3.pdf (Page 54)",
+      "directive_1.pdf (Page 67)",
+      "directive_1.pdf (Page 83)",
+      "directive_1.pdf (Page 35)",
+      "directive_1.pdf (Page 16)"
+    ],
+    "answer": "प्रदान गरिएको कागजातहरूमा स्वःघोषणा (Self-Declaration) सम्बन्धी व्यवस्थाहरू मुख्यतया भुक्तानी सेवा प्रदायक संस्थाहरूको दर्ता वा कारोबार सुरु गर्दा आवश्यक पर्ने दस्तावेजहरूको सूचीमा उल्लेख गरिएको छ।\n\n**कागजात:** directive_1.pdf\n**पृष्ठ:** 35\n\nयस पृष्ठमा उल्लेख गरिएका स्वःघोषणासम्बन्धी दुईवटा मुख्य व्यवस्थाहरू निम्न अनुसार छन्:\n\n१. **बैंक वा वित्तीय संस्थासँगको कारोबारमा कालोसूचीमा नपरेको प्रमाण:**\n   - \"बैंक वा वित्तीय संस्थासँगको कारोबारमा कालोसूचीमा नपरेको प्रमाण वा परेको भए फुकुवा भएको कम्तीमा ३ वर्ष पूरा भएको स्वःघोषणा ।\"\n   - **व्याख्या:** यदि कुनै संस्था वा व्यक्ति बैंक वा वित्तीय संस्थासँगको कारोबारमा कालोसूचीमा परेको थियो भने, त्यसबाट फुकुवा भएको कम्तीमा ३ वर्ष पूरा भएको हुनुपर्छ र यसको स्वःघोषणा गर्नुपर्छ।\n\n२. **सम्पत्ति शुद्धीकरण र आतङ्कवादी कार्यमा वित्तीय लगानीको क्रियाकलापमा संलग्न नरहेको स्वःघोषणा:**\n   - \"सम्पत्ति शुद्धीकरण र आतङ्कवादी कार्यमा वित्तीय लगानीको क्रियाकलापमा संलग्न नरहेको स्वःघोषणा ।\"\n   - **व्याख्या:** संस्था वा व्यक्तिले सम्पत्ति शुद्धीकरण (Money Laundering) वा आतङ्कवादलाई वित्तीय रूपमा सहयोग गर्ने क्रियाकलापमा संलग्न नरहेको कुराको स्वःघोषणा गर्नुपर्छ।\n\nयी स्वःघोषणाहरू भुक्तानी सेवा प्रदायक संस्थाले आधिकारिक प्रतिनिधिमार्फत भुक्तानीसम्बन्धी सेवा प्रवाह गर्दा आवश्यक पर्ने दस्तावेजहरूको भाग हो।",
+    "search_ms": 51.7,
+    "gen_sec": 20.56,
+    "total_sec": 20.61,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 10,
+    "category": "Category 3: Legal & Governance Rules",
+    "question": "What is the cooling-off period required if an agent was previously blacklisted?",
+    "expected": "At least 3 years must have elapsed since removal from the credit blacklist. Source: directive_1.pdf / directive_2.pdf — Page 33/35",
+    "retrieved_sources": [
+      "directive_2.pdf (Page 80)",
+      "directive_3.pdf (Page 66)",
+      "directive_3.pdf (Page 34)",
+      "directive_2.pdf (Page 84)",
+      "directive_1.pdf (Page 16)",
+      "directive_2.pdf (Page 13)"
+    ],
+    "answer": "Information not found in the documents.",
+    "search_ms": 261.4,
+    "gen_sec": 29.64,
+    "total_sec": 29.9,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 11,
+    "category": "Category 3: Legal & Governance Rules",
+    "question": "संस्थागत सुशासनसम्बन्धी व्यवस्था कुन निर्देशनमा छ?",
+    "expected": "भुक्तानी प्रणाली विभागको अ.प्रा. निर्देशन नं. ११/०८१ र ११/०८२। Source: directive_1.pdf / directive_2.pdf — Page 56",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 91)",
+      "directive_3.pdf (Page 12)",
+      "directive_2.pdf (Page 64)",
+      "directive_1.pdf (Page 67)",
+      "directive_3.pdf (Page 57)"
+    ],
+    "answer": "संस्थागत सुशासनसम्बन्धी व्यवस्था **नेपाल राष्ट्र बैंकको भुक्तानी प्रणाली विभागद्वारा जारी 'विद्युतीय भुक्तानी प्रणालीको सञ्चालन तथा सुरक्षासम्बन्धी व्यवस्था' (अ.प्रा. निर्देशन नं. ३/०८०)** मा उल्लेख गरिएको छ।\n\nयो व्यवस्था **कागजात: directive_3.pdf** को **पृष्ठ १२** मा भेटिन्छ।\n\n**सम्बन्धित धारा/बुँदा:**\nयस पृष्ठमा \"ज्ञ. सूचना प्रविधिको सुशासनसम्बन्धमा\" शीर्षक अन्तर्गत संस्थागत संरचना, सञ्चालक समिति र उच्च व्यवस्थापनको भूमिका, तथा सूचना प्रविधि र विद्युतीय भुक्तानी सम्बन्धी नीति, कार्ययोजना र जोखिमको नियमित अनुगमन गर्ने व्यवस्था गरिएको छ।\n\n**उद्धरण:**\n> \"संस्थामा विद्युतीय भुक्तानीको व्यवस्थापनका लागि उचित संस्थागत संरचना तयार गर्नुपर्ने छ । संस्थाको सञ्चालक समिति र उच्च व्यवस्थापनले सूचना प्रविधि तथा विद्युतीय भुक्तानी सम्बन्धी नीति, कार्ययोजना तथा जोखिम आदिको नियमित अनुगमन गर्नुपर्ने छ ।\"\n\n**स्रोत:**\n*   **कागजात:** directive_3.pdf\n*   **पृष्ठ:** १२\n*   **निर्देशन:** अ.प्रा. निर्देशन नं. ३/०८० (विद्युतीय भुक्तानी प्रणालीको सञ्चालन तथा सुरक्षासम्बन्धी व्यवस्था)",
+    "search_ms": 65.0,
+    "gen_sec": 25.46,
+    "total_sec": 25.52,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 12,
+    "category": "Category 4: Cross-Lingual Tests",
+    "question": "Tell us about the self-declaration system for board directors.",
+    "expected": "Responds in English explaining the Director appointment rule, Schedule 11.1 format, and the 15-day deadline. Source: directive_1.pdf — Page 59",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 57)",
+      "directive_3.pdf (Page 71)",
+      "directive_1.pdf (Page 59)",
+      "directive_1.pdf (Page 88)",
+      "directive_2.pdf (Page 62)"
+    ],
+    "answer": "Based on the provided document **directive_1.pdf** (Page 59), the regulations regarding the self-declaration system for board directors are as follows:\n\n**1. Requirement for Self-Declaration**\nEvery individual appointed to a directorship position is required to submit a self-declaration.\n*   **Exact Clause:** \"सञ्चालक पदमा नियुक्त भएको व्यक्तिले अनुसूची ११.१ बमोजिमको स्वघोषणा गर्नुपर्ने छ ।\"\n    *(Translation: A person appointed to the position of director must make a self-declaration in accordance with Schedule 11.1.)*\n\n**2. Submission Deadline**\nThe appointed individual's self-declaration must be submitted to the relevant department of Nepal Rastra Bank within **15 days** of their appointment.\n*   **Exact Clause:** \"नियुक्त भएको १५ दिन भित्र उक्त स्वघोषणापत्र सम्बन्धित संस्थाले यस विभागमा पेश गर्नुपर्ने छ ।\"\n    *(Translation: The said self-declaration form must be submitted by the concerned institution to this Department within 15 days of the appointment.)*\n\n**Citation:**\n*   **Document:** directive_1.pdf\n*   **Page:** 59\n*   **Section:** ड. कार्य सञ्चालनसम्बन्धमा (Regarding Operation of Business) / ठ. स्वःघोषणासम्बन्धी व्यवस्था (Provisions regarding Self-Declaration)",
+    "search_ms": 224.1,
+    "gen_sec": 27.27,
+    "total_sec": 27.49,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 13,
+    "category": "Category 4: Cross-Lingual Tests",
+    "question": "What are the reporting requirements for failed and successful electronic transactions?",
+    "expected": "Cites reporting portal requirements and Schedule 10.1.6 (Statement of Success and Failed Transaction). Source: directive_1.pdf — Page 41 & Page 47",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 7)",
+      "directive_1.pdf (Page 74)",
+      "directive_1.pdf (Page 81)",
+      "directive_3.pdf (Page 61)",
+      "directive_3.pdf (Page 34)",
+      "directive_2.pdf (Page 13)"
+    ],
+    "answer": "Error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1gdqhg4ejz8ke65abm5by2v` service tier `on_demand` on input tokens per minute (ITPM): Limit 7000, Used 5867, Requested 3516. Please try again in 20.425714285s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "search_ms": 576.8,
+    "gen_sec": 153.85,
+    "total_sec": 154.42,
+    "status": "ERROR"
+  },
+  {
+    "id": 14,
+    "category": "Category 5: Anti-Hallucination / Negative Tests",
+    "question": "Can a digital wallet provide home loans or personal loans directly?",
+    "expected": "Information not found / Not authorized in directives",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 7)",
+      "directive_1.pdf (Page 7)",
+      "directive_3.pdf (Page 22)",
+      "directive_2.pdf (Page 20)",
+      "directive_2.pdf (Page 63)",
+      "directive_2.pdf (Page 13)"
+    ],
+    "answer": "Error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1gdqhg4ejz8ke65abm5by2v` service tier `on_demand` on input tokens per minute (ITPM): Limit 7000, Used 5810, Requested 3103. Please try again in 16.397142857s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "search_ms": 241.1,
+    "gen_sec": 123.75,
+    "total_sec": 123.99,
+    "status": "ERROR"
+  },
+  {
+    "id": 15,
+    "category": "Category 5: Anti-Hallucination / Negative Tests",
+    "question": "के ग्राहकले वालेटबाट सिधै क्रिप्टोकरेन्सी (Cryptocurrency) किन्न पाउँछ?",
+    "expected": "उपलब्ध कागजातमा यो जानकारी फेला परेन / यो अनुमति प्रदान गरिएको छैन।",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 64)",
+      "directive_3.pdf (Page 22)",
+      "directive_3.pdf (Page 59)",
+      "directive_3.pdf (Page 20)",
+      "directive_3.pdf (Page 73)",
+      "directive_1.pdf (Page 88)"
+    ],
+    "answer": "उपलब्ध कागजातमा यो जानकारी फेला परेन।\n\nप्रदान गरिएका कागजातहरू (directive_3.pdf र directive_1.pdf) मा वालेट कारोबारको सीमा, ग्राहक पहिचान प्रक्रिया, एजेन्टको भूमिका, र भुक्तानी सेवा प्रदायकहरूको नियमन सम्बन्धी विषयहरू उल्लेख गरिएकै छन्, तथापि क्रिप्टोकरेन्सी (Cryptocurrency) किनमल वा यससँग सम्बन्धिथ नियमन/प्रतिकूलता सम्बन्धी कुनै स्पष्ट दण्ड वा व्यवस्था उल्लेख गरिएको छैन।",
+    "search_ms": 64.1,
+    "gen_sec": 84.43,
+    "total_sec": 84.49,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 16,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "DB हरूको deprived sector lending घट्दै गएको हो? तथ्यांकसहित भन्नुहोस्।",
+    "expected": "Deprived sector lending trends from Annual Supervision Report",
+    "retrieved_sources": [
+      "Annual_Report_2024.pdf (Page 65)",
+      "Annual_Report_2025.pdf (Page 74)",
+      "directive_1.pdf (Page 62)",
+      "Annual_Report_2024.pdf (Page 31)",
+      "Annual_Report_2024.pdf (Page 26)",
+      "Annual_Report_2025.pdf (Page 32)"
+    ],
+    "answer": "हो, प्रदान गरिएका वार्षिक प्रतिवेदनहरूको तथ्यांक अनुसार डेभलपमेन्ट बैंकहरू (DBs) को वञ्चित क्षेत्र (Deprived Sector) मा गरिएको ऋण वितरण (Lending) क्रमशः घट्दै गएको छ।\n\nनेपाल राष्ट्र बैंकका वार्षिक प्रतिवेदनहरूमा उल्लेख भएका तथ्यांकहरू यस प्रकार छन्:\n\n**१. वञ्चित क्षेत्रको ऋण कुल ऋणमा भएको अनुपात (Deprived Sector Loan as % of Total Loan):**\n\n*   **२०२१/२२:** १०.३४ प्रतिशत\n*   **२०२२/२३:** ८.१० प्रतिशत\n*   **२०२३/२४:** ७.०४ प्रतिशत\n*   **२०२४/२५:** ५.१९ प्रतिशत\n\n**तथ्यांकीय विश्लेषण:**\n*   २०२१/२२ देखि २०२४/२५ सम्मको अवधिमा वञ्चित क्षेत्रको ऋणको अनुपात १०.३४ प्रतिशतबाट घटेर ५.१९ प्रतिशतमा झरेको छ।\n*   २०२३/२४ को वार्षिक प्रतिवेदनमा स्पष्ट रूपमा उल्लेख गरिएको छ: *\"This shows gradual decline in deprived sector loan\"* (यसले वञ्चित क्षेत्रको ऋणमा क्रमशः घट्दै गएको देखाउँछ)।\n*   २०२४/२५ को वार्षिक प्रतिवेदनमा पनि यो घट्दो प्रवृत्ति जारी रहेको उल्लेख गरिएको छ, जहाँ २०२४/२५ मा यो अनुपात ५.१९ प्रतिशतमा पुगेको छ।\n\n**स्रोतहरू:**\n1.  **Annual_Report_2024.pdf**, पृष्ठ ३१ (Table 3.5: Deprived Sector to Total loan Ratios of DBs)\n2.  **Annual_Report_2025.pdf**, पृष्ठ ३२ (Table 3.5: Deprived Sector to Total loan Ratios of DBs)",
+    "search_ms": 34.8,
+    "gen_sec": 21.72,
+    "total_sec": 21.75,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 17,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "२०२४ मा mobile banking users कति पुगेका थिए?",
+    "expected": "Mobile banking users count in 2024 from report",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 7)",
+      "Annual_Report_2024.pdf (Page 31)",
+      "directive_3.pdf (Page 19)",
+      "Annual_Report_2025.pdf (Page 42)",
+      "Annual_Report_2025.pdf (Page 43)",
+      "directive_1.pdf (Page 10)"
+    ],
+    "answer": "प्रश्नमा उल्लेख गरिएको \"२०२४\" वर्षको सन्दर्भमा उपलब्ध कागजातहरूमा दुईवटा मुख्य तथ्याङ्कहरू फेला परेका छन्, जुन बैंक (DBs) र वित्तीय संस्था (FCs) को आधारमा छुट्टाछुट्टै छन्:\n\n**१. बैंकहरू (Commercial Banks) को सन्दर्भमा:**\nमिड-जुलाई २०२४ (Mid-July 2024) सम्म बैंकहरूमा मोबाइल बैंकिङ ग्राहकहरूको संख्या **३२,७५,९०६ (3,275,906)** पुगेको थियो।\n*   **सन्दर्भ:** Annual_Report_2024.pdf, पृष्ठ ३१, तालिका ३.६ (Table 3.6 : Use of Electronic Banking in DBs)।\n*   **तथ्याङ्क:** \"No. of Customers (Mobile Banking) ... 2023/24: 3,275,906\"\n\n**२. वित्तीय संस्थाहरू (Finance Companies) को सन्दर्भमा:**\nमिड-जुलाई २०२४ (Mid-July 2024) सम्म वित्तीय संस्थाहरूमा मोबाइल बैंकिङ ग्राहकहरूको संख्या **२,३१,८५२ (231,852)** थियो।\n*   **सन्दर्भ:** Annual_Report_2025.pdf, पृष्ठ ४३, तालिका ४.५ (Table 4.5 : Use of Electronic Banking in FCs)।\n*   **तथ्याङ्क:** \"No. of Customers (Mobile Banking) ... 2023/24: 231,852\"\n\n**निष्कर्ष:**\nयदि तपाईंले सामान्यतया बैंक क्षेत्र (Banking Sector) को कुरा गर्नुभएको हो भने, २०२४ मा (मिड-जुलाई २०२४ सम्म) मोबाइल बैंकिङ प्रयोगकर्ताहरूको संख्या **३२,७५,९०६** थियो।",
+    "search_ms": 55.5,
+    "gen_sec": 23.81,
+    "total_sec": 23.86,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 18,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "What happened to the base rate during FY 2023/24?",
+    "expected": "Base rate trend/movement during FY 2023/24",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 67)",
+      "directive_3.pdf (Page 8)",
+      "directive_1.pdf (Page 78)",
+      "directive_1.pdf (Page 67)",
+      "directive_1.pdf (Page 83)",
+      "directive_3.pdf (Page 69)"
+    ],
+    "answer": "Information not found in the documents.",
+    "search_ms": 207.5,
+    "gen_sec": 26.58,
+    "total_sec": 26.78,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 19,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "वञ्चित क्षेत्र कर्जाको प्रतिशत २०२१/२२ देखि २०२३/२४ सम्म कसरी परिवर्तन भयो?",
+    "expected": "Deprived sector loan percentage changes from 2021/22 to 2023/24",
+    "retrieved_sources": [
+      "directive_2.pdf (Page 78)",
+      "directive_3.pdf (Page 57)",
+      "directive_1.pdf (Page 67)",
+      "directive_2.pdf (Page 66)",
+      "directive_3.pdf (Page 68)",
+      "directive_1.pdf (Page 16)"
+    ],
+    "answer": "उपलब्ध कागजातमा वञ्चित क्षेत्र कर्जाको प्रतिशत २०२१/२२ देखि २०२३/२४ सम्मको परिवर्तनसम्बन्धी कुनै तथ्याङ्क वा जानकारी फेला परेन।\n\nप्रदान गरिएका कागजातहरू (directive_1.pdf, directive_2.pdf, directive_3.pdf) मा मुख्यतया भुक्तानी प्रणाली, जोखिम व्यवस्थापन (क्रेडिट, साइबर, प्रणालीगत जोखिम), सम्पत्ति शुद्धीकरण तथा आतङ्कवाद निवारणसम्बन्धी नियमनशील प्रावधानहरू मात्र समावेश छन्। वित्तीय तथ्याङ्क वा आँकडाहरू उपलब्ध छैनन्।",
+    "search_ms": 60.3,
+    "gen_sec": 21.32,
+    "total_sec": 21.38,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 20,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "Why does the report say that banking customers are becoming more technology savvy?",
+    "expected": "Explanation on surge in electronic/mobile banking, QR payments, digital adoption",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 30)",
+      "directive_1.pdf (Page 62)",
+      "directive_3.pdf (Page 10)",
+      "directive_1.pdf (Page 5)",
+      "directive_1.pdf (Page 88)",
+      "directive_3.pdf (Page 25)"
+    ],
+    "answer": "Information not found in the documents.",
+    "search_ms": 264.7,
+    "gen_sec": 24.56,
+    "total_sec": 24.83,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 21,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "Stress test अनुसार DB हरूको मुख्य जोखिम के देखिएको छ?",
+    "expected": "Main risks identified in stress testing for Development Banks",
+    "retrieved_sources": [
+      "directive_2.pdf (Page 80)",
+      "Annual_Report_2024.pdf (Page 40)",
+      "directive_1.pdf (Page 69)",
+      "Annual_Report_2025.pdf (Page 79)",
+      "Annual_Report_2024.pdf (Page 31)",
+      "Annual_Report_2025.pdf (Page 33)"
+    ],
+    "answer": "उपलब्ध कागजातहरूको आधारमा विकास बैंकहरू (DBs) को स्ट्रेस टेस्ट नतिजा अनुसार मुख्य जोखिमहरू निम्न अनुसार देखिएका छन्:\n\n**१. क्रेडिट (Credit) र लिक्विडिटी (Liquidity) जोखिममा उच्च संवेदनशीलता:**\nविकास बैंकहरू बजार सम्बन्धी (market-related) झटकाहरूको प्रतिमाथि सामान्यतया सहनशील (resilient) भए पनि, **क्रेडिट र लिक्विडिटी स्ट्रेस परिदृश्यहरूमा उच्च संवेदनशीलता (greater vulnerability)** देखिएको छ। यसका लागि जोखिम व्यवस्थापनमा विशेष ध्यान दिनु आवश्यक रहेको उल्लेख गरिएको छ।\n\n**२. न्यूनतम पूँजी पर्याप्तता अनुपात (Minimum Capital Adequacy Ratio - CAR) पुरा गर्न असमर्थता:**\nक्रेडिट झटका (Credit Shock) को नतिजा अनुसार, केही विकास बैंकहरू न्यूनतम पूँजी पर्याप्तता अनुपात पूरा गर्न असमर्थ हुनेछन्:\n*   **२०२४/२५ को नतिजा (Mid-July 2025):** १५ प्रतिशत प्रदर्शनशील ऋणहरू (performing loans) उपमानक (substandard) मा झर्ने अवस्थामा, **६ वटा राष्ट्रिय स्तरका** र **४ वटा प्रादेशिक स्तरका** विकास बैंकहरू न्यूनतम पूँजी पर्याप्तता अनुपात (१० प्रतिशत) भन्दा तल झर्नेछन्। जम्मा **१० वटा** विकास बैंकहरू न्यूनतम पूँजी पर्याप्तता आवश्यकता पूरा गर्न असमर्थ हुनेछन्।\n*   **२०२३/२४ को नतिजा (Mid-July 2024):** १५ प्रतिशत प्रदर्शनशील ऋणहरू उपमानकमा झर्ने अवस्थामा **५ वटा** विकास बैंकहरू न्यूनतम पूँजी पर्याप्तता अनुपात पूरा गर्न असमर्थ हुनेछन्।\n\n**सन्दर्भ कागजातहरू:**\n*   *Annual_Report_2025.pdf*, पृष्ठ ३३ (खण्ड ३.२३ र ३.२४)\n*   *Annual_Report_2024.pdf*, पृष्ठ ३१ (खण्ड ३.२३ र ३.२४)",
+    "search_ms": 35.1,
+    "gen_sec": 16.7,
+    "total_sec": 16.74,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 22,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "२० प्रतिशत deposit withdrawal हुँदा liquidity सम्बन्धी के समस्या आउन सक्छ?",
+    "expected": "Liquidity stress test scenario outcome (20% deposit withdrawal impact)",
+    "retrieved_sources": [
+      "directive_2.pdf (Page 30)",
+      "directive_2.pdf (Page 29)",
+      "directive_2.pdf (Page 64)",
+      "directive_1.pdf (Page 66)",
+      "directive_1.pdf (Page 18)",
+      "directive_2.pdf (Page 63)"
+    ],
+    "answer": "उपलब्ध कागजातमा \"२० प्रतिशत deposit withdrawal\" (जम्मा रकमको २० प्रतिशत निकासी) भन्ने विशिष्ट प्रतिशत वा त्यससँग सम्बन्धित कुनै सीमा (limit) को उल्लेख फेला परेन।\n\nतथापि, उपलब्ध कागजातहरूमा तरलता जोखिम (Liquidity Risk) व्यवस्थापनसँग सम्बन्धित सामान्य नियमहरू यस प्रकार छन्:\n\n**१. तरलता जोखिमको परिभाषा र व्यवस्थापन:**\nकागजात `directive_1.pdf` को पृष्ठ ६६ मा तरलता जोखिमलाई \"संस्था वा संस्थासँग सम्बद्ध पक्षहरूले आफ्नो वित्तीय दायित्व पूरा गर्न पर्याप्त श्रोत नहुँदा हुन सक्ने जोखिम\" भनेर परिभाषित गरिएको छ। यसको प्रभावकारी मापन, अनुगमन र व्यवस्थापन गर्न संस्थाले व्यवस्था मिलाउनुपर्नेछ।\n\n**२. भुक्तानी सेवा प्रदायकको दायित्व:**\nत्यही कागजात (`directive_1.pdf`, पृष्ठ ६६) को धारा (ख) मा उल्लेख छ:\n> \"भुक्तानी सेवा प्रदायकले आफ्नो ग्राहकको वालेटमा रहेको विद्युतीय रकमको दायित्व भुक्तानी गर्न पर्याप्त मौजदात सेटलमेन्ट खातामा राख्नुपर्ने छ। सो प्रयोजनको लागि संस्थाले आफ्नो कोषको प्रवाह र सेटलमेन्ट खातामा भएको मौजदात रकमको नियमित अनुगमन गर्नुपर्ने छ।\"\n\n**निष्कर्ष:**\nयदि २० प्रतिशत जम्मा रकम निकासी (withdrawal) भएको अवस्थामा, संस्थाले आफ्नो सेटलमेन्ट खातामा त्यस दायित्व पूरा गर्न **पर्याप्त मौजदात (sufficient balance)** राखेको छैन भने, त्यसले **तरलता जोखिम (Liquidity Risk)** उत्पन्न गराउँछ। यसको अर्थ संस्थाले ग्राहकको विद्युतीय रकमको दायित्व समयमै भुक्तानी गर्न सक्दैन, जसले गर्दा वित्तीय दायित्व पूरा गर्न पर्याप्त श्रोत नहुने समस्या आउँछ।\n\n*नोट: उपलब्ध कागजातमा २० प्रतिशत भन्ने विशिष्ट आँकडा वा त्यससँग सम्बन्धित कुनै विशेष प्रावधान (clause) फेला परेन।*",
+    "search_ms": 52.3,
+    "gen_sec": 24.91,
+    "total_sec": 24.96,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 23,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "प्रतिवेदनअनुसार DB हरूमाथि regulatory action लिनुका मुख्य कारणहरू के थिए?",
+    "expected": "Reasons for supervisory/regulatory actions on DBs",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 63)",
+      "directive_1.pdf (Page 81)",
+      "directive_3.pdf (Page 66)",
+      "directive_2.pdf (Page 61)",
+      "directive_1.pdf (Page 65)",
+      "directive_3.pdf (Page 57)"
+    ],
+    "answer": "उपलब्ध कागजातमा DB हरूमाथि regulatory action लिनुका मुख्य कारणहरू सम्बन्धी कुनै जानकारी फेला परेन।\n\nप्रदान गरिएका कागजातहरू (directive_1.pdf, directive_2.pdf, directive_3.pdf) मा जोखिम व्यवस्थापन, संस्थापक शेयरको खरिद/बिक्री, र सम्पत्ति शुद्धीकरण निवारण (AML/CFT) सम्बन्धी सामान्य नियमहरू मात्र उल्लेख गरिएका छन्, कुनै विशिष्ट संस्था (जस्तै DB) विरुद्ध लिइएको कारबाही वा त्यसका कारणहरूको उल्लेख छैन।",
+    "search_ms": 35.7,
+    "gen_sec": 31.14,
+    "total_sec": 31.18,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 24,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "How many DBs were placed under Prompt Corrective Actions and why?",
+    "expected": "Number of DBs under PCA and supervisory reasons",
+    "retrieved_sources": [
+      "directive_1.pdf (Page 38)",
+      "directive_1.pdf (Page 62)",
+      "directive_1.pdf (Page 29)",
+      "directive_2.pdf (Page 61)",
+      "Annual_Report_2024.pdf (Page 46)",
+      "directive_3.pdf (Page 75)"
+    ],
+    "answer": "Based on the provided context, **information not found in the documents**.\n\nThe provided excerpts from `directive_1.pdf`, `directive_2.pdf`, `directive_3.pdf`, and `Annual_Report_2024.pdf` do not contain specific data regarding the number of Development Banks (DBs) placed under Prompt Corrective Actions (PCA) or the specific reasons for such actions. The available text focuses on payment system directives, IT security challenges, and share transfer regulations for payment institutions.",
+    "search_ms": 219.6,
+    "gen_sec": 14.65,
+    "total_sec": 14.87,
+    "status": "SUCCESS"
+  },
+  {
+    "id": 25,
+    "category": "Category 6: Analytical & Reasoning",
+    "question": "शाखारहित बैंकिङ केन्द्रको संख्या घट्दा पनि mobile banking ग्राहक किन बढिरहेको देखिन्छ?",
+    "expected": "Analysis on shift from physical BLB touchpoints to direct smartphone/mobile banking",
+    "retrieved_sources": [
+      "directive_3.pdf (Page 56)",
+      "directive_3.pdf (Page 60)",
+      "directive_3.pdf (Page 10)",
+      "directive_1.pdf (Page 72)",
+      "directive_1.pdf (Page 32)",
+      "directive_1.pdf (Page 17)"
+    ],
+    "answer": "उपलब्ध कागजातमा शाखारहित बैंकिङ केन्द्रको संख्या घट्नु र मोबाइल बैंकिङ ग्राहक बढ्नु बीचको कारणसम्बन्धी विश्लेषण वा आँकडाहरू फेला परेनन्।\n\nप्रदान गरिएका कागजातहरूमा (directive_1.pdf र directive_3.pdf) मुख्यतया शाखारहित बैंकिङ सेवा प्रदायक बैंक तथा वित्तीय संस्थाहरूको लागि नियमन, सम्झौताका सर्तहरू, शुल्क व्यवस्था, जोखिम व्यवस्थापन र सेटलमेन्ट समयसीमाहरूको उल्लेख गरिएको छ, तर बजारको प्रवृत्ति वा ग्राहक बढ्ने कारणबारेको जानकारी उपलब्ध छैन।",
+    "search_ms": 34.7,
+    "gen_sec": 20.91,
+    "total_sec": 20.94,
+    "status": "SUCCESS"
+  }
+]

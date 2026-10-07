@@ -10,7 +10,7 @@ print("Loading model...")
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # 3. Ask any question about your book!
-query = "formula of duration?"
+query = "संस्थापक शेयर खरिदकर्ता संस्था भएमा"
 
 print(f"\n🔍 Searching for: '{query}'\n")
 

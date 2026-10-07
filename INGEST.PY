@@ -74,15 +74,8 @@ embedding_model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 def clean_nepali_artifacts(text: str) -> str:
     """Fix common Preeti converter glitches and garbled English acronyms."""
     replacements = {
-        "भुत्तफानी": "भुक्तानी",
-        "भिफक्न": "झिक्न",
-        "९भ(प्थ्ऋ०": "(e-KYC)",
-        "भ(प्थ्ऋ": "e-KYC",
-        "ध्भदकष्तभ": "Website",
-        "ब्त्ः": "ATM",
-        "सम्भफाैता": "सम्झौता",
-        "आतÍवादी": "आतङ्कवादी",
-        "अधावधिक": "अद्यावधिक",
+
+
         "अधाविधक": "अद्यावधिक",
         "विधुतीय": "विद्युतीय",
         "विधमान": "विद्यमान"
@@ -216,6 +209,12 @@ try:
 except Exception:
     table = db.create_table(TABLE_NAME, data=new_records)
     print(f"   Created new database table with {len(new_records)} chunks.")
+
+try:
+    table.create_fts_index("text", replace=True)
+    print("   Synchronized native Full-Text (FTS) Inverted Index.")
+except Exception as e:
+    pass
 
 with open(TRACKER_FILE, "w", encoding="utf-8") as f:
     json.dump(indexed_files, f, indent=4)
