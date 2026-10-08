@@ -1,0 +1,155 @@
+<USER_REQUEST>
+Category 1: Financial Supervision Reports (English Source Files)
+Q1. Establishment of Banking Institutions in Nepal
+English Question: When was Nepal Bank Limited (NBL) established as the first commercial bank, and in which year was Nepal Rastra Bank (NRB) established?
+नेपालीमा प्रश्न: नेपालको पहिलो वाणिज्य बैंकको रूपमा नेपाल बैंक लिमिटेड (NBL) कहिले स्थापना भएको थियो, र नेपाल राष्ट्र बैंक (NRB) कुन वर्षमा स्थापना भएको थियो?
+Source Document: Financial Institutions Supervision Report 2023/24 (Chapter 1, Para 1.1, Page 11)
+Expected Answer (in document's language — English):
+
+Nepal’s Banking history dates back to 1937, when Nepal Bank Limited (NBL) was established as the first commercial bank of the country under the then Nepal Bank Act (1937) and public-private partnership model. It was established prior to the establishment of Nepal Rastra Bank (NRB) in 1956.
+
+RAG Evaluation Focus: Factoid extraction from historical introductory narrative.
+Q2. Asset Composition of Development Banks (Mid-July 2024)
+English Question: What were the top three asset components and their respective shares for Development Banks (DBs) as of Mid-July 2024?
+नेपालीमा प्रश्न: मध्य-जुलाई २०२४ सम्मको तथ्यांक अनुसार विकास बैंकहरूको कुल सम्पत्तिको प्रमुख तीन हिस्साहरू र तिनको प्रतिशत कति-कति थियो?
+Source Document: Financial Institutions Supervision Report 2023/24 (Chapter 3, Para 3.3, Page 23)
+Expected Answer (in document's language — English):
+
+As on mid-July 2024, the major chunk of the total assets of the DBs were covered by loans & advances with Rs. 489.03 billion, representing 70.5 percent of total assets. The second and third largest components of total assets are investments with 17.1 percent share and cash & cash equivalent with 7.5 percent share respectively.
+
+RAG Evaluation Focus: Numeric accuracy, ranking, and percentage extraction.
+Q3. Comparison of Non-Performing Loans (NPL) between DBs and FCs
+English Question: What was the Non-Performing Loan (NPL) ratio of Development Banks (B-class) versus Finance Companies (C-class) as of Mid-July 2024 compared to Mid-July 2023?
+नेपालीमा प्रश्न: मध्य-जुलाई २०२३ को तुलनामा मध्य-जुलाई २०२४ मा विकास बैंक (ख वर्ग) र फाइनान्स कम्पनीहरू (ग वर्ग) को खराब कर्जा (NPL) अनुपात कति पुगेको थियो?
+Source Document: Financial Institutions Supervision Report 2023/24 (Chapter 1, Para 1.12 & Table 1.2, Pages 13–14)
+Expected Answer (in document's language — English):
+
+As of mid-July 2024, the NPL ratio remained as 10.31 percent for FCs as against 4.50 percent as of mid-July 2023. For DBs, the NPL ratio was 3.97 percent as of mid-July 2024, compared to 2.50 percent as of mid-July 2023.
+
+RAG Evaluation Focus: Cross-class comparative retrieval across paragraphs and tables.
+Q4. Capital Adequacy Framework Regulations
+English Question: Under NRB regulations, which Capital Adequacy Framework applies to national-level Development Banks versus regional-level Development Banks and Finance Companies?
+नेपालीमा प्रश्न: नेपाल राष्ट्र बैंकको विद्यमान नीतिगत व्यवस्था अनुसार राष्ट्रिय स्तरका विकास बैंकहरू र क्षेत्रीय स्तरका विकास बैंक तथा फाइनान्स कम्पनीहरूका लागि कुन-कुन पुँजी पर्याप्तता फ्रेमवर्क (Capital Adequacy Framework) लागू हुन्छ?
+Source Document: Financial Institutions Supervision Report 2023/24 (Chapter 2, Para 2.4, Page 16)
+Expected Answer (in document's language — English):
+
+All national level DBs are required to maintain capital adequacy ratios as per Capital Adequacy Framework (2015) (based on Basel III standards). For all other regional level DBs as well as all national and regional level FCs, Capital Adequacy Framework (2007, updated July 2008) is applicable.
+
+RAG Evaluation Focus: Distinguishing conditional policy applicability.
+Q5. Profitability Shift of Finance Companies (FY 2024/25 vs FY 2023/24)
+English Question: Did Finance Companies post a consolidated net profit or loss in FY 2024/25, and how did it compare to FY 2023/24?
+नेपालीमा प्रश्न: आर्थिक वर्ष २०२४/२५ मा फाइनान्स कम्पनीहरूले खुद नाफा वा घाटा के कति गरे र यो अघिल्लो वर्ष (२०२३/२४) को तुलनामा कस्तो रह्यो?
+Source Document: Financial Institutions Supervision Report 2024/25 (Chapter 4, Para 4.14, Page 41)
+Expected Answer (in document's language — English):
+
+FCs made a consolidated net profit for FY 2024/25 by Rs. 0.67 billion which was earlier amounting net loss by Rs. 1.27 billion for FY 2023/24.
+
+RAG Evaluation Focus: Financial turnaround metric retrieval (profit vs. loss).
+Q6. Key Onsite Findings on Board Member Borrowing Restrictions
+English Question: According to the onsite supervision observations in FY 2024/25, which specific loan types are board members of financial institutions permitted to obtain under the Unified Directives?
+नेपालीमा प्रश्न: आर्थिक वर्ष २०२४/२५ को स्थलगत निरीक्षणका मुख्य बुँदाहरू अनुसार, एकीकृत निर्देशन बमोजिम वित्तीय संस्थाका सञ्चालकहरूले कुन-कुन शीर्षकका कर्जा सुविधाहरू मात्र लिन पाउने व्यवस्था छ?
+Source Document: Financial Institutions Supervision Report 2024/25 (Chapter 5, Para 5.2, Page 45)
+Expected Answer (in document's language — English):
+
+The Unified Directives restricts the directors to enjoy any loan facilities other than educational loan, hire purchase loan (referred as hair Purchase loan in the report), housing loan and loan for purchasing household materials.
+
+RAG Evaluation Focus: Qualitative compliance / supervisory exception retrieval.
+Q7. Stress Testing of Development Banks (Credit Shock C1 - 2024/25)
+English Question: In the FY 2024/25 stress testing results, how many Development Banks fail to meet the minimum Capital Adequacy Ratio under Credit Shock C1 (15% performing loans deteriorating into substandard)?
+नेपालीमा प्रश्न: आर्थिक वर्ष २०२४/२५ को स्ट्रेस टेस्टिङ नतिजा अनुसार, क्रेडिट शक C1 (१५ प्रतिशत असल कर्जा कमसलमा खस्कँदा) अन्तर्गत कतिवटा विकास बैंकहरू न्यूनतम पुँजी पर्याप्तता अनुपात (CAR) पुर्याउन असफल हुने देखिएको छ?
+Source Document: Financial Institutions Supervision Report 2024/25 (Chapter 3, Para 3.24, Page 33)
+Expected Answer (in document's language — English):
+
+Under Credit Shock (C1), where 15 percent of performing loans deteriorate into Substandard, 6 national-level DBs would fall below 11 percent CAR, while 4 provincial-level DBs would fall below the regulatory minimum CAR of 10 percent. Overall, 10 DBs would fail to meet the minimum capital adequacy requirement under this scenario.
+
+RAG Evaluation Focus: Stress test condition parsing and breakdown extraction.
+Category 2: NRB Payment System Unified Directives (Nepali Source Files)
+Q8. ATM CCTV Footage Retention Requirement
+English Question: How long (in days) must banks and financial institutions retain the CCTV camera memory backup at ATM kiosks?
+नेपालीमा प्रश्न: बैंक तथा वित्तीय संस्थाहरूले एटीएम (ATM) बुथमा राखिएको सीसीटीभी क्यामेराको मेमोरी ब्याकअप कम्तीमा कति दिनसम्म सुरक्षित राख्नुपर्ने व्यवस्था छ?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. १, बुँदा ५(३)(ख))
+Expected Answer (in document's language — Nepali):
+
+CCTV Camera को Memory Backup कम्तीमा नब्बे (९०) दिनसम्म रहने व्यवस्था गर्नुपर्ने छ ।
+
+RAG Evaluation Focus: Single-sentence specific numerical constraint lookup.
+Q9. Force Settlement Window for Failed Card Transactions
+English Question: What is the required timeline for Force Settlement when an electronic transaction fails (account debited but cash not dispensed / transaction not completed) and both Issuer and Acquirer are different Nepali institutions?
+नेपालीमा प्रश्न: विद्युतीय कार्ड वा माध्यमबाट कारोबार गर्दा खाताबाट रकम घटेको तर नगद नआएको वा कारोबार सम्पन्न नभएको अवस्थामा, Issuer र Acquirer फरक-फरक नेपाली संस्था भएमा कति समयभित्र Force Settlement गरिसक्नुपर्छ?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. १, बुँदा ३(२)(ख) तथा निर्देशन नं. २, बुँदा ८(ख))
+Expected Answer (in document's language — Nepali):
+
+Issuer र Acquirer फरक फरक संस्था भई दुवै नेपाली संस्था भएमा बढीमा (T+3) भित्र Force Settlement गर्ने व्यवस्था मिलाउनुपर्ने छ ।
+
+RAG Evaluation Focus: Business day timeline and condition matching (T+1 vs T+3 vs T+30).
+Q10. Digital Wallet Overnight Balance Cap
+English Question: What is the maximum overnight balance allowed in a natural person's digital wallet, and where must the excess balance be transferred?
+नेपालीमा प्रश्न: प्राकृतिक व्यक्तिको विद्युतीय वालेटमा बढीमा कति रकमसम्म ओभरनाइट मौज्दात (Overnight Balance) राख्न पाइन्छ र त्योभन्दा बढी भएको रकम अनिवार्य रूपमा कहाँ जम्मा गर्नुपर्छ?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. ५, बुँदा ३(३))
+Expected Answer (in document's language — Nepali):
+
+वालेटमा अधिकतम रु. ५० हजारभन्दा बढी मौज्दात Overnight Balance राख्न पाइने छैन । सो सीमा भन्दा बढी रहेको रकम अनिवार्य रुपमा ग्राहकको सम्बन्धित बैंक खातामा जम्मा हुने व्यवस्था मिलाउनुपर्ने छ ।
+
+RAG Evaluation Focus: Direct multi-clause rule compliance extraction.
+Q11. Simplified KYC for Small Merchants (Annual Limit)
+English Question: Under the AML/CFT payment directives, what is the maximum annual transaction limit for merchants eligible for Simplified Customer Due Diligence (Simplified KYC)?
+नेपालीमा प्रश्न: सम्पत्ति शुद्धीकरण निवारणसम्बन्धी निर्देशनअनुसार कुन वार्षिक कारोबार सीमासम्मका मर्चेन्टहरूलाई आबद्ध गर्दा सरलीकृत ग्राहक पहिचान (Simplified KYC) को प्रक्रिया अपनाउन सकिन्छ?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. १५, बुँदा १(८))
+Expected Answer (in document's language — Nepali):
+
+वार्षिक रु. १,००,०००।- (अक्षरेपी एक लाख) सम्मको कारोबार गर्ने मर्चेन्टलाई आबद्ध गर्दा सरलीकृत ग्राहक पहिचानको प्रक्रिया अवलम्बन गर्न सक्नेछन् ।
+
+RAG Evaluation Focus: Threshold and process condition lookup.
+Q12. Maximum Fee for Inter Bank Fund Transfer (IBFT)
+English Question: What is the maximum fee service providers can charge individual customers per transaction for Inter Bank Fund Transfer (IBFT) through Mobile App or Internet Banking?
+नेपालीमा प्रश्न: ग्राहकहरूले मोबाइल एप वा इन्टरनेट बैंकिङ्गबाट अन्तर बैंक विद्युतीय रकमान्तर (IBFT) गर्दा सेवा प्रदायकहरूले प्रति कारोबार बढीमा कति सेवा शुल्क लिन पाउँछन्?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. ५, बुँदा ६(५))
+Expected Answer (in document's language — Nepali):
+
+बैंक तथा वित्तीय संस्थाका ग्राहकहरूले मोबाइल एप्लिकेशन (App) वा इन्टरनेट बैंकिङ्ग मार्फत विद्युतीय रकमान्तर Inter Bank Fund Transfer (IBFT) गर्दा सेवा प्रदायकहरूले प्रति कारोबार अधिकतम रु. १० सम्म सेवा शुल्क लिन सक्नेछन् ।
+
+RAG Evaluation Focus: Financial service tariff cap extraction.
+Q13. Periodic Payment System Audit Guidelines
+English Question: When must a licensed non-bank Payment Service Provider conduct its first System Audit, and how often must it be conducted thereafter if the system is not replaced or upgraded?
+नेपालीमा प्रश्न: भुक्तानी सेवा प्रदायक संस्था (बैंक तथा वित्तीय संस्था बाहेक) ले सेवा सुरु गरेको कति समयपछि पहिलो पटक System Audit गराउनुपर्छ र त्यसपछि कति-कति अवधिमा गराई प्रतिवेदन पेश गर्नुपर्छ?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. ३, बुँदा ४(१))
+Expected Answer (in document's language — Nepali):
+
+सेवा सञ्चालन गरेको १ वर्ष पुरा भएपछि भुक्तानी प्रणालीको परीक्षण (System Audit) गराई यस बैंकमा सोको प्रतिवेदन पेश गर्नुपर्ने छ । साथै, साविक System प्रतिस्थापन वा System Upgrade नभएको अवस्थामा प्रत्येक २ आर्थिक वर्षमा System Audit गराई आर्थिक वर्ष समाप्त भएको ६ महिनाभित्र यस बैंकमा प्रतिवेदन पेश गर्नुपर्ने छ ।
+
+RAG Evaluation Focus: Multi-part timeline retrieval with conditional clauses.
+Q14. Threshold Transaction Reporting (TTR) via goAML
+English Question: Under what conditions must a Threshold Transaction Report (TTR) be submitted to the FIU, and what is the reporting deadline and required platform?
+नेपालीमा प्रश्न: कुन अवस्थामा वित्तीय जानकारी एकाई (FIU) मा सीमा कारोबार प्रतिवेदन (TTR) बुझाउनुपर्छ, र यसको समयसीमा तथा प्रयोग हुने सफ्टवेयर के हो?
+Source Document: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन (अ.प्रा. निर्देशन नं. १५, बुँदा २(३))
+Expected Answer (in document's language — Nepali):
+
+कुनै ग्राहकको एक वा एकभन्दा बढी खाता/वालेटमा एकै पटक वा पटक पटक गरी एक महिनामा (नेपाली क्यालेण्डर अनुसार) रु. १० लाख वा सो भन्दा बढी रकमको कारोबार भएमा सोसम्बन्धी सीमा कारोबार प्रतिवेदन (Threshold Transaction Reporting- TTR) कारोबार भएको मितिले १५ दिनभित्र goAML Software मार्फत वित्तीय जानकारी ईकाईमा उपलब्ध गराउनुपर्ने छ ।
+
+RAG Evaluation Focus: Regulatory AML trigger threshold + reporting tool extraction.
+Q15. Daily Cash Withdrawal Limit on Debit Cards (Version Comparison: २०८१ vs २०८२)
+English Question: What is the daily ATM cash withdrawal limit on debit cards issued by banks and financial institutions in the 2081 directive versus the updated 2082 directive?
+नेपालीमा प्रश्न: भुक्तानी प्रणालीसम्बन्धी एकीकृत निर्देशन २०८१ र २०८२ बीच बैंक तथा वित्तीय संस्थाले जारी गरेको डेबिट कार्डबाट प्रतिदिन एटीएममार्फत नगद झिक्न पाउने सीमामा के फरक छ?
+Source Documents:
+२०८१ निर्देशन (अ.प्रा. निर्देशन नं. ५, बुँदा १(१), पृष्ठ १७)
+२०८२ निर्देशन (अ.प्रा. निर्देशन नं. ५, बुँदा १(१), पृष्ठ १७)
+Expected Answer (in document's language — Nepali):
+निर्देशन २०८१ अनुसार: डेबिट कार्डबाट प्रतिदिन नगद झिक्ने अधिकतम सीमा रु. १ लाख रहेको थियो ।
+निर्देशन २०८२ अनुसार: डेबिट कार्डबाट प्रतिदिन नगद झिक्ने अधिकतम सीमा घटाएर रु. ५० हजार कायम गरिएको छ ।
+RAG Evaluation Focus: Temporal multi-document chunk retrieval (detecting amendments between regulatory circular versions).
+
+check on these
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-07T15:29:37+05:45.
+
+The user's current state is as follows:
+Active Document: c:\Users\Banish\RAG_FILESYSTEM\app.py (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 378
+Other open documents:
+- c:\Users\Banish\RAG_FILESYSTEM\INGEST.PY (LANGUAGE_UNSPECIFIED)
+- c:\Users\Banish\RAG_FILESYSTEM\search.py (LANGUAGE_UNSPECIFIED)
+- c:\Users\Banish\RAG_FILESYSTEM\ask.py (LANGUAGE_UNSPECIFIED)
+- c:\Users\Banish\RAG_FILESYSTEM\README.md (LANGUAGE_UNSPECIFIED)
+- c:\Users\Banish\RAG_FILESYSTEM\directive_2.pdf (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>

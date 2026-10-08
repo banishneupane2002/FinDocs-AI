@@ -1,0 +1,177 @@
+[
+  {
+    "id": "Q1",
+    "question": "When was Nepal Bank Limited (NBL) established as the first commercial bank, and in which year was Nepal Rastra Bank (NRB) established?",
+    "sources": [
+      "Annual_Report_2024.pdf (Page 11)",
+      "Annual_Report_2025.pdf (Page 11)"
+    ],
+    "answer": "**Establishment dates**\n\n| Institution | Year of establishment |\n|-------------|-----------------------|\n| Nepal Bank Limited (NBL) – first commercial bank | **1937** |\n| Nepal Rastra Bank (NRB) – central bank | **1956** |\n\n**Documented evidence**\n\n- *Annual_Report_2024.pdf*, p. 11:  \n  “**1.1 Nepal’s Banking history dates back to 1937, when Nepal Bank Limited (NBL) was established as the first commercial bank of the country … It was established prior to the establishment of Nepal Rastra Bank (NRB) in 1956.**”\n\n- *Annual_Report_2025.pdf*, p. 11 repeats the same statement.\n\nThus, NBL was founded in **1937**, and NRB was founded later in **1956**.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q2",
+    "question": "What were the top three asset components and their respective shares for Development Banks (DBs) as of Mid-July 2024?",
+    "sources": [
+      "Annual_Report_2024.pdf (Page 24)",
+      "Annual_Report_2024.pdf (Page 15)",
+      "Annual_Report_2025.pdf (Page 25)",
+      "Annual_Report_2025.pdf (Page 30)"
+    ],
+    "answer": "**Top three asset components of Development Banks (DBs) as of Mid‑July 2024**\n\n| Rank | Asset component | Share of total assets |\n|------|----------------|-----------------------|\n| 1 | Loans and advances | **70.5 %** |\n| 2 | Investment | **17.1 %** |\n| 3 | Cash and bank balance | **7.5 %** |\n\n**Source**\n\n- *Annual_Report_2024.pdf*, “Financial Institution Supervision Report 2023/24”, Figure 3.2 – “Composition of Total Assets of DBs (Mid‑July 2024)”. (Page 24) – the figure lists the percentages: “Loans and advances, 70.5 %”, “Investment, 17.1 %”, “Cash and Bank Balance, 7.5 %” (along with other lower‑share items).",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q3",
+    "question": "What was the Non-Performing Loan (NPL) ratio of Development Banks (B-class) versus Finance Companies (C-class) as of Mid-July 2024 compared to Mid-July 2023?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 13)",
+      "Annual_Report_2024.pdf (Page 13)",
+      "Annual_Report_2024.pdf (Page 28)",
+      "Annual_Report_2024.pdf (Page 26)"
+    ],
+    "answer": "**Non‑Performing Loan (NPL) ratios (mid‑July 2024 vs. mid‑July 2023)**  \n\n| Institution type (class) | NPL ratio 2024 | NPL ratio 2023 | Source (document & page) |\n|--------------------------|----------------|----------------|--------------------------|\n| Development Banks (B‑class) | **3.97 %** | **2.71 %** | *Annual_Report_2024.pdf*, p. 28 – “The ratio of NPLs to total loans and advances of DBs increased to **3.97 percent** in mid‑July 2024 from **2.71 percent** in mid‑July 2023.” |\n| Finance Companies (C‑class) | **10.31 %** | **4.50 %** | *Annual_Report_2024.pdf*, p. 13 – “As of mid‑July 2024, the NPL ratio remained as **10.31 percent** for FCs as against **4.50 percent** as of mid‑July 2023.” |\n\n**Interpretation**  \n- Development Banks saw their NPL ratio rise by **1.26 percentage points** (from 2.71 % to 3.97 %).  \n- Finance Companies experienced a larger increase of **5.81 percentage points** (from 4.50 % to 10.31 %).  \n\nThese figures are taken directly from the Nepal Rastra Bank’s *Financial Institution Supervision Report 2023/24* as presented in the 2024 Annual Report.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q4",
+    "question": "Under NRB regulations, which Capital Adequacy Framework applies to national-level Development Banks versus regional-level Development Banks and Finance Companies?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 17)",
+      "Annual_Report_2024.pdf (Page 16)",
+      "Annual_Report_2025.pdf (Page 53)"
+    ],
+    "answer": "**Capital Adequacy Frameworks under NRB regulations**\n\n| Institution type | Applicable Capital Adequacy Framework |\n|------------------|----------------------------------------|\n| **National‑level Development Banks (DBs)** | **Capital Adequacy Framework (2015)** |\n| **Regional‑level Development Banks (DBs) and Finance Companies (FCs)** | **Capital Adequacy Framework (2007, updated July 2008)** |\n\n**Exact clause from the NRB supervision report**\n\n> “The current regulatory provision requires all national level DBs to maintain capital adequacy ratios as per **Capital Adequacy Framework (2015)**. For all other regional level DBs as well as all national and regional level FCs, **Capital Adequacy Framework (2007, updated July 2008)** is applicable.”  \n> — *Financial Institution Supervision Report 2024/25*, **Annual_Report_2025.pdf**, p. 17  \n\n(The same wording appears in the prior year’s report: *Financial Institution Supervision Report 2023/24*, **Annual_Report_2024.pdf**, p. 16.)",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q5",
+    "question": "Did Finance Companies post a consolidated net profit or loss in FY 2024/25, and how did it compare to FY 2023/24?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 41)",
+      "Annual_Report_2024.pdf (Page 30)",
+      "Annual_Report_2025.pdf (Page 31)",
+      "Annual_Report_2024.pdf (Page 33)"
+    ],
+    "answer": "**Consolidated result for Finance Companies (FCs)**  \n\n- **FY 2024/25:** Net **profit** of **Rs 0.67 billion**.  \n- **FY 2023/24:** Net **loss** of **Rs 1.27 billion**.\n\n**Comparison:** The FCs moved from a loss in FY 2023/24 to a modest profit in FY 2024/25, improving by **Rs 1.94 billion** (from –Rs 1.27 bn to +Rs 0.67 bn).\n\n**Source:** *Annual_Report_2025.pdf*, page 41 – “FCs made a consolidated net profit for FY 2024/25 by Rs. 0.67 billion which was earlier amounting net loss by Rs. 1.27 billion for FY 2023/24.”",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q6",
+    "question": "According to the onsite supervision observations in FY 2024/25, which specific loan types are board members of financial institutions permitted to obtain under the Unified Directives?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 45)",
+      "Annual_Report_2024.pdf (Page 42)",
+      "Annual_Report_2025.pdf (Page 48)"
+    ],
+    "answer": "**Permitted loan types for board members (FY 2024/25 onsite supervision)**  \n\n- **Educational loan**  \n- **Hair‑purchase loan**  \n- **Housing loan**  \n- **Loan for purchasing household materials**  \n\n**Source** – *Financial Institution Supervision Report 2024/25* (Annual_Report_2025.pdf), **page 45**, Observation 5.2:\n\n> “Board member of some of the FIs were found being involved in taking loan from BFIs against the provision of Unified Directives that **restricts the directors to enjoy any loan facilities other than educational loan, hair Purchase loan, housing loan and loan for purchasing household materials**.”  \n\nThese four loan categories are the only ones expressly allowed for directors under the Unified Directives.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q7",
+    "question": "In the FY 2024/25 stress testing results, how many Development Banks fail to meet the minimum Capital Adequacy Ratio under Credit Shock C1 (15% performing loans deteriorating into substandard)?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 43)",
+      "Annual_Report_2024.pdf (Page 31)",
+      "Annual_Report_2024.pdf (Page 32)"
+    ],
+    "answer": "**Information not found in the documents**. The provided FY 2024/25 report contains stress‑testing results only for finance companies, while the Development Bank stress‑testing data are limited to FY 2023/24. No FY 2024/25 figures for Development Banks under Credit Shock C1 (15 % performing loans deteriorating into substandard) are present in the supplied documents.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q8",
+    "question": "How long (in days) must banks and financial institutions retain the CCTV camera memory backup at ATM kiosks?",
+    "sources": [
+      "directive_3.pdf (Page 8)",
+      "directive_1.pdf (Page 7)",
+      "directive_3.pdf (Page 7)",
+      "Annual_Report_2025.pdf (Page 50)"
+    ],
+    "answer": "Banks and financial institutions must retain the CCTV‑camera memory backup at ATM kiosks for **a minimum of 90 days**.\n\n**Citation**  \n- *Directive 3* – “CCTV Camera को Memory Backup कम्तीमा नब्बे (९०) दिनसम्म रहने व्यवस्था” (पृष्ठ 8).  \n- *Directive 1* – “CCTV Camera को Memory Backup कम्तीमा नब्बे (९०) दिनसम्म रहने व्यवस्था” (पृष्ठ 7).",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q9",
+    "question": "What is the required timeline for Force Settlement when an electronic transaction fails (account debited but cash not dispensed / transaction not completed) and both Issuer and Acquirer are different Nepali institutions?",
+    "sources": [
+      "directive_3.pdf (Page 7)",
+      "directive_2.pdf (Page 6)",
+      "directive_2.pdf (Page 10)",
+      "directive_1.pdf (Page 10)"
+    ],
+    "answer": "**Required timeline for Force Settlement**\n\n- **When the Issuer and the Acquirer are different Nepali institutions:** the settlement must be completed **within T + 3 days** (i.e., no later than three business days after the failed transaction).\n\n**Exact clause**\n\n> “(ख) Issuer र Acquirer फरक फरक संस्था भर्इ दुवै नेपाली संस्था भएमा बढीमा (T+3) भित्र”  \n> — *Directive 3*, page 7  \n\n(The same wording appears in *Directive 2*, page 6.)\n\nThus, for an electronic transaction that fails (account debited but cash not dispensed or the transaction not completed), the Force Settlement must be effected within three days when the Issuer and Acquirer are separate Nepali entities.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q10",
+    "question": "What is the maximum overnight balance allowed in a natural person's digital wallet, and where must the excess balance be transferred?",
+    "sources": [
+      "directive_3.pdf (Page 19)",
+      "directive_3.pdf (Page 20)",
+      "directive_1.pdf (Page 22)",
+      "directive_2.pdf (Page 22)"
+    ],
+    "answer": "**Maximum overnight balance:** Rs 50,000 per natural‑person digital wallet.  \n\n**Where the excess must go:** Any amount that would exceed this Rs 50,000 limit must be automatically transferred to the customer’s **linked (correspondent) bank account**.\n\n**Source:** *Directive 3* (PDF), page 19 – clause stating: “व्ाालेटमा अधिकतम रु. ५० हजारभन्दा बढी माैज्दात Overnight Balance राख्न पाइनेे छैन । सो सीमा भन्दा बढी रहेको रकम अनिवार्य रुपमा ग्राहकको सम्बन्िधत बैंक खातामा जम्मा हुने व्यवस्था मिलाउनुपनर्े छ।”",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q11",
+    "question": "Under the AML/CFT payment directives, what is the maximum annual transaction limit for merchants eligible for Simplified Customer Due Diligence (Simplified KYC)?",
+    "sources": [
+      "directive_1.pdf (Page 78)",
+      "directive_2.pdf (Page 77)",
+      "directive_3.pdf (Page 64)",
+      "directive_2.pdf (Page 81)"
+    ],
+    "answer": "**Maximum annual transaction limit for merchants eligible for Simplified Customer Due Diligence (Simplified KYC): Rs 1,00,000 (one lakh rupees) per year.**\n\n**Exact clause (as worded in the directives):**  \n\n> “वार्षकि रु.१,००,०००।– (अक्षरेपी एक लाख) सम्मको कारोबार गर्ने मचर्ेन्टलाई ... सरलीकृत ग्राहक पहिचानको प्रक्रिया अवलम्बन गर्न सक्नेछन।”  \n\n- **Document:** *directive_1.pdf*, **Page 78**  \n- **Document:** *directive_2.pdf*, **Page 77**  \n- **Document:** *directive_3.pdf*, **Page 64**  \n\nThese passages specify that merchants whose annual transaction volume does not exceed **Rs 1,00,000** may be onboarded using the simplified KYC procedure.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q12",
+    "question": "What is the maximum fee service providers can charge individual customers per transaction for Inter Bank Fund Transfer (IBFT) through Mobile App or Internet Banking?",
+    "sources": [
+      "directive_3.pdf (Page 21)",
+      "directive_1.pdf (Page 24)",
+      "directive_2.pdf (Page 24)",
+      "directive_3.pdf (Page 40)"
+    ],
+    "answer": "**Maximum fee for an Inter‑Bank Fund Transfer (IBFT) via Mobile App or Internet Banking**\n\n- **Amount:** **Rs 10 per transaction**  \n- **Source:** Directive 3, page 21 – clause (छ) states:  \n\n> “बैंक तथा वित्तीय संस्थाका ग्राहकहरूले मोबाइल एप्लिकेशन वा इन्टरनेट बैंकिङ मार्फत विद्युतीय रकमान्तर (IBFT) गर्दा सेवा प्रदायकहरूले प्रति कारोबार अधिकतम **रु. १०** सम्म सेवा शुल्क लिन सक्नेछन्।”  \n\n**Document:** *directive_3.pdf*, **page 21**.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q13",
+    "question": "When must a licensed non-bank Payment Service Provider conduct its first System Audit, and how often must it be conducted thereafter if the system is not replaced or upgraded?",
+    "sources": [
+      "directive_3.pdf (Page 15)",
+      "directive_1.pdf (Page 25)",
+      "directive_1.pdf (Page 15)",
+      "directive_2.pdf (Page 25)"
+    ],
+    "answer": "**First System Audit**\n\n- A licensed non‑bank Payment Service Provider (PSP) must carry out its **first System Audit after it has completed one (1) year of service operation**.  \n- The audit report must be submitted to Nepal Rastra Bank (NRB) thereafter.\n\n**Subsequent Audits (if the system is neither replaced nor upgraded)**  \n\n- The PSP must conduct a **System Audit every two (2) financial years** (i.e., biennially).  \n- The audit report must be presented to NRB **within six (6) months after the end of the financial year** to which the audit relates.\n\n**Source**\n\n- *Directive No. 6/082 – Payment System Department, Nepal Rastra Bank*, **page 15** (also reiterated on page 15 of *directive_3.pdf*).  \n  > “अनुमतिपत्रप्राप्त संस्था (बैंक तथा वित्तीय संस्था बाहेक) ले सेवा सञ्चालन गरेको १ वर्ष पुरा भएपछि भुक्तानी प्रणालीको परीक्षण ९System Audit० गरार्इ यस बैंकमा सोको प्रतिवेदन पेश गर्नुपर्‍नेछ । साथै, साविक System प्रतिस्थापन वा System ग्उनचबमभ नभएको अवस्थामा प्रत्येक २ आर्थकि वर्षमा System Audit गरार्इ आर्थकि वर्ष समाप्त भएको ६ महिनाभित्र यस बैंकमा प्रतिवेदन पेश गर्नुपर्‍नेछ ।”\n\nThus, the first audit is due after one year of operation, and thereafter it must be repeated every two financial years, with the report filed within six months of the fiscal‑year close.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q14",
+    "question": "Under what conditions must a Threshold Transaction Report (TTR) be submitted to the FIU, and what is the reporting deadline and required platform?",
+    "sources": [
+      "directive_2.pdf (Page 54)",
+      "directive_1.pdf (Page 54)",
+      "directive_3.pdf (Page 24)",
+      "directive_2.pdf (Page 80)"
+    ],
+    "answer": "**Information not found in the documents**.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q15",
+    "question": "What is the daily ATM cash withdrawal limit on debit cards issued by banks and financial institutions in the 2081 directive versus the updated 2082 directive?",
+    "sources": [
+      "directive_1.pdf (Page 20)",
+      "directive_3.pdf (Page 18)",
+      "directive_2.pdf (Page 20)",
+      "directive_3.pdf (Page 19)"
+    ],
+    "answer": "**Daily ATM cash‑withdrawal limit on debit cards (banks & financial institutions)**  \n\n| Directive (B.S.) | Document (page) | Daily limit (NRs.) |\n|------------------|-----------------|--------------------|\n| **2081** (Directive 5/081) | *directive_2.pdf*, p. 20 | **NR 25,000** per day |\n| **2082** (Directive 5/082) | *directive_1.pdf*, p. 20 | **NR 20,000** per day |\n\n**Exact wording (same clause in both documents)**  \n\n> “(ज्ञ) भुक्तानी कार्डबाट नगद झिक्ने अधिकतम सीमा देहाय बमोेजिम हुनेछ ः … **डेबिट कार्ड** … **रकम (रु.)** **प्रतिदिन** …”  \n\n- In *directive_2.pdf* (p. 20) the table lists **डेबिट कार्ड – २५ हजार** under “प्रतिदिन”.  \n- In *directive_1.pdf* (p. 20) the table lists **डेबिट कार्ड – २० हजार** under “प्रतिदिन”.\n\nThus, the daily ATM cash‑withdrawal ceiling for debit cards issued by banks and financial institutions was reduced from **NR 25,000** in the 2081 directive to **NR 20,000** in the updated 2082 directive.",
+    "model": "openai/gpt-oss-120b"
+  }
+]

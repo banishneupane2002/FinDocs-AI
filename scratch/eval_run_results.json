@@ -1,0 +1,160 @@
+[
+  {
+    "id": "Q1",
+    "question": "When was Nepal Bank Limited (NBL) established as the first commercial bank, and in which year was Nepal Rastra Bank (NRB) established?",
+    "sources": [
+      "Annual_Report_2024.pdf (Page 11)"
+    ],
+    "answer": "Based on the provided document, here are the establishment years:\n\n*   **Nepal Bank Limited (NBL):** Established in **1937** as the first commercial bank of the country.\n*   **Nepal Rastra Bank (NRB):** Established in **1956**.\n\n**Source:**\n*   **Document:** Annual_Report_2024.pdf\n*   **Page:** 11\n*   **Clause:** \"1.1 Nepal’s Banking history dates back to 1937 , when Nepal Bank Limited (NBL) was established as the first commercial bank of the country... It was established prior to the establishment of Nepal Rastra Bank (NRB) in 1956.\"",
+    "model": "qwen/qwen3.8-27b"
+  },
+  {
+    "id": "Q2",
+    "question": "What were the top three asset components and their respective shares for Development Banks (DBs) as of Mid-July 2024?",
+    "sources": [
+      "Annual_Report_2024.pdf (Page 24)",
+      "Annual_Report_2025.pdf (Page 30)",
+      "Annual_Report_2024.pdf (Page 15)"
+    ],
+    "answer": "**Top three asset components for Development Banks (DBs) as of Mid‑July 2024**\n\n| Rank | Asset component | Share of total assets |\n|------|----------------|-----------------------|\n| 1 | Loans and advances | **70.5 %** |\n| 2 | Investment | **17.1 %** |\n| 3 | Cash and bank balance | **7.5 %** |\n\n**Source** – *Annual_Report_2024.pdf*, **Figure 3.2: “Composition of Total Assets of DBs (Mid‑July 2024)”**, page 24. The figure lists the percentages exactly as shown above.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q3",
+    "question": "What was the Non-Performing Loan (NPL) ratio of Development Banks (B-class) versus Finance Companies (C-class) as of Mid-July 2024 compared to Mid-July 2023?",
+    "sources": [
+      "Annual_Report_2024.pdf (Page 28)",
+      "Annual_Report_2025.pdf (Page 13)",
+      "Annual_Report_2024.pdf (Page 13)"
+    ],
+    "answer": "**Non‑Performing Loan (NPL) ratios (mid‑July)**  \n\n| Institution type | Mid‑July 2024 | Mid‑July 2023 |\n|------------------|--------------|--------------|\n| Development Banks (B‑class) | **3.97 %** | **2.50 %** |\n| Finance Companies (C‑class) | **10.31 %** | **4.50 %** |\n\n**Source** – *Annual_Report_2024.pdf*, page 13, “Financial Institution Supervision Report 2023/24”, clause 1.12.  \n\nThe report states that the NPL ratio for Development Banks rose to 3.97 % in mid‑July 2024, up from 2.50 % in mid‑July 2023, while the NPL ratio for Finance Companies increased to 10.31 % in mid‑July 2024, compared with 4.50 % in mid‑July 2023.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q4",
+    "question": "Under NRB regulations, which Capital Adequacy Framework applies to national-level Development Banks versus regional-level Development Banks and Finance Companies?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 53)"
+    ],
+    "answer": "**Information not found in the documents**.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q5",
+    "question": "Did Finance Companies post a consolidated net profit or loss in FY 2024/25, and how did it compare to FY 2023/24?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 41)",
+      "Annual_Report_2024.pdf (Page 30)",
+      "Annual_Report_2025.pdf (Page 31)"
+    ],
+    "answer": "**Consolidated Net Profit/Loss of Finance Companies (FCs)**  \n\n| Fiscal Year | Result | Amount (Rs. billion) |\n|-------------|--------|----------------------|\n| FY 2024/25  | **Net profit** | **0.67** |\n| FY 2023/24  | **Net loss**   | **‑1.27** |\n\n**Comparison:**  \nFinance Companies moved from a net loss of **Rs 1.27 billion** in FY 2023/24 to a net profit of **Rs 0.67 billion** in FY 2024/25, indicating a turnaround of **Rs 1.94 billion** (from loss to profit).\n\n**Source:** *Annual_Report_2025.pdf*, page 41 – “FCs made a consolidated net profit for FY 2024/25 by Rs. 0.67 billion which was earlier amounting net loss by Rs. 1.27 billion for FY 2023/24.”",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q6",
+    "question": "According to the onsite supervision observations in FY 2024/25, which specific loan types are board members of financial institutions permitted to obtain under the Unified Directives?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 45)",
+      "Annual_Report_2024.pdf (Page 42)"
+    ],
+    "answer": "**Permitted loan types for board members (as per the FY 2024/25 onsite supervision observations):**\n\n- Educational loan  \n- Hair‑purchase loan  \n- Housing loan  \n- Loan for purchasing household materials  \n\n**Source** – *Annual_Report_2025.pdf*, page 45, clause 5.2:  \n\n> “Board member of some of the FIs were found being involved in taking loan from BFIs against the provision of Unified Directives that **restricts the directors to enjoy any loan facilities other than educational loan, hair Purchase loan, housing loan and loan for purchasing household materials**.”  \n\nThis clause explicitly lists the only loan facilities that directors are allowed to obtain under the Unified Directives.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q7",
+    "question": "In the FY 2024/25 stress testing results, how many Development Banks fail to meet the minimum Capital Adequacy Ratio under Credit Shock C1 (15% performing loans deteriorating into substandard)?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 43)",
+      "Annual_Report_2024.pdf (Page 31)"
+    ],
+    "answer": "Information not found in the documents.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q8",
+    "question": "How long (in days) must banks and financial institutions retain the CCTV camera memory backup at ATM kiosks?",
+    "sources": [
+      "Annual_Report_2025.pdf (Page 50)",
+      "directive_3.pdf (Page 8)"
+    ],
+    "answer": "**Retention period:** Banks and financial institutions must retain the CCTV‑camera memory backup at ATM kiosks for **a minimum of 90 days**.\n\n**Exact clause:**  \n> “(ख) … कम्तीमा नब्बे (९०) दिनसम्म रहने व्यवस्था …”  \n\n**Source:** *directive_3.pdf*, page 8.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q9",
+    "question": "What is the required timeline for Force Settlement when an electronic transaction fails (account debited but cash not dispensed / transaction not completed) and both Issuer and Acquirer are different Nepali institutions?",
+    "sources": [
+      "directive_3.pdf (Page 7)",
+      "directive_2.pdf (Page 6)",
+      "directive_2.pdf (Page 10)"
+    ],
+    "answer": "**Required timeline for Force Settlement (different Nepali Issuer & Acquirer):**  \n\n- **Within 9 days** of the failed transaction.\n\n**Exact clause (as written in the directive):**  \n\n> “(ख) क्ष्ककगभच र ब्अत्रगष्चभच फरक फरक संस्था भर्इ दुवै नेपाली संस्था भएमा बढीमा ९त्ंघ० भित्र”  \n\n- **Document:** *directive_2.pdf* – Page 6  \n- (The same wording appears in *directive_3.pdf* – Page 7.)  \n\nThus, when the issuer and acquirer are two different Nepali institutions, the settlement of the disputed amount must be completed **no later than nine (9) days** after the transaction failure.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q10",
+    "question": "What is the maximum overnight balance allowed in a natural person's digital wallet, and where must the excess balance be transferred?",
+    "sources": [
+      "directive_3.pdf (Page 19)",
+      "directive_3.pdf (Page 20)",
+      "directive_1.pdf (Page 22)"
+    ],
+    "answer": "**Maximum overnight balance in a natural‑person’s digital wallet:** **Rs 50,000**  \n\n**Required handling of any amount above this limit:** The excess must be automatically transferred to the customer’s **linked (correspondent) bank account**.\n\n**Source (exact clause):**  \n\n> “वालेटमा अधिकतम रु. ५० हजारभन्दा बढी माैज्दात इखभचलष्नजत धबबिलअभ राख्न पाइनेे छैन । सो सीमा भन्दा बढी रहेको रकम अनिवार्य रुपमा ग्राहकको सम्बन्िधत बैंक खातामा जम्मा हुने व्यवस्था मिलाउनुपनर्े छ ।”  \n> — *directive_3.pdf*, पृष्ठ 19  \n\n(The same wording appears in *directive_1.pdf*, पृष्ठ 22.)",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q11",
+    "question": "Under the AML/CFT payment directives, what is the maximum annual transaction limit for merchants eligible for Simplified Customer Due Diligence (Simplified KYC)?",
+    "sources": [
+      "directive_1.pdf (Page 78)",
+      "directive_2.pdf (Page 77)",
+      "directive_3.pdf (Page 64)"
+    ],
+    "answer": "**Maximum annual transaction limit for merchants that may use the Simplified Customer Due Diligence (Simplified KYC) procedure:**  \n\n- **Rs 1,00,000 (one lakh Nepali rupees) per year**  \n\n**Exact clause:**  \n\n> “वार्षकि रु.१,००,०००।– (अक्षरेपी एक लाख) सम्मको कारोबार … सरलीकृत ग्राहक पहिचानको प्रक्रिया अवलम्बन गर्न सक्नेछन”  \n\n- Appears in **directive_1.pdf, page 78**  \n- Re‑stated in **directive_2.pdf, page 77**  \n- Re‑stated in **directive_3.pdf, page 64**  \n\nThus, any merchant whose expected annual transaction volume does not exceed **Rs 1,00,000** may be onboarded using the simplified KYC approach under the AML/CFT payment directives.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q12",
+    "question": "What is the maximum fee service providers can charge individual customers per transaction for Inter Bank Fund Transfer (IBFT) through Mobile App or Internet Banking?",
+    "sources": [
+      "directive_3.pdf (Page 21)",
+      "directive_1.pdf (Page 24)",
+      "directive_2.pdf (Page 24)"
+    ],
+    "answer": "**Maximum fee:** **Rs 10 per transaction**\n\n**Citation:** Directive 3, *“Inter‑Bank Fund Transfer (IBFT) through Mobile Application or Internet Banking”* – clause (छ), page 21.  \n\n*Exact wording (translated):* “When customers of banks and financial institutions transfer funds electronically via mobile application or internet banking, the service provider may charge a maximum service fee of **Rs 10** per transaction.”",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q13",
+    "question": "When must a licensed non-bank Payment Service Provider conduct its first System Audit, and how often must it be conducted thereafter if the system is not replaced or upgraded?",
+    "sources": [
+      "directive_3.pdf (Page 15)",
+      "directive_1.pdf (Page 25)",
+      "directive_2.pdf (Page 15)"
+    ],
+    "answer": "**Timing of the first system audit**\n\n- A licensed non‑bank Payment Service Provider (PSP) must carry out its first payment‑system test/audit **after it has completed one (1) year of service operation** and submit the report to Nepal Rastra Bank.  \n\n**Subsequent audits when the system is not replaced or upgraded**\n\n- If the system has **not been replaced or upgraded**, the PSP must repeat the audit **once every two (2) financial years**.  \n- The audit report must be presented to the Bank **within six (6) months after the end of the relevant financial year**.\n\n**Exact clause (quoted)**  \n\n> “अनुमतिपत्रप्राप्त संस्था (बैंक तथा वित्तीय संस्था बाहेक) ले सेवा सञ्चालन गरेको १ वर्ष पुरा भएपछि भुक्तानी प्रणालीको परीक्षण … गरार्इ यस बैंकमा सोको प्रतिवेदन पेश गनर्ुपनर्े छ ।",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q14",
+    "question": "Under what conditions must a Threshold Transaction Report (TTR) be submitted to the FIU, and what is the reporting deadline and required platform?",
+    "sources": [
+      "directive_2.pdf (Page 54)",
+      "directive_1.pdf (Page 54)",
+      "directive_2.pdf (Page 80)"
+    ],
+    "answer": "**Information not found in the documents**.",
+    "model": "openai/gpt-oss-120b"
+  },
+  {
+    "id": "Q15",
+    "question": "What is the daily ATM cash withdrawal limit on debit cards issued by banks and financial institutions in the 2081 directive versus the updated 2082 directive?",
+    "sources": [
+      "directive_1.pdf (Page 20)",
+      "directive_3.pdf (Page 18)",
+      "directive_2.pdf (Page 20)"
+    ],
+    "answer": "**Daily ATM cash‑withdrawal limit on debit cards (banks & financial institutions)**  \n\n| Directive (B.S.) | Daily limit (Rs.) | Source clause & page |\n|------------------|-------------------|----------------------|\n| **2081** (Directive № 5/081) | **Rs 25,000** per day | “(ज्ञ) भुक्तानी कार्डबाट नगद झिक्ने अधिकतम सीमा …” – Table for **डेबिट कार्ड** shows **२५ हजार** (प्रतिदिन) – *directive_2.pdf, p. 20* |\n| **2082** (Directive № 5/082",
+    "model": "openai/gpt-oss-120b"
+  }
+]

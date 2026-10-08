@@ -1,0 +1,650 @@
+[
+  {
+    "id": "Q1",
+    "title": "Establishment of Banking Institutions in Nepal",
+    "question": "When was Nepal Bank Limited (NBL) established as the first commercial bank, and in which year was Nepal Rastra Bank (NRB) established?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 11,
+        "score": 0.071,
+        "text_snippet": "1 Financial Institution Supervision Report 2023/24 CHAPTER 1 AN OVERVIEW OF FINANCIAL INSTITUTIONS A Short Glimpse of Banking in Nepal 1.1 Nepal’s Banking history dates back to 1937 , when Nepal Bank Limited (NBL) was established as the first commercial bank of the country under the then Nepal Bank Act (1937) and public-private partnership model. It was established prior to the establishment of Ne"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 11,
+        "score": 0.0649,
+        "text_snippet": "1 Financial Institution Supervision Report 2024/25 CHAPTER 1 AN OVERVIEW OF FINANCIAL INSTITUTIONS A Brief Overview or Banks and Financial Institutions in Nepal 1.1 After the establishment of Nepal Bank Limited (NBL) as the first commercial bank in 1937 , under the then Nepal Bank Act (1937) and public -private partnership model Nepalese banking ushered into the era of modern banking system. 1.2 T"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 12,
+        "score": 0.0443,
+        "text_snippet": "2 Financial Institution Supervision Report 2024/25 1.6 As a central bank of Nepal, NRB was established in 1956 under the then NRB Act (1955) with the main aim of issuing Nepalese banknote, promoting the use and stabilizing the exchange rate of Nepalese currency. Later, NRB Act (2002) was promulgated abolishing the earlier act. As per this new act, NRB's objectives are to ensure price stability, ex"
+      }
+    ],
+    "fact_coverage": {
+      "1937": true,
+      "1956": true,
+      "Nepal Bank Limited": true,
+      "Nepal Rastra Bank": true
+    }
+  },
+  {
+    "id": "Q2",
+    "title": "Asset Composition of Development Banks (Mid-July 2024)",
+    "question": "What were the top three asset components and their respective shares for Development Banks (DBs) as of Mid-July 2024?",
+    "status": "PARTIAL (4/5 facts found)",
+    "is_sufficient": false,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 24,
+        "score": 0.0667,
+        "text_snippet": "14 Financial Institution Supervision Report 2023/24 Figure 3.2: Composition of Total Assets of DBs (Mid-July 2024) 3.4 As on mid-July, 2024 the major sources of liabilities for DBs were customer deposits with 88.38 percent share. Other sources include paid up capital with 6.44  percent share, reserve and surplus with 2.60 percent share, other liabilities with 1.71 percent share and borrowings with"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 15,
+        "score": 0.0563,
+        "text_snippet": "5 Financial Institution Supervision Report 2023/24 1.16 The total share of DBs and FCs on the total assets of banking industry (BFIs comprising A, B, C and D class FIs) stands at 8.3 percent and 2.0 percent respectively as of mid-July 2024. Share of each class of  BFIs on the ir overall total assets during the la st five years  has been furnished in the table below. Table 1.3 : BFIs Share on asset"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 25,
+        "score": 0.0535,
+        "text_snippet": "15 Financial Institution Supervision Report 2024/25 Figure 3.2: Composition of Total Assets of DBs (Mid-July 2025) 3.4 As on mid-July, 2025 the major sources of liabilities for DB s were customer deposits  with 87.17 percent share. Other source s include paid up capital with 5.94  percent share, reserve and surplus with 3.23 percent share, other liabilities with 2.94 percent share and borrowings w"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 30,
+        "score": 0.0525,
+        "text_snippet": "20 Financial Institution Supervision Report 2024/25 Non-Banking Assets 3.15 As of Mid-July 2025, the non-banking assets (NBA) of DBs increased to Rs. 4.84 billion, as compared to Rs. 3.52 billion in Mid-July 2024 and Rs. 2.27 billion in Mid-July 2023. The consistent growth in NBA over the past two fiscal years indicates a substantial accumulation of assets, which suggests the effects of rising loa"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 76,
+        "score": 0.0513,
+        "text_snippet": "66 Financial Institution Supervision Report 2024/25 Annex 3.9 : Investment details of DBs (Mid-July 2025) Rs in thousands Name of Financial Institution Investment in Government/NRB Securities Investment in Shares and Debentures Purchase/Investment in Land and Housing Development Other Investment Total Investment Corporate Development Bank Ltd  -   -   -   -   - Excel Development Bank Ltd.  3,346,0"
+      }
+    ],
+    "fact_coverage": {
+      "70.5": true,
+      "17.1": true,
+      "7.5": true,
+      "Loans and advances": false,
+      "Investment": true
+    }
+  },
+  {
+    "id": "Q3",
+    "title": "Comparison of Non-Performing Loans (NPL) between DBs and FCs",
+    "question": "What was the Non-Performing Loan (NPL) ratio of Development Banks (B-class) versus Finance Companies (C-class) as of Mid-July 2024 compared to Mid-July 2023?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 13,
+        "score": 0.0657,
+        "text_snippet": "3 Financial Institution Supervision Report 2024/25 1.10 As of Mid-July 2025 , DBs were present in 6 9 districts whereas FCs were present in 42 districts throughout the country. In a province -wise scenario, Bagmati province has the highest number of branches with 33 2 DB branches and 109 FC branches. The province that has lowest presence of FIs is Karnali province with just 21 DB branches and 3 FC"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 13,
+        "score": 0.0649,
+        "text_snippet": "3 Financial Institution Supervision Report 2023/24 1.10 As of mid-July 2024, DBs were present in 68 districts whereas FCs were present in 42 districts throughout the country. In a province -wise scenario, Bagmati province has the highest number of branches with 335 DB branches and 108 FC branches. The province that has lowest presence of FIs is Karnali province with just 21 DB branches and 3 FC br"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 28,
+        "score": 0.0646,
+        "text_snippet": "18 Financial Institution Supervision Report 2023/24 Non-performing Loans (NPLs) 3.14 The ratio of NPLs to total loans and advances of DBs increased to 3.97 percent in mid -July 2024 from 2.71 percent in mid -July, 2023. The Non -Performing Loans (NPLs) of DBs increased notably in FY 2023/24, indicating a deterioration in asset quality. The rising NPL ratio reflects growing credit risk and potentia"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 26,
+        "score": 0.0615,
+        "text_snippet": "16 Financial Institution Supervision Report 2023/24 3.10 Out of the total loans and advances, Rs. 478.2 billion (or 96.0 percent) were performing loans, while Rs. 19.8 billion (or 3.97 percent) were non -performing loans (NPLs). The NPL ratio has continued its upward trend. The rising trend of non -performing loans signals increasing credit risk within the DBs requiring close monitoring and proact"
+      }
+    ],
+    "fact_coverage": {
+      "3.97": true,
+      "2.50": true,
+      "10.31": true,
+      "4.50": true
+    }
+  },
+  {
+    "id": "Q4",
+    "title": "Capital Adequacy Framework Regulations",
+    "question": "Under NRB regulations, which Capital Adequacy Framework applies to national-level Development Banks versus regional-level Development Banks and Finance Companies?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 17,
+        "score": 0.0591,
+        "text_snippet": "7 Financial Institution Supervision Report 2024/25 CHAPTER 2 FINANCIAL INSTITUTIONS SUPERVISION Overview of FI Supervision 2.1 NRB Act (2002) mandated NRB to supervise licensed BFIs to maintain financial stability and channelize financial resources for sustainable economic growth in Nepal. The supervision departments at NRB conduct onsite examination and offsite supervision of licensed banks and f"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 16,
+        "score": 0.0591,
+        "text_snippet": "6 Financial Institution Supervision Report 2023/24 CHAPTER 2 FINANCIAL INSTITUTIONS SUPERVISION Overview of FI Supervision 2.1 NRB Act (2002) mandated NRB to supervise licensed BFIs to maintain financial stability and channelize financial resources for sustainable economic growth  in Nepal. The supervision departments at NRB conduct onsite  examination and offsite supervision of licensed banks and"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 53,
+        "score": 0.0549,
+        "text_snippet": "43 Financial Institution Supervision Report 2024/25 higher provisioning, directly eroding the capital adequacy and profitability of commercial and development banks alike. 5.69 To mitigate these risks, Nepalese institutions must navigate a tightening regulatory landscape enforced by NRB, which demands more stringent loan cla ssification and risk -weighted monitoring. The challenge lies in balancin"
+      }
+    ],
+    "fact_coverage": {
+      "Capital Adequacy Framework (2015)": true,
+      "Capital Adequacy Framework (2007": true,
+      "national level DBs": true
+    }
+  },
+  {
+    "id": "Q5",
+    "title": "Profitability Shift of Finance Companies (FY 2024/25 vs FY 2023/24)",
+    "question": "Did Finance Companies post a consolidated net profit or loss in FY 2024/25, and how did it compare to FY 2023/24?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 41,
+        "score": 0.0667,
+        "text_snippet": "31 Financial Institution Supervision Report 2024/25 Figure 4.9: Investment Portfolio of the FCs (Mid-July 2025) Profitability 4.14 FCs made a consolidated net profit for FY 2024/25 by Rs. 0. 67 billion which was earlier amounting net loss by Rs. 1.27 billion for FY 2023/24.  Interest income of all FCs was Rs. 13.06 billion, interest expenses was Rs. 9.1 6 billion, and net interest income remained "
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 30,
+        "score": 0.063,
+        "text_snippet": "20 Financial Institution Supervision Report 2023/24 as compared to previous year. Net profit, after dropping in FY 2022/23, saw only a marginal improvement in FY 202 3/24, indicating continued pressure on profitability during FY 2023/24. (Refer Annexure 3.4) Figure 3.10: Operating Efficiency of the DBs (Mid-July 2024) Liquidity 3.19 Liquid assets comprises cash balance, bank balances with NRB and "
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 31,
+        "score": 0.0599,
+        "text_snippet": "21 Financial Institution Supervision Report 2024/25 3.17 Investment in shares and debentures increased to Rs. 13.71 billions, making up 10.65 percent of the total, while  other investments rose to Rs. 9.13 billion (7.10  percent). The growth in total investment signals an expanding investment portfolio with moderate diversification. The investment trend highlights DBs’ preference for safer invest "
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 33,
+        "score": 0.0531,
+        "text_snippet": "23 Financial Institution Supervision Report 2023/24 CHAPTER 4 PERFORMANCE OF FINANCE COMPANIES 4.1 This chapter provides a comprehensive analysis of the financial performance of FCs during FY 2023/24, based on their NFRS-compliant financial statements. Assets and Liabilities 4.2 The total assets or liabilities of FCs have increased by 11.6 percent from Rs .137.3 billion in mid-July 2023 to Rs.153."
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 44,
+        "score": 0.0481,
+        "text_snippet": "34 Financial Institution Supervision Report 2024/25 Other Shocks 4.23 Furthermore, concentration risk is highly evident, as the withdrawal of deposits by the top institutional depositor would cause all finance companies to fall below the minimum liquidity requirement. Similarly, withdrawal by the top five institutional depositors would push most finance companies into negative liquidity positions,"
+      }
+    ],
+    "fact_coverage": {
+      "0.67": true,
+      "1.27": true,
+      "net profit": true,
+      "net loss": true
+    }
+  },
+  {
+    "id": "Q6",
+    "title": "Key Onsite Findings on Board Member Borrowing Restrictions",
+    "question": "According to the onsite supervision observations in FY 2024/25, which specific loan types are board members of financial institutions permitted to obtain under the Unified Directives?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 45,
+        "score": 0.071,
+        "text_snippet": "35 Financial Institution Supervision Report 2024/25 CHAPTER 5 KEY ONSITE OBSERVATIONS AND CHALLENGES Key Onsite Observations 5.1 The major representative remarks identified through the onsite supervision of DBs and FCs conducted during the FY 2024/25 are summarized below: Board and Senior Management 5.2 Board member of some of the FIs were found being involved in taking loan from BFIs against the "
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 42,
+        "score": 0.0667,
+        "text_snippet": "32 Financial Institution Supervision Report 2023/24 CHAPTER 5 KEY ONSITE OBSERVATIONS AND CHALLENGES Key Onsite Observations 5.1 Board and Senior Management • Some of the financial institutions were found to have violated the regulatory limits as prescribed in Unified Directives while providing lending facility to their Board members. • Some of the board members were found to be engaged in unethic"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 48,
+        "score": 0.0557,
+        "text_snippet": "38 Financial Institution Supervision Report 2024/25 5.27 Issues such as i mproper utilization of loans as well as disbursement of new loans to settle existing loans have been observed in few FIs. 5.28 Few FIs have practice of disbursing short term or demand loan to firm or companies mentioning business requirement however, proper assessment of business need has not been done and institutions have "
+      }
+    ],
+    "fact_coverage": {
+      "educational loan": true,
+      "hair Purchase loan": true,
+      "housing loan": true,
+      "hous ehold": true
+    }
+  },
+  {
+    "id": "Q7",
+    "title": "Stress Testing of Development Banks (Credit Shock C1 - 2024/25)",
+    "question": "In the FY 2024/25 stress testing results, how many Development Banks fail to meet the minimum Capital Adequacy Ratio under Credit Shock C1 (15% performing loans deteriorating into substandard)?",
+    "status": "PARTIAL (1/4 facts found)",
+    "is_sufficient": false,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 43,
+        "score": 0.0647,
+        "text_snippet": "33 Financial Institution Supervision Report 2024/25 of QR based payment throughout the country, the mobile banking customers in FCs have also increased. Table 4.5 : Use of Electronic Banking in FCs (Mid-July 2025) S. N. Particulars 2022/23 2023/24 2024/25 1 No. of Branchless Banking Centers - - - 2 No. of Customers (Branchless Banking) - - - 3 No. of Customers (Mobile Banking) 152,682 231,852 294,"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 31,
+        "score": 0.0644,
+        "text_snippet": "21 Financial Institution Supervision Report 2023/24 Deprived Sector Lending 3.20 The overall exposure of DBs to deprived sector lending has been 7.04 percent of total loan as of mid-July 2024 compared to 8.10 percent as on mid-July 2023. The deprived sector lending was 10.34 percent two years ago. This shows gradual decline in deprived sector loan . Refer Annexure 3.8 (a) Table 3.5 : Deprived Sect"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 32,
+        "score": 0.0611,
+        "text_snippet": "22 Financial Institution Supervision Report 2023/24 meet with the minimum capital adequacy ratio while 5 percent of performing loans deteriorated to loss loans. 4 DBs will likely fail to meet the minimum capital adequacy ratio if all NPLs under substandard category downgrades to doubtful and all NPLs under doubtful category downgrades to loss. Liquidity Shock 3.25 Standard liquidity shock test res"
+      }
+    ],
+    "fact_coverage": {
+      "Credit Shock (C1)": false,
+      "15 percent of performing loans": true,
+      "6 national": false,
+      "4 provincial": false
+    }
+  },
+  {
+    "id": "Q8",
+    "title": "ATM CCTV Footage Retention Requirement",
+    "question": "How long (in days) must banks and financial institutions retain the CCTV camera memory backup at ATM kiosks?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 50,
+        "score": 0.0676,
+        "text_snippet": "40 Financial Institution Supervision Report 2024/25 5.49 Some FIs does not have the sufficient back up and ample space of CCTV coverage as required by CCTV installation and operational procedures set by Ministry of home affairs. Additionally, many FIs have deployed a single security guard in their branc hes for 12 hours a day only, relying on CCTV monitoring from central office for rest 12 hours o"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 8,
+        "score": 0.0608,
+        "text_snippet": "द्ध (ख) CCTV Camera को Memory Backup कम्तीमा नब्बे (९०) दिनसम्म रहने व्यवस्था गनर्ुपनर्े छ । (ग) CCTV Camera जडान गर्दा कारोबार गनर्े व्यत्तिफको मुखाकृति प्रष्ट ्रपमा देखिने तर ग्राहकले राखेको एक्ष्ल् अनुमान गर्न र रेकर्ड गर्न नसकिने गरी जडान गर्नुपनर्े छ । (घ) ATM बुथह्रमा कुनै व्यत्तिफ वा समूहबाट शंकास्पद गतिविधि भएको शंका लागेमा यथाशीघ्र संस्थाले तोकेको पदाधिकारी/निकायमा तत्काल सूचित गनर्े व्यव"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 46,
+        "score": 0.0594,
+        "text_snippet": "36 Financial Institution Supervision Report 2023/24 is weak in general. Borrowers ask for frequent loan restructuring and heavy interest waivers, a difficult task for FIs to commit or facilitate. Collaterals are difficult to be sold off due to depression in the real estate sector. At times, NRB has stepped in to support FIs through facilitation in loan restructuring, blacklisting, loan-to-value ra"
+      }
+    ],
+    "fact_coverage": {
+      "CCTV Camera": true,
+      "Memory Backup": true,
+      "नब्बे": true,
+      "९०": true
+    }
+  },
+  {
+    "id": "Q9",
+    "title": "Force Settlement Window for Failed Card Transactions",
+    "question": "What is the required timeline for Force Settlement when an electronic transaction fails (account debited but cash not dispensed / transaction not completed) and both Issuer and Acquirer are different Nepali institutions?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_3.pdf",
+        "page": 7,
+        "score": 0.0499,
+        "text_snippet": "घ (घ) विद्युतीय भुक्तानी क ार्डमार्फत ऋबकज इ गत गरिने कारोबारमा ऋबकज म् ष्कउभलकभ नभर्इ खाताबाट माैज्दात घटेको अवस्थामा वा विद्युतीय भुक्तानी कार्ड मार्फत एयक्, एयत् ःबअजष्लभ वा अन्य विद्युतीय माध्यमबाट भुक्तानी कारोबार गर्दा कारोबार सम्पÌ नभर्इ खाताबाट माैज्दात घटेको अवस्थामा दाबी उजुरी परेको वा नपरेका े अवस्थामा देहायबमोजिम कारोबार रकमको Force Settlement गनर्े व्यवस्था मिलाउनुपनर्े छ । (क) Issuer"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 6,
+        "score": 0.0488,
+        "text_snippet": "घ (घ) विद्युतीय माध्यमबाट तेस्रो पक्षको खातामा रकमान्तर गनर्े । (द्द) विद्युतीय भुक्तानी कार्ड मार्फत ऋबकज इ गत गरिने कारोबारमा ऋबकज म् ष्कउभलकभ नभर्इ खाताबाट माैज्दात घटेको अवस्थामा वा विद्युतीय भु त्तफानी कार्ड मार्फत एयक्, एयत् ःबअजष्लभ वा अन्य विद्युतीय माध्यमबाट भुक्तानी कारोबार गर्दा कारोबार सम्पÌ नभर्इ खाताबाट माैज्दात घटेको अवस्थामा दाबी उजुरी परेको वा नपरेको अवस्थामा देहायबमोजिम कारोबार र"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 10,
+        "score": 0.0478,
+        "text_snippet": "ठ छ. नेपालमा जारी भएका उपकरण विदेशबाट सञ्चालन गर्दा देहाय बमोजिमको सुरक्षाको व्यवस्था अपनाउनु पर्नेछ ः (ज्ञ) अनुमतिपत्रप्राप्त संस् थाले इन्टरने ट बैंकि Ë र मोबाइल बै किË प्रणालीमा प्रयोगकर्तालार्इ आबद्ध गराउँदा ग्राहकले विदेशबाट सेवा प्रयोग गनर्े/नगनर्े व्यहोरा अनिवार्यरुपमा खुलाउने व्यवस्था मिलाउनुपनर्ेछ । साथै, ग्राहकले मोबाइल बैंकिË वा इन्टरनेट बैंकिË सुविधा विदेशबाट प्रयोग गनर्े भएमा विदेश जा"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 10,
+        "score": 0.047,
+        "text_snippet": "ठ छ. नेपालमा जारी भएका उपकरण विदेशबाट सञ्चालन गर्दा देहाय बमोजिमको सुरक्षाको व्यवस्था अपनाउनु पर्नेछ ः (ज्ञ) अनुमतिपत्रप्राप्त संस् थाले इन्टरनेट बैंकि Ë र मोबाइल बै किË प्रणालीमा प्रयोगकर्तालार्इ आबद्ध गराउँदा ग्राहकले विदेशबाट सेवा प्रयोग गनर्े/नगनर्े व्यहोरा अनिवार्यरुपमा खुलाउने व्यवस्था मिलाउनुपनर्ेछ । साथै, ग्राहकले मोबाइल बैंकिË वा इन्टरनेट बैंकिË सुविधा विदेशबाट प्रयोग गनर्े भएमा विदेश जान"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 27,
+        "score": 0.0454,
+        "text_snippet": "द्दद्ध नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ७/०८१ च्त्न्क् System सञ्चालनसम्बन्धी व्यवस्था यस बैंकबाट सञ्चा लित च्भब ित्ष्फभ न्चयकक Settlement ९च्त्न्क्०  System बाट भुक्तानी कारोबार फस्यार्ैट गनर्ेसम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. म्ष्चभअत एबचतष्अष्उबलत  भएका बैंक तथा वित्तीय संस्थाले क्त"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 27,
+        "score": 0.0453,
+        "text_snippet": "द्दद्ध नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ७/०८२ च्त्न्क् System सञ्चालनसम्बन्धी व्यवस्था यस बैंकबाट सञ्चा लित च्भब ित्ष्फभ न्चयकक Settlement ९च्त्न्क्०  System बाट भुक्तानी कारोबार फस्यार्ैट गनर्ेसम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. म्ष्चभअत एबचतष्अष्उबलत  भएका बैंक तथा वित्तीय संस्थाले क्त"
+      }
+    ],
+    "fact_coverage": {
+      "Issuer": true,
+      "Acquirer": true,
+      "T+3": true,
+      "Force Settlement": true
+    }
+  },
+  {
+    "id": "Q10",
+    "title": "Digital Wallet Overnight Balance Cap",
+    "question": "What is the maximum overnight balance allowed in a natural person's digital wallet, and where must the excess balance be transferred?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_3.pdf",
+        "page": 19,
+        "score": 0.0631,
+        "text_snippet": "ज्ञछ द्द. मोबाइल बैंकिË तथा र्इ–बैंकिË कारोबारसम्बन्धमा मोबार्इल एप्िलकेशन ९ब्उउ० तथा इन्टरनेट बैंकिËद्वारा गरिने कारोबारको अधिकतम सीमा देहायबमोजिम हुनेछ ः उपकरण प्रतिदिन (रु) मोबाइल एप्िलकेशन ९ब्उउ० (त्तच् ऋयमभ समेत) ३ लाख इन्टरनेट बैंकिË २० लाख तर, देहायको अवस्थामा उपयर्ुत्तफ अधिकतम सीमा सम्बन्धी व्यवस्थाले बाधा पुगेको मानिने छैन ः (ज्ञ) कुनै व्यत्तिफको नाममा बैं क तथा वित्तीय संस्थामा रहेको एउट"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 20,
+        "score": 0.0587,
+        "text_snippet": "ज्ञट (द्ध) भुक्तानी सेवा प्रदायक संस्थाले यस बैंकबाट इजाजत पत्रप्राप्त विप्रेषण कम्पनीसँग सम्झौता गरी विदेशबाट आप्रवाह हुने रकम नेपालमा सञ्चालित विद्युतीय वालेट मा जम्मा हुने गरी रेमिटेन्स भित्र्याउन सक्नेछन् । यसरी रेमिटेन्स प्राप्त गर्दा वालेटमा रकम जम्मा गर्न तोकिएको सीमाले बाधा पु¥याएको मानिने छैन । (छ) विदेशबाट वालेटमा प्राप्त रेमिटेन्स रकम वालेटको Overnight Balance को सीमाभन्दा बढी भएको अवस्"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 22,
+        "score": 0.058,
+        "text_snippet": "ज्ञढ तर, देहायको अवस्थामा एक वालेटबाट अर्को वालेटमा जम्मा/भुक्तानी गनर्े उपयर्ुत्तफ अधिकतम सीमासम्बन्धी व्यवस्थाले बाधा पुगेको मानिने छैन ः (ज्ञ) नेपाल सरकारको सम्बन्िधत कार्यालयमा भुक्तानी गनर्ुपनर्े कर, राजस्व, जरिवाना, सवारी दस्तुर, रजिष्ट्रेशन तथा सेवा शुल्क जस्ता शुल्कह्र भुक्तानी गर्न, (द्द) विधुत, दूरसञ्चार, तथा खानेपानी महशुल, बीमा पि्रमियम, योगदानमा आधारित सामाजिक सुरक्षा कोषको रकम भुक्ता"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 22,
+        "score": 0.0565,
+        "text_snippet": "ज्ञढ तर, देहायको अवस्थामा एक वालेटबाट अर्को वालेटमा जम्मा/भुक्तानी गनर्े उपयर्ुत्तफ अधिकतम सीमासम्बन्धी व्यवस्थाले बाधा पुगेको मानिने छैन ः (ज्ञ) नेपाल सरकारको सम्बन्िधत कार्यालयमा भुक्तानी गनर्ुपनर्े कर, राजस्व, जरिवाना, सवारी दस्तुर, रजिष्ट्रेशन तथा सेवा शुल्क जस्ता शुल्कह्र भुक्तानी गर्न, (द्द) विधुत, दूरसञ्चार, तथा खानेपानी महशुल, बीमा पि्रमियम, योगदानमा आधारित सामाजिक सुरक्षा कोषको र कम भुक्त"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 20,
+        "score": 0.0553,
+        "text_snippet": "ज्ञठ नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ५/०८२ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्कसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानी सम्बन्धी कार्य गनर्े संस्थाह ्रलार्इ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्क सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. कार्डको माध्यमबाट "
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 18,
+        "score": 0.0496,
+        "text_snippet": "ज्ञद्ध नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ५/०८० विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्कसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानीसम्बन्धी कार्य गनर्े संस्थाह ्रलार्इ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्क सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. कार्डको माध्यमबाट"
+      }
+    ],
+    "fact_coverage": {
+      "५० हजार": true,
+      "Overnight Balance": true,
+      "बैंक खाता": true
+    }
+  },
+  {
+    "id": "Q11",
+    "title": "Simplified KYC for Small Merchants (Annual Limit)",
+    "question": "Under the AML/CFT payment directives, what is the maximum annual transaction limit for merchants eligible for Simplified Customer Due Diligence (Simplified KYC)?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_1.pdf",
+        "page": 78,
+        "score": 0.0608,
+        "text_snippet": "ठछ (ठ) वालेटमार्फत कारोबार गनर्े ग्राहकह्रका लागि यस बंैकको बंैक तथा वित्तीय संस्था नियमन विभागबाट जारी गरिएको ग्राहक पहिचान ९प्लयध थ्यगच ऋगकतयफभच०  सम्बन्धी निदर्ेशनको पूर्ण्रपमा परिपालना गरेको हुनुपनर्े छ । (ड) अनुमतिपत्रप्राप्त संस्थाले सम्पत्ति शुद्धीकरण निवारण एेन, २०६४ को दफा ७च तथा सम्पत्ति शुद्धीकरण निवारण नियमावली, २०८१  को नियम ९  बमोजिम वार्षकि रु.१,००,०००।– (अक्षरेपी एक लाख) सम्मको कार"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 77,
+        "score": 0.0586,
+        "text_snippet": "ठद्ध (ठ) वालेटमार्फत कारोबार गनर्े ग्राहकह्रका लागि यस बंैकको बंैक तथा वित्तीय संस्था नियमन विभागबाट जारी गरिएको ग्राहक पहिचान ९प्लयध थ्यगच ऋगकतयफभच०  सम्बन्धी निदर्ेशनको पूर्ण्रपमा परिपालना गरेको हुनुपनर्े छ । (ड) अनुमतिपत्रप्राप्त संस्थाले सम्पत्ति शुद्धीकरण  निवारण एेन, २०६४ को दफा ७च तथा सम्पत्ति शुद्धीकरण निवारण नियमावली, २०८१  को नियम ९  बमोजिम वार्षकि रु.१,००,०००।– (अक्षरेपी एक लाख) सम्मको "
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 64,
+        "score": 0.0517,
+        "text_snippet": "टण् (ण) संस्थाका शेयर धनी, सञ्चालक समितिका सदस्य ह्र तथा उच्च व्यवस्थापन र कर्मचारीह्रलार्इ एेन, नियमावली तथा यस निदर्ेशनको पालनाको लागि नियमित रुपमा क्षमता अभिवृद्धि कार्यक्रममा सहभागी गराउने व्यवस्था (त) सम्पत्ति शुद्धीकरण तथा आतंकवादी कार्यमा लगानी निवारणसम्बन्धी कानूनबमोजिम सूचक संस्थाले पालना गनर्ुपनर्े अन्य दायित्व (द्द) उपबुँदा (१) बमोजिम नीति तथा कार्यविधि तयार गर्दा एेन तथा नियमावलीमा भएक"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 81,
+        "score": 0.0485,
+        "text_snippet": "ठड ट. संस्थाले जोखिमका आधारमा सम्पत्ति शुद्धीकरण तथा आतङ्कवादी कि्रयाकलापमा वित्तीय लगानी निवारणसम्बन्धमा गनुपनर्े कार्यक्रमह्र तय गरी उत्तफ कार्यक्रमह्र आफ्नो वार्षकि वजेट तथा कार्ययोजनामा समावेश गनर्ुपनर्े छ । ठ. एेनबमोजिम गनर्ु पनर्े ग्राहक पहिचान, लकि्षत वित्तीय कारबाही, निर्धारित सीमाभन्दा बढीको कारोबार वा शंकास्पद कारोबारको पहिचान तथा सोको आधार , उच्च पदस्थ व्यत्तिफ, उच्च जोखिम रहेको मुलुक, "
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 21,
+        "score": 0.0412,
+        "text_snippet": "ज्ञठ (घ) अनुमतिपत्रप्राप्त संस्थाले डिपार्टमेन्टल स्टोर, मार्ट, होटल, पसल लगायतका मचर्ेन्टबाट एयष्लत या क्बभि ९POS०रएयष्लत या त्चबलकबअतष्यल ९POT०  मेसिन मार्फत गरिएको कारोबारमा ग्राहकसँग कुनै पनि प्रकारको अतिरित्तफ शुल्क लिन नपाउने व्यवस्था मिलाउनुपनर्े छ । (द्ध) नेपाल सरकार, राजस्व व्यवस्थापन सूचना प्रणाली ९च्ःक्ष्क्० मा आबद्ध भएका भुक्तानी सेवा प्रदायकले सञ्चालन गरेको वालेट मार्फत गरिने राजस्व भ"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 9,
+        "score": 0.0363,
+        "text_snippet": "VI Financial Institution Supervision Report 2023/24 List of Abbreviations A.D.  :  Anno Domini ADBN  :  Agricultural Development Bank Nepal AGM  :  Annual General Meeting ALCO : Asset-Liability Committee AML/CFT :  Anti-Money Laundering/Combating the Financing of Terrorism ATM : Automated Teller Machine BAFIA  :  Bank and Financial Institutions Act BCBS  :  Basel Committee on Banking Supervision B"
+      }
+    ],
+    "fact_coverage": {
+      "१,००,०००": true,
+      "एक लाख": true,
+      "सरलीकृत": true,
+      "मचर्ेन्ट": true
+    }
+  },
+  {
+    "id": "Q12",
+    "title": "Maximum Fee for Inter Bank Fund Transfer (IBFT)",
+    "question": "What is the maximum fee service providers can charge individual customers per transaction for Inter Bank Fund Transfer (IBFT) through Mobile App or Internet Banking?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_3.pdf",
+        "page": 21,
+        "score": 0.0615,
+        "text_snippet": "ज्ञठ (घ) अनुमतिपत्रप्राप्त संस्थाले डिपार्टमेन्टल स्टोर, मार्ट, होटल, पसल लगायतका मचर्ेन्टबाट एयष्लत या क्बभि ९POS०रएयष्लत या त्चबलकबअतष्यल ९POT०  मेसिन मार्फत गरिएको कारोबारमा ग्राहकसँग कुनै पनि प्रकारको अतिरित्तफ शुल्क लिन नपाउने व्यवस्था मिलाउनुपनर्े छ । (द्ध) नेपाल सरकार, राजस्व व्यवस्थापन सूचना प्रणाली ९च्ःक्ष्क्० मा आबद्ध भएका भुक्तानी सेवा प्रदायकले सञ्चालन गरेको वालेट मार्फत गरिने राजस्व भ"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 24,
+        "score": 0.0523,
+        "text_snippet": "द्दज्ञ (ट) विद्युतीय वालेटमार्फत कारोबार गर्दा सम्बन्िधत सेवा प्रदायकले ग्राहकसँग प्रति कारोबार अधिकतम देहायबमोजिम शुल्क लिन सक्नेछन् ः क्र.सं. कारोबारको विवरण रकम शुल्क १. आधिकारिक प्रतिनिधि मार्फत वालेटमा रकम लोड गर्न र झिक्न रु.५,०००।– सम्म रु.५ रु.५,००१ देखि १५,०००।– सम्म रु.१५ रु.१५,००१ देखि २५,०००।– सम्म रु.२५ २. वालेटबाट बैंकमा रकमान्तर गर्न                               रु.१० (ठ) च्भब ित्ष"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 24,
+        "score": 0.0517,
+        "text_snippet": "द्दज्ञ (ट) विद्युतीय वालेटमार्फत कारोबार गर्दा स म्बन्िधत सेवा प्रदायकले ग्राहकसँग प्रति कारोबार अधिकतम देहायबमोजिम शुल्क लिन सक्नेछन् ः क्र.सं. कारोबारको विवरण रकम शुल्क १. आधिकारिक प्रतिनिधि मार्फत वालेटमा रकम लोड गर्न र झिक्न रु.५,०००।– सम्म रु.५ रु.५,००१ देखि १५,०००।– सम्म रु.१५ रु.१५,००१ देखि २५,०००।– सम्म रु.२५ २. वालेटबाट बैंकमा रकमान्तर गर्न                               रु.१० (ठ) च्भब ित्"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 40,
+        "score": 0.0508,
+        "text_snippet": "36 cg';\"rL !)=!=% Transaction Report for Payment Service Providers Instruments/ Channel Used for Transaction Form of Transaction Upto 1000 1000 - 5000 5000 - 10000 10000 -25000 25000 and above Total Number Value Number Value Number Value Number Value Number Value Number Value Card Withdrawal On Us Card Withdrawal Off Us Card Bill Payments Card Transfer (A/c to A/c) Card Others Agent/ Sub-Agent Bil"
+      },
+      {
+        "source": "Annual_Report_2025.pdf",
+        "page": 43,
+        "score": 0.0464,
+        "text_snippet": "33 Financial Institution Supervision Report 2024/25 of QR based payment throughout the country, the mobile banking customers in FCs have also increased. Table 4.5 : Use of Electronic Banking in FCs (Mid-July 2025) S. N. Particulars 2022/23 2023/24 2024/25 1 No. of Branchless Banking Centers - - - 2 No. of Customers (Branchless Banking) - - - 3 No. of Customers (Mobile Banking) 152,682 231,852 294,"
+      },
+      {
+        "source": "Annual_Report_2024.pdf",
+        "page": 40,
+        "score": 0.0419,
+        "text_snippet": "30 Financial Institution Supervision Report 2023/24 Deprived Sector Lending 4.16 The overall exposure of FCs to deprived sector lending was 6.80 percent of total loan in FY 2023/24 as compared to 6.75 percent in FY 2022/23, thereby registering a slight growth. However, the loan to deprived sector was 7.92 percent of total loans and advances earlier  in FY 2021/22. (Refer Annexure 4.7) Table 4.4 : "
+      }
+    ],
+    "fact_coverage": {
+      "IBFT": true,
+      "१० सम्म": true,
+      "सेवा शुल्क": true
+    }
+  },
+  {
+    "id": "Q13",
+    "title": "Periodic Payment System Audit Guidelines",
+    "question": "When must a licensed non-bank Payment Service Provider conduct its first System Audit, and how often must it be conducted thereafter if the system is not replaced or upgraded?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_3.pdf",
+        "page": 15,
+        "score": 0.0669,
+        "text_snippet": "ज्ञज्ञ (द्ध) भुक्तानी प्रणाली कारोबारको System उपलब्ध गराउने संस्थाले System ग्उनचबमभ गरे अनु्रप सम्बन्िधत संस्थाले पनि भुक्तानी कारोबारमा आउनसक्ने सम्भावित जोखिमलार्इ दृष्िटगत गरी आफ्नो प्रणालीको स्तरोन्नति गनर्ुपनर्े छ । द्ध. भुक्तानी प्रणाली परिक्षण ९System Audit० (ज्ञ) अनुमतिपत्रप्राप्त संस्था (बैंक तथा वित्तीय संस्था बाहेक) ले सेवा सञ्चालन गरेको १ वर्ष पुरा भएपछि भुक्तानी प्रणालीको परीक्षण ९S"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 25,
+        "score": 0.0587,
+        "text_snippet": "द्दद्द नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ६/०८२ वार्षकि वित्तीय विवरण सार्वजनिक/प्रकाशन गनर्ुपुर्व स्वीकृति लिनेसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानी सम्बन्धी का र्य गनर्े (बैंक तथा वित्तीय संस्था बाहेक) संस्थाह्रलार्इ वार्षकि वित्तीय विवरण सार्वजनिक/प्रकाशन गनर्ुपूर्व स्वीकृति लिने सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 15,
+        "score": 0.0583,
+        "text_snippet": "ज्ञद्द (घ) संस्थाले सुरक्षाको प्रत्याभूतिको लागि भुक्तानी कारोबारको नियमित अनुगमन तथा आवश्यकता अनुसार System ग्उनचबमभ  गनर्ुपनर्े छ  र सोको आव श्यक जानकारी ग्राहकलार्इ दिनुपनर्े छ । (द्ध) भुक्तानी प्रणाली कारोबारको System उपलब्ध गराउने संस्थाले System ग्उनचबमभ गरे अनु्रप सम्बन्िधत संस्थाले पनि भुक्तानी कारोबारमा आउनसक्ने सम्भावित जोखिमलार्इ दृष्िटगत गरी आफ्नो प्रणालीको स्तरोन्नति गनर्ुपनर्े छ । (छ"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 25,
+        "score": 0.0571,
+        "text_snippet": "द्दद्द नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ६/०८१ वार्षकि वित्तीय विवरण सार्वजनिक/प्रकाशन गनर्ुपुर्व स्वीकृति लिनेसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानी सम्बन्धी कार्य गनर्े (बैंक तथा वित्तीय संस्था बाहेक) संस्थाह्रलार्इ वार्षकि वित्तीय विवरण सार्वजनिक/प्रकाशन गनर्ुपूर्व स्वीकृति लिने सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 15,
+        "score": 0.0552,
+        "text_snippet": "ज्ञद्द (घ) संस्थाले सुरक्षाको प्रत्याभूतिको लागि भुक्तानी कारोबारको नियमित अनुगमन तथा आवश्यकता अनुसार System ग्उनचबमभ  गनर्ुपनर्े छ  र सोको आवश्यक जानकारी ग्राहकलार्इ दिनुपनर्े छ । (द्ध) भुक्तानी प्रणाली कारोबारको System उपलब्ध गराउने संस्थाले System ग्उनचबमभ गरे अनु्रप सम्बन्िधत संस्थाले पनि भुक्तानी कारोबारमा आउनसक्ने सम्भावित जोखिमलार्इ दृष्िटगत गरी आफ्नो प्रणालीको स्तरोन्नति गनर्ुपनर्े छ । (छ)"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 80,
+        "score": 0.0435,
+        "text_snippet": "ठठ वित्तीय जानकारी र्इकार्इमा उपलब्ध गराउनुपनर्े छ । यसरी प्रतिवेदन तयार गर्दा संस्थाले एक प्राकृतिक व्यत्तिफको कुल सीमा पहिचान गनर्े व्यवस्था गनर्ुपनर्े छ । (द्ध) शंकास्पद कारोबार प्रतिवेदन ९क्गकउष्अष्यगक त्चबलकबअतष्यल च्भउयचत( STR० तथा शंकास्पद गतिविधिसम्बन्धी प्रतिवेदन ९क्गकउष्अष्यगक ब्अतष्खष्तथ च्भउयचत(  SAR० संस्थाले देहायबमोजिमकोे अवस्थाह्र विद्यमान भएमा शंकास्पद कारोबार प्रतिवेदन ९क्गकउष्अष"
+      }
+    ],
+    "fact_coverage": {
+      "१ वर्ष": true,
+      "System Audit": true,
+      "२ आर्थकि वर्ष": true
+    }
+  },
+  {
+    "id": "Q14",
+    "title": "Threshold Transaction Reporting (TTR) via goAML",
+    "question": "Under what conditions must a Threshold Transaction Report (TTR) be submitted to the FIU, and what is the reporting deadline and required platform?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_2.pdf",
+        "page": 54,
+        "score": 0.0474,
+        "text_snippet": "51 cg';\"rL !)=!=!# Number of Transactions Reported to Financial Intelligence Unit (FIU) Particulars Number of Transactions Threshold Transactions Reporting (TTR) Suspicious Transactions Reporting (STR) Suspicious Activity Reporting (SAR)"
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 54,
+        "score": 0.0463,
+        "text_snippet": "51 cg';\"rL !)=!=!# Number of Transactions Reported to Financial Intelligence Unit (FIU) Particulars Number of Transactions Threshold Transactions Reporting (TTR) Suspicious Transactions Reporting (STR) Suspicious Activity Reporting (SAR)"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 24,
+        "score": 0.0462,
+        "text_snippet": "द्दण् नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ७/०८० च्त्न्क् System सञ्चालनसम्बन्धी व्यवस्था यस बैंकबाट सञ्चा लित च्भब ित्ष्फभ न्चयकक Settlement ९च्त्न्क्०  System बाट भुक्तानी कारोबार फस्यार्ैट गनर्ेसम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. म्ष्चभअत एबचतष्अष्उबलत  भएका बैंक तथा वित्तीय संस्थाले क्तच"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 80,
+        "score": 0.0459,
+        "text_snippet": "ठठ वित्तीय जानकारी र्इकार्इमा उपलब्ध गराउनुपनर्े छ । यसरी प्रतिवेदन तयार गर्दा संस्थाले एक प्राकृतिक व्यत्तिफको कुल सीमा पहिचान गनर्े व्यवस्था गनर्ुपनर्े छ । (द्ध) शंकास्पद कारोबार प्रतिवेदन ९क्गकउष्अष्यगक त्चबलकबअतष्यल च्भउयचत( STR० तथा शंकास्पद गतिविधिसम्बन्धी प्रतिवेदन ९क्गकउष्अष्यगक ब्अतष्खष्तथ च्भउयचत(  SAR० संस्थाले देहायबमोजिमकोे अवस्थाह्र विद्यमान भएमा शंकास्पद कारोबार प्रतिवेदन ९क्गकउष्अष"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 48,
+        "score": 0.0444,
+        "text_snippet": "44 cg';\"rL !)=!=!# Number of Transactions Reported to Financial Intelligence Unit (FIU) Particulars Number of Transactions Threshold Transactions Reporting (TTR) Suspicious Transactions Reporting (STR) Suspicious Activity Reporting (SAR)"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 67,
+        "score": 0.0435,
+        "text_snippet": "टघ (द्द) संस्थाले व्यवस्थापकीय तहको एक कार्यान्वयन अधिकारी ९ऋयफउष्िबलअभ इााष्अभच० तोकी निजको नाम, ठेगाना, योग्यता, सम्पर्क नम्बर, इमेल लगायतका विवरण यस विभाग तथा वित्तीय जानकारी इकार्इलार्इ सोको जानकारी गराउनुपनर्े छ । साथै, कार्यान्वयन अधिकारी परिवर्तन भएमा वा निजको विवरणमा परिवर्तन भएमा सोको जानकारी यस विभाग तथा वित्तीय जानकारी इकार्इमा अविलम्ब पठाउनुपनर्े छ । (घ) सीमा कारोबार प्रतिवेदन ९Thresho"
+      }
+    ],
+    "fact_coverage": {
+      "१० लाख": true,
+      "१५ दिन": true,
+      "goAML": true,
+      "Threshold Transaction Reporting": true
+    }
+  },
+  {
+    "id": "Q15",
+    "title": "Daily Cash Withdrawal Limit on Debit Cards (Version Comparison: २०८१ vs २०८२)",
+    "question": "What is the daily ATM cash withdrawal limit on debit cards issued by banks and financial institutions in the 2081 directive versus the updated 2082 directive?",
+    "status": "SUFFICIENT (100% Context Available)",
+    "is_sufficient": true,
+    "retrieved_pages": [
+      {
+        "source": "directive_1.pdf",
+        "page": 20,
+        "score": 0.069,
+        "text_snippet": "ज्ञठ नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ५/०८२ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्कसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानी सम्बन्धी कार्य गनर्े संस्थाह ्रलार्इ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्क सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. कार्डको माध्यमबाट "
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 18,
+        "score": 0.0649,
+        "text_snippet": "ज्ञद्ध नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ५/०८० विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्कसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानीसम्बन्धी कार्य गनर्े संस्थाह ्रलार्इ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्क सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ को दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. कार्डको माध्यमबाट"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 20,
+        "score": 0.0613,
+        "text_snippet": "ज्ञठ नेपाल राष्ट्र बैंक भुक्तानी प्रणाली विभाग अ.प्रा. निदर्ेशन नं. ५/०८१ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्कसम्बन्धी व्यवस्था यस बंैकबाट अनुमतिपत्रप्राप्त भुक्तानी सम्बन्धी कार्य गनर्े संस्थाह ्रलार्इ विद्युतीय माध्यमबाट गरिने कारोबार सीमा तथा शुल्क सम्बन्धमा भुक्तानी तथा फस्यार्ैट एेन, २०७५ क ो दफा ४५ ले दिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ । ज्ञ. कार्डको माध्यमबाट"
+      },
+      {
+        "source": "directive_3.pdf",
+        "page": 19,
+        "score": 0.0585,
+        "text_snippet": "ज्ञछ द्द. मोबाइल बैंकिË तथा र्इ–बैंकिË कारोबारसम्बन्धमा मोबार्इल एप्िलकेशन ९ब्उउ० तथा इन्टरनेट बैंकिËद्वारा गरिने कारोबारको अधिकतम सीमा देहायबमोजिम हुनेछ ः उपकरण प्रतिदिन (रु) मोबाइल एप्िलकेशन ९ब्उउ० (त्तच् ऋयमभ समेत) ३ लाख इन्टरनेट बैंकिË २० लाख तर, देहायको अवस्थामा उपयर्ुत्तफ अधिकतम सीमा सम्बन्धी व्यवस्थाले बाधा पुगेको मानिने छैन ः (ज्ञ) कुनै व्यत्तिफको नाममा बैं क तथा वित्तीय संस्थामा रहेको एउट"
+      },
+      {
+        "source": "directive_2.pdf",
+        "page": 45,
+        "score": 0.0551,
+        "text_snippet": "42 cg';\"rL !)=!=$ Electronic Transaction BFIs Channel used Type of instrument Form of transaction No. of transaction Total Amount of transactions within the bracket (within the reporting period) >5000 5000- 10000 >10000 >5000 5000- 10000 >10000 ATM Debit Card Withdrawal on us Withdrawal off us Prepaid Card Withdrawal on us Withdrawal off us Credit Card Withdrawal on us Withdrawal off us BLB Debit "
+      },
+      {
+        "source": "directive_1.pdf",
+        "page": 45,
+        "score": 0.0547,
+        "text_snippet": "42 cg';\"rL !)=!=$ Electronic Transaction BFIs Channel used Type of instrument Form of transaction No. of transaction Total Amount of transactions within the bracket (within the reporting period) >5000 5000- 10000 >10000 >5000 5000- 10000 >10000 ATM Debit Card Withdrawal on us Withdrawal off us Prepaid Card Withdrawal on us Withdrawal off us Credit Card Withdrawal on us Withdrawal off us BLB Debit "
+      }
+    ],
+    "fact_coverage": {
+      "डेबिट कार्ड": true,
+      "प्रतिदिन": true,
+      "१ लाख": true,
+      "५० हजार": true
+    }
+  }
+]
