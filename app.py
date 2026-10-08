@@ -18,6 +18,142 @@ st.set_page_config(
     layout="wide"
 )
 
+# Custom Institutional Banking & Finance Theme (Clean White & Slate Navy)
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    /* Global White App Canvas */
+    .stApp {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+    }
+    
+    /* Institutional Executive Header */
+    .finance-header {
+        background: linear-gradient(135deg, #0A2540 0%, #003366 60%, #08213B 100%);
+        color: #FFFFFF;
+        padding: 22px 28px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 14px rgba(10, 37, 64, 0.10);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .finance-header-text h1 {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #FFFFFF !important;
+    }
+    .finance-header-text p {
+        margin: 4px 0 0 0;
+        font-size: 0.92rem;
+        color: #CBD5E1 !important;
+    }
+    .finance-badge {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #F8FAFC;
+        white-space: nowrap;
+    }
+    
+    /* Sidebar: Crisp Executive Slate */
+    section[data-testid="stSidebar"] {
+        background-color: #F8FAFC !important;
+        border-right: 1px solid #E2E8F0;
+    }
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3 {
+        color: #0F2C59 !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Expander / Card Containers */
+    div[data-testid="stExpander"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* Chat Message Bubbles */
+    div[data-testid="stChatMessage"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 10px !important;
+        padding: 16px 20px !important;
+        margin-bottom: 14px !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+    }
+    
+    /* User Message Container Accent */
+    div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]) {
+        background-color: #F8FAFC !important;
+        border-left: 4px solid #64748B !important;
+    }
+    
+    /* Assistant Message Container Accent (Institutional Navy) */
+    div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-assistant"]) {
+        background-color: #FFFFFF !important;
+        border-left: 4px solid #003366 !important;
+    }
+    
+    /* Quick Showcase Buttons */
+    div[data-testid="stHorizontalBlock"] button {
+        background-color: #FFFFFF !important;
+        color: #0A2540 !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        padding: 8px 14px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    div[data-testid="stHorizontalBlock"] button:hover {
+        background-color: #F0F7FF !important;
+        border-color: #003366 !important;
+        color: #003366 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 51, 102, 0.1) !important;
+    }
+    
+    /* Verified Source Cards */
+    .stTextArea textarea {
+        background-color: #F8FAFC !important;
+        color: #1E293B !important;
+        border: 1px solid #E2E8F0 !important;
+        font-family: 'Consolas', 'Courier New', monospace !important;
+        font-size: 0.88rem !important;
+    }
+    
+    /* Chat Input Bar */
+    div[data-testid="stChatInput"] {
+        border-color: #CBD5E1 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    }
+    div[data-testid="stChatInput"]:focus-within {
+        border-color: #003366 !important;
+        box-shadow: 0 0 0 2px rgba(0, 51, 102, 0.15) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Read Groq API Key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY and os.path.exists(".env"):
@@ -600,51 +736,26 @@ except Exception as e:
 # 3. Sidebar: System Status & Document Management
 with st.sidebar:
     st.title("🏦 Bank Document System")
-    st.caption("Powered by **Qwen 27B** (Groq LPU) • Multilingual (नेपाली / EN)")
+    # st.caption("Powered by **Qwen 27B** (Groq LPU) • Multilingual (नेपाली / EN)")
     st.divider()
 
-    # ⚡ Model Token & Quota Monitor
-    st.subheader("⚡ Live Model Quotas")
-    if st.button("🔄 Check Live Quotas", key="btn_check_tokens"):
-        st.session_state.model_status = {}
-        for m in MODELS_TO_TRY:
-            try:
-                res = groq_client.chat.completions.with_raw_response.create(
-                    model=m,
-                    messages=[{"role": "user", "content": "1"}],
-                    max_tokens=1
-                )
-                h = res.headers
-                st.session_state.model_status[m] = {
-                    "rem_tpm": h.get("x-ratelimit-remaining-tokens", "8,000"),
-                    "lim_tpm": h.get("x-ratelimit-limit-tokens", "8,000"),
-                    "reset_tokens": h.get("x-ratelimit-reset-tokens", "100ms"),
-                    "status": "Healthy 🟢"
-                }
-            except Exception as e:
-                err_msg = str(e)
-                if "429" in err_msg:
-                    st.session_state.model_status[m] = {"status": "Rate Limited (429) 🔴", "rem_tpm": "0", "lim_tpm": "8,000"}
-                else:
-                    st.session_state.model_status[m] = {"status": "Offline ⚠️", "rem_tpm": "0", "lim_tpm": "8,000"}
 
-    for m in MODELS_TO_TRY:
-        short_name = m.split("/")[-1]
-        used = st.session_state.model_usage.get(m, 0)
-        stat = st.session_state.model_status.get(m, {})
-        est_daily_left = max(0, 200000 - used)
-        role = "Primary 🚀" if m == MODELS_TO_TRY[0] else ("Fallback 1 🛡️" if m == MODELS_TO_TRY[1] else "Fallback 2 🛡️")
-        
-        with st.expander(f"{short_name} ({role})", expanded=False):
-            if stat.get("status"):
-                st.caption(f"Status: **{stat['status']}**")
-            if stat.get("rem_tpm"):
-                st.write(f"• **Live Minute Window:** `{stat['rem_tpm']} / {stat['lim_tpm']}`")
-            st.write(f"• **Session Used:** `{used:,} tokens`")
-            st.write(f"• **Est. Daily Left:** `~{est_daily_left:,} / 200,000`")
-            st.progress(min(1.0, est_daily_left / 200000))
 
-    st.divider()
+    # File Uploader
+    st.subheader("📤 Add New Document")
+    uploaded_file = st.file_uploader(
+        "Drop a PDF, DOCX, or TXT file here",
+        type=["pdf", "docx", "txt"]
+    )
+    if uploaded_file is not None:
+        save_path = os.path.join("File_System", uploaded_file.name)
+        if not os.path.exists(save_path):
+            with open(save_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            st.success(f"Saved '{uploaded_file.name}' to folder!")
+            st.info("File saved. Ingest script or watcher will process it automatically.")
+
+
 
     # Active Documents in Database
     st.subheader("📚 Indexed Documents")
@@ -669,23 +780,23 @@ with st.sidebar:
 
     st.divider()
 
-    # File Uploader
-    st.subheader("📤 Add New Document")
-    uploaded_file = st.file_uploader(
-        "Drop a PDF, DOCX, or TXT file here",
-        type=["pdf", "docx", "txt"]
-    )
-    if uploaded_file is not None:
-        save_path = os.path.join("File_System", uploaded_file.name)
-        if not os.path.exists(save_path):
-            with open(save_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success(f"Saved '{uploaded_file.name}' to folder!")
-            st.info("File saved. Ingest script or watcher will process it automatically.")
+
+
+
+    
 
 # 4. Main Chat Interface
-st.title("💬 Confidential Banking Document Intelligence")
-st.write("Ask regulatory, circular, fee, or policy questions in **नेपाली** or **English**.")
+st.markdown("""
+<div class="finance-header">
+    <div class="finance-header-text">
+        <h1>🏦 Document Extraction Intelligence</h1>
+        <p>Institutional Document Search, Statutory Verification & Audit Clauses • Multilingual (नेपाली / EN)</p>
+    </div>
+    <div class="finance-badge">
+        CONFIDENTIAL & SECURE
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # Quick Demo Prompt Buttons (Executive Showcase)
 st.markdown("##### ⚡ Quick Showcase Questions (Click to test):")
@@ -702,7 +813,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = [
         {
             "role": "assistant",
-            "content": "नमस्ते! म नेपाल राष्ट्र बैंक सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
+            "content": "नमस्ते! म यस संस्था सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
             "sources": [],
             "latency": None
         }
