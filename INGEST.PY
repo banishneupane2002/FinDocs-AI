@@ -22,7 +22,8 @@ if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
 # --- CONFIGURATION ---
-WATCH_FOLDER = "./"
+WATCH_FOLDER = "File_System"
+os.makedirs(WATCH_FOLDER, exist_ok=True)
 DB_FOLDER = "./lancedb_data"
 TABLE_NAME = "bank_documents"
 TRACKER_FILE = "indexed_files.json"

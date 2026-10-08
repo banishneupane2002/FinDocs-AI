@@ -46,6 +46,28 @@ STOP_WORDS = {
 }
 
 # Preeti to clean text decoder for legacy PDF streams
+PREETI_SECTION_DIGIT_MAP = [
+    (r'(?<![०-९\d])द्ध\.', '४.'),
+    (r'(?<![०-९\d])द्द\.', '२.'),
+    (r'(?<![०-९\d])ज्ञ\.', '१.'),
+    (r'\(ज्ञ\)', '(१)'),
+    (r'\(द्द\)', '(२)'),
+    (r'\(द्ध\)', '(४)'),
+]
+
+PREETI_LIGATURE_FIXES = [
+    ('आर्थकि', 'आर्थिक'),
+    ('गरार्इ', 'गराई'),
+    ('इकार्इ', 'इकाई'),
+    ('र्इ', 'ई'),
+    ('गनर्ुपनर्े', 'गर्नुपर्ने'),
+    ('गनर्े', 'गर्ने'),
+    ('व्यत्तिफ', 'व्यक्ति'),
+    ('कैफियतह्र', 'कैफियतहरू'),
+    ('विवरणह्र', 'विवरणहरू'),
+    ('उपायह्र', 'उपायहरू'),
+]
+
 PREETI_CLEAN_REPLACEMENTS = [
     ('इखभचलष्नजत धबबिलअभ', 'Overnight Balance'),
     ('इखभचलष्नजत', 'Overnight'),
@@ -55,6 +77,11 @@ PREETI_CLEAN_REPLACEMENTS = [
     ('क्भततभिफभलत', 'Settlement'),
     ('क्भततिभफभलत', 'Settlement'),
     ('क्थकतभफ ब्गमष्त', 'System Audit'),
+    ('क्थकतभफ ग्उनचबमभ', 'System Upgrade'),
+    ('प्रतिस्थापन वा क्थकतभफ ग्उनचबमभ', 'प्रतिस्थापन वा System Upgrade'),
+    ('प्रतिस्थापन वा System ग्उनचबमभ', 'प्रतिस्थापन वा System Upgrade'),
+    ('प्रतिस्थापन वा ग्उनचबमभ', 'प्रतिस्थापन वा Upgrade'),
+    ('ग्उनचबमभ', 'Upgrade'),
     ('क्थकतभफ', 'System'),
     ('ब्गमष्त', 'Audit'),
     ('ब्गमषत', 'Audit'),
@@ -84,6 +111,8 @@ PREETI_CLEAN_REPLACEMENTS = [
     ('क्ष्ककगभच', 'Issuer'),
     ('ष्ककगभच', 'Issuer'),
     ('ब्अत्रगष्चभच', 'Acquirer'),
+    ('ख्गलिभचबदष्ष्ितष्भक', 'Vulnerabilities'),
+    ('म्ऋ(म्च्', 'DC-DR'),
     ('९त्ंघ०', '(T+3)'),
     ('९त्ंज्ञ०', '(T+1)'),
     ('९त्ंघण्०', '(T+30)'),
@@ -96,11 +125,18 @@ PREETI_CLEAN_REPLACEMENTS = [
 ]
 
 def decode_preeti_text(text):
-    """Decode legacy Preeti font glyphs to standard terminology for the LLM."""
+    """Universal Preeti font decoder and Devanagari normalizer."""
     if not text:
         return ""
+    # 1. Section numbers and points (e.g. द्ध. -> ४., (ज्ञ) -> (१))
+    for pat, rep in PREETI_SECTION_DIGIT_MAP:
+        text = re.sub(pat, rep, text)
+    # 2. Preeti vocabulary / compound word replacements
     for garbled, clean in PREETI_CLEAN_REPLACEMENTS:
         text = text.replace(garbled, clean)
+    # 3. Standard Devanagari spelling / ligature fixes
+    for err, fix in PREETI_LIGATURE_FIXES:
+        text = text.replace(err, fix)
     return text
 
 SPECIAL_PREETI = {
@@ -118,6 +154,8 @@ SPECIAL_PREETI = {
     'pos': ['एइक्'],
     'force': ['ँयचअभ'],
     'system': ['क्थकतभफ'],
+    'upgrade': ['ग्उनचबमभ'],
+    'vulnerabilities': ['ख्गलिभचबदष्ष्ितष्भक'],
 }
 
 BANKING_DOMAIN_LEXICON = {
@@ -170,6 +208,8 @@ BANKING_DOMAIN_LEXICON = {
     'shock': ['shock', 'C1', 'Substandard', '10 DBs', 'Credit Shock', 'Development Banks'],
     'framework': ['Framework', '2015', '2007', 'Basel', 'Capital Adequacy Framework'],
     'adequacy': ['adequacy', 'Framework', '2015', '2007', 'Basel', 'Capital Adequacy Framework'],
+    'upgrade': ['Upgrade', 'ग्उनचबमभ', 'प्रतिस्थापन'],
+    'vulnerabilities': ['Vulnerabilities', 'कमजोरी', 'ख्गलिभचबदष्ष्ितष्भक'],
 }
 
 def normalize_devanagari(text):
@@ -349,9 +389,12 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
 
     return diverse_results
 
-# Cached translation lookup to avoid repeated API calls
 if "translation_cache" not in st.session_state:
     st.session_state.translation_cache = {}
+if "model_usage" not in st.session_state:
+    st.session_state.model_usage = {m: 0 for m in MODELS_TO_TRY}
+if "model_status" not in st.session_state:
+    st.session_state.model_status = {}
 
 def expand_query_crosslingual(q, client):
     """Bidirectional cross-lingual query expansion for English & Nepali banking documents with failover."""
@@ -451,6 +494,49 @@ with st.sidebar:
     st.caption("Powered by **Qwen 27B** (Groq LPU) • Multilingual (नेपाली / EN)")
     st.divider()
 
+    # ⚡ Model Token & Quota Monitor
+    st.subheader("⚡ Live Model Quotas")
+    if st.button("🔄 Check Live Quotas", key="btn_check_tokens"):
+        st.session_state.model_status = {}
+        for m in MODELS_TO_TRY:
+            try:
+                res = groq_client.chat.completions.with_raw_response.create(
+                    model=m,
+                    messages=[{"role": "user", "content": "1"}],
+                    max_tokens=1
+                )
+                h = res.headers
+                st.session_state.model_status[m] = {
+                    "rem_tpm": h.get("x-ratelimit-remaining-tokens", "8,000"),
+                    "lim_tpm": h.get("x-ratelimit-limit-tokens", "8,000"),
+                    "reset_tokens": h.get("x-ratelimit-reset-tokens", "100ms"),
+                    "status": "Healthy 🟢"
+                }
+            except Exception as e:
+                err_msg = str(e)
+                if "429" in err_msg:
+                    st.session_state.model_status[m] = {"status": "Rate Limited (429) 🔴", "rem_tpm": "0", "lim_tpm": "8,000"}
+                else:
+                    st.session_state.model_status[m] = {"status": "Offline ⚠️", "rem_tpm": "0", "lim_tpm": "8,000"}
+
+    for m in MODELS_TO_TRY:
+        short_name = m.split("/")[-1]
+        used = st.session_state.model_usage.get(m, 0)
+        stat = st.session_state.model_status.get(m, {})
+        est_daily_left = max(0, 200000 - used)
+        role = "Primary 🚀" if m == MODELS_TO_TRY[0] else ("Fallback 1 🛡️" if m == MODELS_TO_TRY[1] else "Fallback 2 🛡️")
+        
+        with st.expander(f"{short_name} ({role})", expanded=False):
+            if stat.get("status"):
+                st.caption(f"Status: **{stat['status']}**")
+            if stat.get("rem_tpm"):
+                st.write(f"• **Live Minute Window:** `{stat['rem_tpm']} / {stat['lim_tpm']}`")
+            st.write(f"• **Session Used:** `{used:,} tokens`")
+            st.write(f"• **Est. Daily Left:** `~{est_daily_left:,} / 200,000`")
+            st.progress(min(1.0, est_daily_left / 200000))
+
+    st.divider()
+
     # Active Documents in Database
     st.subheader("📚 Indexed Documents")
     try:
@@ -481,7 +567,7 @@ with st.sidebar:
         type=["pdf", "docx", "txt"]
     )
     if uploaded_file is not None:
-        save_path = os.path.join("./", uploaded_file.name)
+        save_path = os.path.join("File_System", uploaded_file.name)
         if not os.path.exists(save_path):
             with open(save_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
@@ -589,6 +675,7 @@ RULES:
 6. Interpret statutory conditions and exclusionary scopes logically:
    - For example, if a directive states that a service is permitted in "X बाहेकका क्षेत्रमा" (areas except/excluding X), state definitively that it cannot be operated / is not permitted in X. Do not claim information is missing when the regulatory scope is explicitly defined.
 7. Only state "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents" if the subject matter is genuinely absent from the provided context.
+8. Strict Citation Boundary: Cite ONLY the specific document and page where the extracted provision or clause is actually stated. Do NOT invent, assume, or add speculative notes claiming that a clause or provision is also present in other documents or pages unless that exact clause is explicitly found in that other document within the provided context.
 
 Context from files:
 {context_text}"""
@@ -630,6 +717,11 @@ Context from files:
 
             if not full_response and last_err:
                 raise last_err
+
+            # Track tokens used in session
+            approx_tokens = (len(system_prompt) + len(active_query) + len(full_response)) // 4
+            if active_model_used:
+                st.session_state.model_usage[active_model_used] = st.session_state.model_usage.get(active_model_used, 0) + approx_tokens
 
             elapsed_sec = time.time() - start_time
             latency_str = f"Answered in {elapsed_sec:.2f}s via {active_model_used} on Groq LPU"

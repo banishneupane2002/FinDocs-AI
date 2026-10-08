@@ -51,6 +51,28 @@ STOP_WORDS = {
 }
 
 # Preeti to clean text decoder for legacy PDF streams
+PREETI_SECTION_DIGIT_MAP = [
+    (r'(?<![०-९\d])द्ध\.', '४.'),
+    (r'(?<![०-९\d])द्द\.', '२.'),
+    (r'(?<![०-९\d])ज्ञ\.', '१.'),
+    (r'\(ज्ञ\)', '(१)'),
+    (r'\(द्द\)', '(२)'),
+    (r'\(द्ध\)', '(४)'),
+]
+
+PREETI_LIGATURE_FIXES = [
+    ('आर्थकि', 'आर्थिक'),
+    ('गरार्इ', 'गराई'),
+    ('इकार्इ', 'इकाई'),
+    ('र्इ', 'ई'),
+    ('गनर्ुपनर्े', 'गर्नुपर्ने'),
+    ('गनर्े', 'गर्ने'),
+    ('व्यत्तिफ', 'व्यक्ति'),
+    ('कैफियतह्र', 'कैफियतहरू'),
+    ('विवरणह्र', 'विवरणहरू'),
+    ('उपायह्र', 'उपायहरू'),
+]
+
 PREETI_CLEAN_REPLACEMENTS = [
     ('इखभचलष्नजत धबबिलअभ', 'Overnight Balance'),
     ('इखभचलष्नजत', 'Overnight'),
@@ -60,6 +82,11 @@ PREETI_CLEAN_REPLACEMENTS = [
     ('क्भततभिफभलत', 'Settlement'),
     ('क्भततिभफभलत', 'Settlement'),
     ('क्थकतभफ ब्गमष्त', 'System Audit'),
+    ('क्थकतभफ ग्उनचबमभ', 'System Upgrade'),
+    ('प्रतिस्थापन वा क्थकतभफ ग्उनचबमभ', 'प्रतिस्थापन वा System Upgrade'),
+    ('प्रतिस्थापन वा System ग्उनचबमभ', 'प्रतिस्थापन वा System Upgrade'),
+    ('प्रतिस्थापन वा ग्उनचबमभ', 'प्रतिस्थापन वा Upgrade'),
+    ('ग्उनचबमभ', 'Upgrade'),
     ('क्थकतभफ', 'System'),
     ('ब्गमष्त', 'Audit'),
     ('ब्गमषत', 'Audit'),
@@ -89,6 +116,8 @@ PREETI_CLEAN_REPLACEMENTS = [
     ('क्ष्ककगभच', 'Issuer'),
     ('ष्ककगभच', 'Issuer'),
     ('ब्अत्रगष्चभच', 'Acquirer'),
+    ('ख्गलिभचबदष्ष्ितष्भक', 'Vulnerabilities'),
+    ('म्ऋ(म्च्', 'DC-DR'),
     ('९त्ंघ०', '(T+3)'),
     ('९त्ंज्ञ०', '(T+1)'),
     ('९त्ंघण्०', '(T+30)'),
@@ -101,11 +130,18 @@ PREETI_CLEAN_REPLACEMENTS = [
 ]
 
 def decode_preeti_text(text):
-    """Decode legacy Preeti font glyphs to standard terminology for the LLM."""
+    """Universal Preeti font decoder and Devanagari normalizer."""
     if not text:
         return ""
+    # 1. Section numbers and points (e.g. द्ध. -> ४., (ज्ञ) -> (१))
+    for pat, rep in PREETI_SECTION_DIGIT_MAP:
+        text = re.sub(pat, rep, text)
+    # 2. Preeti vocabulary / compound word replacements
     for garbled, clean in PREETI_CLEAN_REPLACEMENTS:
         text = text.replace(garbled, clean)
+    # 3. Standard Devanagari spelling / ligature fixes
+    for err, fix in PREETI_LIGATURE_FIXES:
+        text = text.replace(err, fix)
     return text
 
 SPECIAL_PREETI = {
@@ -123,6 +159,8 @@ SPECIAL_PREETI = {
     'pos': ['एइक्'],
     'force': ['ँयचअभ'],
     'system': ['क्थकतभफ'],
+    'upgrade': ['ग्उनचबमभ'],
+    'vulnerabilities': ['ख्गलिभचबदष्ष्ितष्भक'],
 }
 
 BANKING_DOMAIN_LEXICON = {
@@ -175,6 +213,8 @@ BANKING_DOMAIN_LEXICON = {
     'shock': ['shock', 'C1', 'Substandard', '10 DBs', 'Credit Shock', 'Development Banks'],
     'framework': ['Framework', '2015', '2007', 'Basel', 'Capital Adequacy Framework'],
     'adequacy': ['adequacy', 'Framework', '2015', '2007', 'Basel', 'Capital Adequacy Framework'],
+    'upgrade': ['Upgrade', 'ग्उनचबमभ', 'प्रतिस्थापन'],
+    'vulnerabilities': ['Vulnerabilities', 'कमजोरी', 'ख्गलिभचबदष्ष्ितष्भक'],
 }
 
 def normalize_devanagari(text):
@@ -500,6 +540,7 @@ RULES:
 6. Interpret statutory conditions and exclusionary scopes logically:
    - For example, if a directive states that a service is permitted in "X बाहेकका क्षेत्रमा" (areas except/excluding X), state definitively that it cannot be operated / is not permitted in X. Do not claim information is missing when the regulatory scope is explicitly defined.
 7. Only state "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents" if the subject matter is genuinely absent from the provided context.
+8. Strict Citation Boundary: Cite ONLY the specific document and page where the extracted provision or clause is actually stated. Do NOT invent, assume, or add speculative notes claiming that a clause or provision is also present in other documents or pages unless that exact clause is explicitly found in that other document within the provided context.
 
 Context from files:
 {context_text}"""
