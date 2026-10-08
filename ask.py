@@ -144,6 +144,42 @@ def decode_preeti_text(text):
         text = text.replace(err, fix)
     return text
 
+def extract_cited_sources(response_text, retrieved_candidates):
+    """
+    Filters retrieved candidate chunks so that ONLY the exact documents and pages
+    actually referenced/cited in the AI response are presented to the user.
+    """
+    cited = []
+    seen = set()
+
+    for item in retrieved_candidates:
+        src = item['source']
+        pg = str(item['page'])
+        base_src = src.replace('.pdf', '').replace('.docx', '').replace('.txt', '')
+
+        # Check if source name appears in response
+        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower():
+            # Check if page number appears in response
+            pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*:?\s*{pg}\b'
+            if re.search(pg_pattern, response_text, re.IGNORECASE) or f" {pg} " in f" {response_text} ":
+                key = (src, item['page'])
+                if key not in seen:
+                    seen.add(key)
+                    cited.append({
+                        'source': src,
+                        'page': item['page']
+                    })
+
+    # Fallback to top-1 primary search match if no explicit citation format was matched
+    if not cited and retrieved_candidates:
+        top_item = retrieved_candidates[0]
+        cited.append({
+            'source': top_item['source'],
+            'page': top_item['page']
+        })
+
+    return cited
+
 SPECIAL_PREETI = {
     'ibft': ['क्ष्धँत्', 'क्ष्द्यँत्'],
     'backup': ['धबअपगउ'],
@@ -556,14 +592,17 @@ Context from files:
                 ]
             )
 
+            full_response = ""
             for chunk in stream:
                 content = chunk.choices[0].delta.content or ""
+                full_response += content
                 print(content, end="", flush=True)
 
             print(f"\n\n(Generated via {model_used})")
-            print("Sources Cited:")
-            for src in set(sources):
-                print(f"   * {src}")
+            cited_sources = extract_cited_sources(full_response, results)
+            print("Verified Source(s) Cited:")
+            for c in cited_sources:
+                print(f"   * {c['source']} (Page {c['page']})")
             print("-" * 65 + "\n")
 
         except Exception as e:

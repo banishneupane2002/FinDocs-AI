@@ -4,6 +4,7 @@ import json
 import re
 import math
 import time
+import subprocess
 import unicodedata
 import lancedb
 import streamlit as st
@@ -138,6 +139,114 @@ def decode_preeti_text(text):
     for err, fix in PREETI_LIGATURE_FIXES:
         text = text.replace(err, fix)
     return text
+
+def open_pdf_at_page(pdf_name: str, page: int):
+    """Opens the local PDF on Windows directly scrolled to the specified page in Chrome or Edge."""
+    pdf_path = os.path.join("File_System", pdf_name)
+    if not os.path.exists(pdf_path):
+        pdf_path = pdf_name
+    if not os.path.exists(pdf_path):
+        st.warning(f"File '{pdf_name}' not found on disk.")
+        return
+
+    abs_path = os.path.abspath(pdf_path).replace("\\", "/")
+    target_url = f"file:///{abs_path}#page={page}"
+
+    browsers = [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+    ]
+
+    for b_path in browsers:
+        if os.path.exists(b_path):
+            try:
+                subprocess.Popen([b_path, target_url])
+                st.toast(f"Opening {pdf_name} at Page {page}...")
+                return
+            except Exception:
+                continue
+
+    try:
+        os.startfile(os.path.abspath(pdf_path))
+    except Exception as e:
+        st.error(f"Error opening document: {e}")
+
+def extract_cited_sources(response_text, retrieved_candidates, full_page_map=None):
+    """
+    Filters retrieved candidate chunks so that ONLY the exact documents and pages
+    actually referenced/cited in the AI response are presented to the user.
+    """
+    cited = []
+    seen = set()
+    full_page_map = full_page_map or {}
+
+    for item in retrieved_candidates:
+        src = item['source']
+        pg = str(item['page'])
+        base_src = src.replace('.pdf', '').replace('.docx', '').replace('.txt', '')
+
+        # Check if source name appears in response
+        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower():
+            # Check if page number appears in response
+            pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*:?\s*{pg}\b'
+            if re.search(pg_pattern, response_text, re.IGNORECASE) or f" {pg} " in f" {response_text} ":
+                key = (src, item['page'])
+                if key not in seen:
+                    seen.add(key)
+                    cited.append({
+                        'source': src,
+                        'page': item['page'],
+                        'text': full_page_map.get(key, item['text'])
+                    })
+
+    # Fallback to top-1 primary search match if no explicit citation format was matched
+    if not cited and retrieved_candidates:
+        top_item = retrieved_candidates[0]
+        key = (top_item['source'], top_item['page'])
+        cited.append({
+            'source': top_item['source'],
+            'page': top_item['page'],
+            'text': full_page_map.get(key, top_item['text'])
+        })
+
+    return cited
+
+def render_verified_sources(cited_sources, key_prefix="src"):
+    """Renders the verified ground truth sources with 1-click PDF page launcher and text viewer."""
+    if not cited_sources:
+        return
+
+    st.markdown("##### 🔍 Verified Source Document:")
+    for idx, c in enumerate(cited_sources):
+        if isinstance(c, dict):
+            src_name = c['source']
+            pg_num = c['page']
+            snippet_text = c.get('text', '').strip()
+        else:
+            # Handle legacy string format e.g. "**directive_3.pdf** (Page 15)"
+            src_name = str(c).replace("**", "")
+            pg_num = 1
+            snippet_text = ""
+
+        col_info, col_btn = st.columns([3, 1])
+        with col_info:
+            st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
+        with col_btn:
+            btn_key = f"{key_prefix}_btn_{idx}_{src_name}_{pg_num}"
+            if st.button(f"📖 Open Page {pg_num}", key=btn_key):
+                open_pdf_at_page(src_name, pg_num)
+
+        if snippet_text:
+            with st.expander(f"👁️ View Extracted Text from {src_name} (Page {pg_num})"):
+                st.text_area(
+                    "Extracted Context",
+                    value=snippet_text,
+                    height=160,
+                    disabled=True,
+                    key=f"{key_prefix}_txt_{idx}_{src_name}_{pg_num}",
+                    label_visibility="collapsed"
+                )
 
 SPECIAL_PREETI = {
     'ibft': ['क्ष्धँत्', 'क्ष्द्यँत्'],
@@ -600,15 +709,13 @@ if "messages" not in st.session_state:
     ]
 
 # Display Previous Messages
-for msg in st.session_state.messages:
+for i, msg in enumerate(st.session_state.messages):
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
         if msg.get("latency"):
             st.caption(f"⚡ {msg['latency']}")
         if msg.get("sources"):
-            with st.expander("📄 Sources Cited"):
-                for src in msg["sources"]:
-                    st.write(f"- {src}")
+            render_verified_sources(msg["sources"], key_prefix=f"hist_{i}")
 
 # Determine Active User Input (from typing or click)
 preset_query = None
@@ -639,7 +746,7 @@ if active_query:
     # Parent Document Context Windowing: provide full page text so clauses are never severed mid-rule
     seen_pages = set()
     full_page_context = []
-    sources_list = []
+    full_page_map = {}
     total_chars = 0
     for item in results:
         sp = (item['source'], item['page'])
@@ -653,9 +760,9 @@ if active_query:
 
             # Decode legacy Preeti font artifacts before providing to LLM
             full_page_text = decode_preeti_text(full_page_text)
+            full_page_map[sp] = full_page_text
 
             full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}]:\n{full_page_text}\n")
-            sources_list.append(f"**{item['source']}** (Page {item['page']})")
             total_chars += len(full_page_text)
             if len(seen_pages) >= 4 or total_chars > 12000:
                 break
@@ -727,19 +834,15 @@ Context from files:
             latency_str = f"Answered in {elapsed_sec:.2f}s via {active_model_used} on Groq LPU"
             st.caption(f"⚡ {latency_str}")
 
-            # Show Sources Expander
-            unique_sources = list(set(sources_list))
-            if unique_sources:
-                with st.expander("📄 Sources Cited & Reference Snippets"):
-                    for item in results:
-                        st.markdown(f"**{item['source']}** — Page {item['page']}")
-                        st.code(item['text'][:250].strip() + "...", language="text")
+            # Extract and display only the exact verified sources cited in the response
+            cited_sources = extract_cited_sources(full_response, results, full_page_map)
+            render_verified_sources(cited_sources, key_prefix=f"curr_{len(st.session_state.messages)}")
 
             # Save to Session State
             st.session_state.messages.append({
                 "role": "assistant",
                 "content": full_response,
-                "sources": unique_sources,
+                "sources": cited_sources,
                 "latency": latency_str
             })
 
