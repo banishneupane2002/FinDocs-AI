@@ -8,7 +8,7 @@ from watchdog.events import FileSystemEventHandler
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
-WATCH_FOLDER = "./"
+WATCH_FOLDER = "File_System"
 SUPPORTED_EXTS = (".pdf", ".docx", ".txt")
 
 class DocumentWatcherHandler(FileSystemEventHandler):
@@ -22,8 +22,8 @@ class DocumentWatcherHandler(FileSystemEventHandler):
             # Brief pause to ensure the file is completely saved by the OS
             time.sleep(1)
             
-            # Automatically triggers ingest.py
-            subprocess.run([sys.executable, "ingest.py"])
+            # Automatically triggers INGEST.PY
+            subprocess.run([sys.executable, "INGEST.PY"])
             print(">> Document successfully indexed! You can now ask questions about it in ask.py.\n")
 
     def on_modified(self, event):
@@ -32,7 +32,7 @@ class DocumentWatcherHandler(FileSystemEventHandler):
             print(f"\n[DETECTOR] File updated: '{filename}'")
             print(">> Updating document index...")
             time.sleep(1)
-            subprocess.run([sys.executable, "ingest.py"])
+            subprocess.run([sys.executable, "INGEST.PY"])
             print(">> Index updated!\n")
 
     def on_deleted(self, event):
@@ -40,7 +40,7 @@ class DocumentWatcherHandler(FileSystemEventHandler):
             filename = os.path.basename(event.src_path)
             print(f"\n[DETECTOR] File removed from folder: '{filename}'")
             print(">> Automatically synchronizing database and removing deleted chunks...")
-            subprocess.run([sys.executable, "ingest.py"])
+            subprocess.run([sys.executable, "INGEST.PY"])
             print(f">> Successfully purged '{filename}' from vector database!\n")
 
 if __name__ == "__main__":

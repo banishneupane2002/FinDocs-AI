@@ -71,9 +71,19 @@ PREETI_LIGATURE_FIXES = [
     ('कैफियतह्र', 'कैफियतहरू'),
     ('विवरणह्र', 'विवरणहरू'),
     ('उपायह्र', 'उपायहरू'),
+    ('भुत्तफानी', 'भुक्तानी'),
+    ('भिफक्न', 'झिक्न'),
+    ('भिफक्ने', 'झिक्ने'),
+    ('उपयर्ुत्तफ', 'उपर्युक्त'),
+    ('अतिरित्तफ', 'अतिरिक्त'),
+    ('सम्बन्िधत', 'सम्बन्धित'),
 ]
 
 PREETI_CLEAN_REPLACEMENTS = [
+    ('ऋयलतबअतभिकक', 'Contactless'),
+    ('म्यफभकतष्अ ऋबचम क्अजभफभ', 'Domestic Card Scheme'),
+    ('्र .', 'रु. '),
+    ('्र.', 'रु. '),
     ('इखभचलष्नजत धबबिलअभ', 'Overnight Balance'),
     ('इखभचलष्नजत', 'Overnight'),
     ('धबबिलअभ', 'Balance'),
@@ -180,7 +190,191 @@ def extract_cited_sources(response_text, retrieved_candidates):
 
     return cited
 
+# --- AUTOMATIC YEAR DETECTION & QUERY ROUTING ENGINE ---
+PREETI_NUM_MAP = {'!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9', ')': '0'}
+NEP_TO_ARABIC = {'०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9'}
+
+def detect_document_years(filename: str, sample_text: str = "") -> set:
+    """
+    Detects all official fiscal or calendar years covered by a document.
+    Distinguishes real years from phone numbers, P.O. Box, registration numbers.
+    Supports multi-year documents (e.g. 2079/80, 2022-23).
+    """
+    years = set()
+
+    # 1. From Filename
+    for m in re.finditer(r'(20[78][0-9]|20[12][0-9])', filename):
+        years.add(int(m.group(1)))
+
+    # 2. Preeti Cover Shift Glyphs (Anchor: follows 'निर्देशन' or cover title)
+    for preeti_m in re.finditer(r'@\)([&*][!@#$%\^&*()०-९0-9])', sample_text):
+        decade_code = preeti_m.group(1)[0]
+        unit_code = preeti_m.group(1)[1]
+        decade = '7' if decade_code == '&' else '8'
+        unit = PREETI_NUM_MAP.get(unit_code, NEP_TO_ARABIC.get(unit_code, unit_code))
+        try:
+            val = int(f"20{decade}{unit}")
+            if 2070 <= val <= 2085:
+                years.add(val)
+        except Exception:
+            pass
+
+    # 3. Multi-year Devanagari ranges (e.g. २०७९/८० or आर्थिक वर्ष २०८०/८१)
+    for m in re.finditer(r'२०([७८][०-९])(?:/([०-९]{2}))?', sample_text):
+        decade_unit = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(1))
+        y1 = int(f"20{decade_unit}")
+        if 2070 <= y1 <= 2085:
+            years.add(y1)
+        if m.group(2):
+            unit2 = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(2))
+            y2 = int(f"20{unit2}")
+            if 2070 <= y2 <= 2085:
+                years.add(y2)
+
+    # 4. Multi-year English ranges (e.g. 2023/24, 2022-23)
+    for m in re.finditer(r'\b(20[12][0-9])[/-]([0-9]{2})\b', sample_text):
+        y1 = int(m.group(1))
+        y2 = int(str(y1)[:2] + m.group(2))
+        years.add(y1)
+        years.add(y2)
+
+    # 5. Standalone English / Devanagari with Regulatory Anchors (rejects phone numbers, fax, PO Box)
+    anchored_matches = re.finditer(
+        r'(?:directive|circular|report|fiscal\s*year|निर्देशन|परिपत्र|प्रतिवेदन|संवत्|मिति)\s*[,:\s]*([०-९\d]{4})',
+        sample_text,
+        re.IGNORECASE
+    )
+    for m in anchored_matches:
+        raw = m.group(1)
+        arabic = "".join(NEP_TO_ARABIC.get(c, c) for c in raw)
+        try:
+            val = int(arabic)
+            if 2070 <= val <= 2085 or 2010 <= val <= 2030:
+                years.add(val)
+        except Exception:
+            pass
+
+    return years
+
+def extract_query_years(query: str, available_years: set = None) -> set:
+    """
+    Extracts all legitimate target regulatory years from user query.
+    Rejects:
+    - Currency amounts (e.g. '2000 rupees', 'Rs. 2500', 'fee 2000')
+    - Standalone numbers not matching any active corpus document year
+    - Non-year numbers (e.g. clause numbers, branch codes)
+    """
+    if available_years is None:
+        available_years = {2079, 2080, 2081, 2082, 2023, 2024}
+
+    found_years = set()
+
+    # 1. Check Devanagari year ranges (e.g. २०७९/८०, २०८०, or Gregorian २०२४, २०२५)
+    dev_ranges = re.finditer(r'२०([०-९]{2})(?:/([०-९]{2}))?', query)
+    for m in dev_ranges:
+        decade_unit = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(1))
+        y1 = int(f"20{decade_unit}")
+        if y1 in available_years:
+            found_years.add(y1)
+        if m.group(2):
+            unit2 = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(2))
+            y2 = int(f"20{unit2}")
+            if y2 in available_years:
+                found_years.add(y2)
+
+    # 2. Check English year ranges (e.g. 2079/80, 2023/24, 2079-80)
+    en_ranges = re.finditer(r'\b(20[78][0-9]|20[12][0-9])[/-]([0-9]{2})\b', query)
+    for m in en_ranges:
+        y1 = int(m.group(1))
+        if y1 in available_years:
+            found_years.add(y1)
+        y2 = int(str(y1)[:2] + m.group(2))
+        if y2 in available_years:
+            found_years.add(y2)
+
+    # 3. Check standalone English 4-digit years
+    standalone_candidates = re.finditer(r'\b(20[78][0-9]|20[12][0-9])\b', query)
+    for m in standalone_candidates:
+        candidate = int(m.group(1))
+        start_idx, end_idx = m.start(), m.end()
+
+        # Check if preceded by currency or quantity terms (e.g. "Rs 2000", "रु २०००", "deposit of 2000")
+        pre_ctx = query[max(0, start_idx - 15):start_idx].lower()
+        post_ctx = query[end_idx:min(len(query), end_idx + 15)].lower()
+
+        if re.search(r'(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|amount|deposit|withdraw|transfer|fee|charge|limit)\s*$', pre_ctx):
+            continue
+        if re.search(r'^\s*(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|हजार|लाख|per|प्रति)', post_ctx):
+            continue
+
+        # If it's a known document year in the corpus, add it
+        if candidate in available_years:
+            found_years.add(candidate)
+
+    return found_years
+
+ARABIC_TO_NEP = {v: k for k, v in NEP_TO_ARABIC.items()}
+
+def clean_query_for_search(query: str, matched_years: set) -> str:
+    """
+    Cleans routing noise ONLY for years that actually matched an active document.
+    Leaves amounts, random numbers, and unknown numbers completely untouched.
+    """
+    if not matched_years or len(matched_years) > 1:
+        # If no year matched or multiple years matched (comparative query), do not strip
+        return query
+
+    yr = list(matched_years)[0]
+    cleaned = re.sub(
+        rf'\b(?:in|of|from|को|अनुसार|बमोजिम)?\s*{yr}\s*(?:directive|circular|report|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
+        '',
+        query,
+        flags=re.IGNORECASE
+    )
+    dev_yr_full = "".join(ARABIC_TO_NEP.get(c, c) for c in str(yr))
+    cleaned = re.sub(
+        rf'\b(?:in|of|from|को|अनुसार|बमोजिम)?\s*{dev_yr_full}\s*(?:directive|circular|report|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
+        '',
+        cleaned,
+        flags=re.IGNORECASE
+    )
+    return cleaned.strip() or query
+
+def prioritize_matching_document(target_yr: int, matching_docs: list) -> str:
+    """
+    Selects the best document when multiple reports cover the target year.
+    Prioritizes:
+    1. Document with target_yr in filename (e.g. Annual_Report_2024.pdf for 2024)
+    2. Primary reporting period over comparative retrospective years.
+    """
+    if not matching_docs:
+        return None
+    for doc in matching_docs:
+        if str(target_yr) in doc:
+            return doc
+    return matching_docs[0]
+
+_DOC_YEAR_CACHE = {}
+
+def build_document_year_map(table) -> dict:
+    """Builds a cached map of document name -> set of detected fiscal/calendar years."""
+    global _DOC_YEAR_CACHE
+    if _DOC_YEAR_CACHE:
+        return _DOC_YEAR_CACHE
+    doc_map = {}
+    try:
+        df = table.to_pandas()
+        for s in df['source'].unique():
+            p1_records = df[(df['source'] == s) & (df['page'] <= 3)]
+            sample_text = " ".join(p1_records['text'].tolist())
+            doc_map[s] = detect_document_years(s, sample_text)
+        _DOC_YEAR_CACHE = doc_map
+    except Exception:
+        pass
+    return doc_map
+
 SPECIAL_PREETI = {
+    'contactless': ['ऋयलतबअतभिकक'],
     'ibft': ['क्ष्धँत्', 'क्ष्द्यँत्'],
     'backup': ['धबअपगउ'],
     'settlement': ['क्भततभिफभलत', 'क्भततिभफभलत'],
@@ -200,19 +394,36 @@ SPECIAL_PREETI = {
 }
 
 BANKING_DOMAIN_LEXICON = {
-    'atm': ['एटीएम', 'ATM', 'ब्त्ः'],
+    'contactless': ['कन्ट्याक्टलेस', 'Contactless', 'ऋयलतबअतभिकक'],
+    'कन्ट्याक्टलेस': ['कन्ट्याक्टलेस', 'Contactless', 'ऋयलतबअतभिकक'],
+    'atm': ['एटीएम', 'ATM', 'ब्त्ः', 'कार्डबाट नगद', 'डेबिट कार्ड', 'भुक्तानी कार्ड'],
+    'एटीएम': ['एटीएम', 'ATM', 'ब्त्ः', 'कार्डबाट नगद', 'डेबिट कार्ड', 'भुक्तानी कार्ड'],
     'debit': ['डेबिट'],
+    'डेबिट': ['डेबिट', 'debit'],
     'credit': ['क्रेडिट'],
     'prepaid': ['पि्रपेड', 'प्रिपेड'],
     'card': ['कार्ड'],
     'cards': ['कार्ड'],
+    'कार्ड': ['कार्ड', 'card'],
     'wallet': ['वालेट'],
     'wallets': ['वालेट'],
-    'withdrawal': ['झिक्ने', 'भुक्तानी'],
-    'withdraw': ['झिक्ने'],
+    'withdrawal': ['झिक्ने', 'भुक्तानी', 'नगद'],
+    'withdrawals': ['झिक्ने', 'भुक्तानी', 'नगद'],
+    'withdraw': ['झिक्ने', 'नगद'],
+    'withdrawn': ['झिक्ने', 'नगद'],
+    'cash': ['नगद', 'रकम'],
+    'नगद': ['नगद', 'cash', 'रकम'],
+    'झिक्ने': ['झिक्ने', 'नगद झिक्ने', 'withdraw'],
+    'झिक्न': ['झिक्ने', 'नगद झिक्ने', 'withdraw'],
     'deposit': ['जम्मा'],
     'limit': ['सीमा'],
     'limits': ['सीमा'],
+    'सीमा': ['सीमा', 'limit'],
+    'max': ['अधिकतम', 'सीमा'],
+    'maximum': ['अधिकतम', 'सीमा'],
+    'अधिकतम': ['अधिकतम', 'सीमा', 'max'],
+    'amount': ['रकम'],
+    'रकम': ['रकम', 'amount'],
     'daily': ['प्रतिदिन', 'दैनिक'],
     'monthly': ['प्रतिमहिना', 'मासिक'],
     'fee': ['शुल्क'],
@@ -313,8 +524,8 @@ def extract_meaningful_keywords(text):
         keywords.update(['इखभचलष्नजत', 'धबबिलअभ', '५०', 'हजार', 'वालेट'])
     if 'threshold transaction' in t_lower or 'ttr' in t_lower or 'सीमा कारोबार' in text:
         keywords.update(['सीमा कारोबार', 'त्त्च्', '१० लाख', '१५ दिन', 'नयब्ःी', 'goAML'])
-    if 'debit card' in t_lower or 'withdrawal limit' in t_lower or 'डेबिट कार्ड' in text:
-        keywords.update(['डेबिट कार्ड', '५० हजार', '१ लाख', 'प्रतिदिन'])
+    if any(c in t_lower for c in ['atm', 'debit', 'card', 'एटीएम', 'कार्ड']) and any(w in t_lower for w in ['withdraw', 'withdrawn', 'withdrawal', 'cash', 'झिक्ने', 'झिक्न', 'नगद', 'सीमा', 'limit', 'max', 'maximum', 'amount']):
+        keywords.update(['भुक्तानी', 'भुत्तफानी', 'कार्डबाट नगद', 'नगद झिक्ने', 'भिफक्ने', 'अधिकतम सीमा', 'डेबिट कार्ड', '५० हजार', '२० हजार', '२५ हजार', '१ लाख', '३ लाख', 'प्रतिकारोबार', 'प्रतिदिन'])
     if 'c1' in t_lower or 'credit shock' in t_lower:
         keywords.update(['C1', 'Credit Shock', 'Substandard', '10 DBs', 'DBs'])
     if 'capital adequacy framework' in t_lower or 'framework' in t_lower:
@@ -332,13 +543,16 @@ def extract_meaningful_keywords(text):
 
     return clean_tokens
 
-def hybrid_search(user_query, table, model, translated_terms="", top_k=6):
+def hybrid_search(user_query, table, model, translated_terms="", selected_doc="All Documents", top_k=6):
     k_const = 30  # Standard RRF constant
 
     # 1. Primary Dense Search (Direct Query Intent)
     d_pri = {}
     q_vec = model.encode(user_query).tolist()
-    for rank, (_, row) in enumerate(table.search(q_vec).limit(100).to_pandas().iterrows(), 1):
+    search_q = table.search(q_vec)
+    if selected_doc and selected_doc != "All Documents":
+        search_q = search_q.where(f"source = '{selected_doc}'")
+    for rank, (_, row) in enumerate(search_q.limit(100).to_pandas().iterrows(), 1):
         k = (row['source'], int(row['page']))
         if k not in d_pri:
             d_pri[k] = (rank, row)
@@ -347,7 +561,10 @@ def hybrid_search(user_query, table, model, translated_terms="", top_k=6):
     d_trans = {}
     if translated_terms and translated_terms.strip():
         t_vec = model.encode(translated_terms).tolist()
-        for rank, (_, row) in enumerate(table.search(t_vec).limit(100).to_pandas().iterrows(), 1):
+        search_t = table.search(t_vec)
+        if selected_doc and selected_doc != "All Documents":
+            search_t = search_t.where(f"source = '{selected_doc}'")
+        for rank, (_, row) in enumerate(search_t.limit(100).to_pandas().iterrows(), 1):
             k = (row['source'], int(row['page']))
             if k not in d_trans:
                 d_trans[k] = (rank, row)
@@ -358,7 +575,10 @@ def hybrid_search(user_query, table, model, translated_terms="", top_k=6):
     clean_pri_fts = " ".join([w for w in kw_pri if len(w) > 1])
     if clean_pri_fts.strip():
         try:
-            for rank, (_, row) in enumerate(table.search(clean_pri_fts).limit(100).to_pandas().iterrows(), 1):
+            search_fts1 = table.search(clean_pri_fts)
+            if selected_doc and selected_doc != "All Documents":
+                search_fts1 = search_fts1.where(f"source = '{selected_doc}'")
+            for rank, (_, row) in enumerate(search_fts1.limit(100).to_pandas().iterrows(), 1):
                 k = (row['source'], int(row['page']))
                 if k not in s_pri:
                     s_pri[k] = (rank, row)
@@ -372,7 +592,10 @@ def hybrid_search(user_query, table, model, translated_terms="", top_k=6):
         clean_trans_fts = " ".join([w for w in kw_trans if len(w) > 1])
         if clean_trans_fts.strip():
             try:
-                for rank, (_, row) in enumerate(table.search(clean_trans_fts).limit(100).to_pandas().iterrows(), 1):
+                search_fts2 = table.search(clean_trans_fts)
+                if selected_doc and selected_doc != "All Documents":
+                    search_fts2 = search_fts2.where(f"source = '{selected_doc}'")
+                for rank, (_, row) in enumerate(search_fts2.limit(100).to_pandas().iterrows(), 1):
                     k = (row['source'], int(row['page']))
                     if k not in s_trans:
                         s_trans[k] = (rank, row)
@@ -396,6 +619,18 @@ def hybrid_search(user_query, table, model, translated_terms="", top_k=6):
         # Multi-Channel Weighted RRF:
         # Primary dense (1.0), Primary sparse exact tokens (1.2), Cross-lingual auxiliary (0.6 each)
         rrf_score = (1.0 / (k_const + dp)) + (1.2 / (k_const + sp)) + (0.6 / (k_const + dt)) + (0.6 / (k_const + st))
+
+        # Gentle Recency Preference for general unanchored regulatory questions (latest active rules take precedence)
+        if not selected_doc or selected_doc == "All Documents":
+            src = row['source']
+            fn_m = re.search(r'(20[78][0-9]|20[12][0-9])', src)
+            if fn_m:
+                doc_yr = int(fn_m.group(1))
+                if 'directive' in src and 2078 <= doc_yr <= 2085:
+                    rrf_score += (doc_yr - 2078) * 0.006
+                elif 'Annual_Report' in src and 2020 <= doc_yr <= 2030:
+                    rrf_score += (doc_yr - 2020) * 0.006
+
         fused_results.append({
             'source': row['source'],
             'page': int(row['page']),
@@ -433,8 +668,12 @@ def expand_query_crosslingual(q, groq_client):
         sys_instruction = (
             "You are a specialized bilingual terminology engine for Nepal Rastra Bank reports and directives.\n"
             "The user question is in Nepali. Translate the core banking entities and financial metrics into their official English terminology (for finding tables in English Annual Reports):\n"
+            "- एकीकृत वित्तीय स्थिति / वित्तीय विवरण -> Consolidated Statement of Financial Position, Financial Position, Annex 3.3, Balance Sheet\n"
             "- विकास बैंक -> Development Banks, DBs\n"
+            "- वाणिज्य बैंक -> Commercial Banks, CBs\n"
             "- वित्त कम्पनी -> Finance Companies, FCs\n"
+            "- जुलाई / मध्य जुलाई -> Mid-July, July\n"
+            "- कुल सम्पत्ति / दायित्व -> Total Assets, Total Liabilities, Equity\n"
             "- इन्टरनेट बैंकिङ -> Internet Banking\n"
             "- मोबाइल बैंकिङ -> Mobile Banking\n"
             "- वञ्चित क्षेत्र कर्जा -> Deprived Sector Lending\n"
@@ -469,7 +708,8 @@ def expand_query_crosslingual(q, groq_client):
             "- IBFT / fund transfer -> अन्तर बैंक, रकमान्तर, क्ष्धँत्, रु. १०\n"
             "- system audit -> System Audit, क्थकतभफ ब्गमष्त, प्रणाली परीक्षण, १ वर्ष, २ आर्थिक वर्ष\n"
             "- overnight balance -> ओभरनाइट मौज्दात, ५० हजार, बैंक खाता\n"
-            "- debit card ATM limit -> डेबिट कार्ड, ATM, नगद झिक्ने सीमा, ५० हजार, १ लाख\n"
+            "- debit card / ATM cash withdrawal limit -> कार्डबाट नगद झिक्ने अधिकतम सीमा, डेबिट कार्ड, ५० हजार, २० हजार, ३ लाख, नगद झिक्ने, एटीएम\n"
+            "- contactless -> Contactless, कन्ट्याक्टलेस, ५ हजार, ५,०००\n"
             "Return 3-6 comma-separated Nepali terms in Devanagari script only, nothing else."
         )
 
@@ -533,10 +773,50 @@ def main():
             print("Goodbye!")
             break
 
+        # Automatic Query Year Routing & Document Selection
+        doc_year_map = build_document_year_map(table)
+        available_years = set.union(*doc_year_map.values()) if doc_year_map else set()
+        matched_years = extract_query_years(user_question, available_years)
+
+        effective_doc = None
+        if len(matched_years) == 1:
+            target_yr = list(matched_years)[0]
+            matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
+            if matching_docs:
+                effective_doc = prioritize_matching_document(target_yr, matching_docs)
+                print(f"   🎯 Auto-routed to {target_yr} Directive / Report ({effective_doc})")
+        elif len(matched_years) > 1:
+            yrs_str = ", ".join(str(y) for y in sorted(matched_years))
+            print(f"   📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})")
+
+        search_query = clean_query_for_search(user_question, matched_years) if effective_doc else user_question
+        if not search_query.strip():
+            search_query = user_question
+
         print("   Searching documents (Cross-Lingual Dual-Pass Hybrid Retrieval)...")
 
-        translated_terms = expand_query_crosslingual(user_question, client)
-        results = hybrid_search(user_question, table, embedding_model, translated_terms=translated_terms, top_k=6)
+        translated_terms = expand_query_crosslingual(search_query, client)
+        results = hybrid_search(search_query, table, embedding_model, translated_terms=translated_terms, selected_doc=effective_doc, top_k=6)
+
+        # For comparative multi-year queries, interleave results across matched documents so all target years enter context
+        if len(matched_years) > 1:
+            target_docs = set()
+            for yr in matched_years:
+                for d, yrs in doc_year_map.items():
+                    if yr in yrs:
+                        target_docs.add(d)
+            if target_docs:
+                by_doc = {d: [] for d in target_docs}
+                for item in results:
+                    if item['source'] in by_doc:
+                        by_doc[item['source']].append(item)
+                interleaved = []
+                for i in range(3):
+                    for d in sorted(by_doc.keys()):
+                        if i < len(by_doc[d]):
+                            interleaved.append(by_doc[d][i])
+                if interleaved:
+                    results = interleaved
 
         # Parent Document Context Windowing with Preeti decoding
         seen_pages = set()
@@ -577,6 +857,7 @@ RULES:
    - For example, if a directive states that a service is permitted in "X बाहेकका क्षेत्रमा" (areas except/excluding X), state definitively that it cannot be operated / is not permitted in X. Do not claim information is missing when the regulatory scope is explicitly defined.
 7. Only state "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents" if the subject matter is genuinely absent from the provided context.
 8. Strict Citation Boundary: Cite ONLY the specific document and page where the extracted provision or clause is actually stated. Do NOT invent, assume, or add speculative notes claiming that a clause or provision is also present in other documents or pages unless that exact clause is explicitly found in that other document within the provided context.
+9. Prevailing Active Regulation: If the user does not specify a target year, prioritize and present the latest active regulatory year's provision (e.g. Directive 2082 takes precedence over 2080/2081, and Annual Report 2024/2025 over earlier years) as the prevailing official rule. Clearly indicate the directive/report year cited.
 
 Context from files:
 {context_text}"""

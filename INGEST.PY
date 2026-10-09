@@ -1,9 +1,83 @@
 import os
 import sys
 import json
+import re
 import pypdf
+try:
+    import pymupdf as fitz
+except ImportError:
+    try:
+        import fitz
+    except ImportError:
+        fitz = None
 import lancedb
 from sentence_transformers import SentenceTransformer
+
+# Year Detection Helpers for Preeti cover glyphs and Devanagari numerals
+PREETI_NUM_MAP = {'!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9', ')': '0'}
+NEP_TO_ARABIC = {'०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9'}
+
+def detect_document_years(filename: str, sample_text: str = "") -> set:
+    """
+    Detects all official fiscal or calendar years covered by a document.
+    Distinguishes real years from phone numbers, P.O. Box, registration numbers.
+    Supports multi-year documents (e.g. 2079/80, 2022-23).
+    """
+    years = set()
+
+    # 1. From Filename
+    for m in re.finditer(r'(20[78][0-9]|20[12][0-9])', filename):
+        years.add(int(m.group(1)))
+
+    # 2. Preeti Cover Shift Glyphs (Anchor: follows 'निर्देशन' or cover title)
+    for preeti_m in re.finditer(r'@\)([&*][!@#$%\^&*()०-९0-9])', sample_text):
+        decade_code = preeti_m.group(1)[0]
+        unit_code = preeti_m.group(1)[1]
+        decade = '7' if decade_code == '&' else '8'
+        unit = PREETI_NUM_MAP.get(unit_code, NEP_TO_ARABIC.get(unit_code, unit_code))
+        try:
+            val = int(f"20{decade}{unit}")
+            if 2070 <= val <= 2085:
+                years.add(val)
+        except Exception:
+            pass
+
+    # 3. Multi-year Devanagari ranges (e.g. २०७९/८० or आर्थिक वर्ष २०८०/८१)
+    for m in re.finditer(r'२०([७८][०-९])(?:/([०-९]{2}))?', sample_text):
+        decade_unit = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(1))
+        y1 = int(f"20{decade_unit}")
+        if 2070 <= y1 <= 2085:
+            years.add(y1)
+        if m.group(2):
+            unit2 = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(2))
+            y2 = int(f"20{unit2}")
+            if 2070 <= y2 <= 2085:
+                years.add(y2)
+
+    # 4. Multi-year English ranges (e.g. 2023/24, 2022-23)
+    for m in re.finditer(r'\b(20[12][0-9])[/-]([0-9]{2})\b', sample_text):
+        y1 = int(m.group(1))
+        y2 = int(str(y1)[:2] + m.group(2))
+        years.add(y1)
+        years.add(y2)
+
+    # 5. Standalone English / Devanagari with Regulatory Anchors (rejects phone numbers, fax, PO Box)
+    anchored_matches = re.finditer(
+        r'(?:directive|circular|report|fiscal\s*year|निर्देशन|परिपत्र|प्रतिवेदन|संवत्|मिति)\s*[,:\s]*([०-९\d]{4})',
+        sample_text,
+        re.IGNORECASE
+    )
+    for m in anchored_matches:
+        raw = m.group(1)
+        arabic = "".join(NEP_TO_ARABIC.get(c, c) for c in raw)
+        try:
+            val = int(arabic)
+            if 2070 <= val <= 2085 or 2010 <= val <= 2030:
+                years.add(val)
+        except Exception:
+            pass
+
+    return years
 
 # Word document support
 try:
@@ -147,12 +221,50 @@ def extract_text_from_file(filepath):
     pages_data = []
     
     if ext == ".pdf":
-        reader = pypdf.PdfReader(filepath)
-        for i, page in enumerate(reader.pages, start=1):
-            text = page.extract_text() or ""
-            text = auto_convert_nepali(text)
-            if text.strip():
-                pages_data.append((i, text))
+        if fitz is not None:
+            try:
+                doc = fitz.open(filepath)
+                for i, page in enumerate(doc, start=1):
+                    blocks = page.get_text("dict")["blocks"]
+                    full_page_lines = []
+                    for b in blocks:
+                        if "lines" not in b:
+                            continue
+                        for line in b["lines"]:
+                            line_parts = []
+                            for span in line["spans"]:
+                                text = span["text"]
+                                if not text:
+                                    continue
+                                font = span["font"].lower()
+                                # Check if span is a legacy typewriter font
+                                if any(f in font for f in ["preeti", "himali", "kantipur", "fontasy", "bishall", "sagarmatha"]):
+                                    try:
+                                        converted = convert_text(text) if convert_text else text
+                                        line_parts.append(clean_nepali_artifacts(converted))
+                                    except Exception:
+                                        line_parts.append(text)
+                                else:
+                                    # English or clean Unicode font (Times New Roman, Arial, Mangal, Calibri, etc.)
+                                    line_parts.append(text)
+                            line_text = "".join(line_parts).strip()
+                            if line_text:
+                                full_page_lines.append(line_text)
+                    page_text = "\n".join(full_page_lines)
+                    if page_text.strip():
+                        pages_data.append((i, page_text))
+            except Exception as e:
+                print(f"   [PyMuPDF extraction fallback to pypdf due to: {e}]")
+                pages_data = []
+
+        # Graceful fallback to pypdf if PyMuPDF was unavailable or returned empty
+        if not pages_data and pypdf is not None:
+            reader = pypdf.PdfReader(filepath)
+            for i, page in enumerate(reader.pages, start=1):
+                text = page.extract_text() or ""
+                text = auto_convert_nepali(text)
+                if text.strip():
+                    pages_data.append((i, text))
                 
     elif ext == ".docx":
         if docx is None:
@@ -176,6 +288,11 @@ new_records = []
 for filename, filepath, last_modified in files_to_process:
     print(f"\nProcessing file: '{filename}'...")
     pages_data = extract_text_from_file(filepath)
+    sample_text = " ".join([text for _, text in pages_data[:3]])
+    detected_yrs = detect_document_years(filename, sample_text)
+    if detected_yrs:
+        yrs_str = ", ".join(str(y) for y in sorted(detected_yrs))
+        print(f"   📅 Detected Document Year(s): {yrs_str}")
     
     file_chunks = 0
     for page_num, text in pages_data:
