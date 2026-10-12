@@ -1,0 +1,12 @@
+streamlit>=1.30.0
+lancedb>=0.4.0
+sentence-transformers>=2.2.0
+groq>=0.4.0
+pymupdf>=1.24.0
+pypdf>=4.0.0
+preeti-unicode>=1.0.0
+watchdog>=4.0.0
+python-docx>=1.1.0
+pyarrow>=14.0.0
+pandas>=2.0.0
+python-dotenv>=1.0.0

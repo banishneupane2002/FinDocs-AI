@@ -1,15 +1,21 @@
+import sys
 import lancedb
 from sentence_transformers import SentenceTransformer
+
+# Ensure clean UTF-8 printing on Windows terminal
+if sys.platform == "win32":
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
 
 # 1. Connect to our LanceDB table
 db = lancedb.connect("./lancedb_data")
 table = db.open_table("bank_documents")
 
-# 2. Load the same embedding model
-print("Loading model...")
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+# 2. Load the active multilingual embedding model
+print("Loading multilingual model...")
+embedding_model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
-# 3. Ask any question about your book!
+# 3. Ask any question about your banking documents!
 query = "संस्थापक शेयर खरिदकर्ता संस्था भएमा"
 
 print(f"\n🔍 Searching for: '{query}'\n")

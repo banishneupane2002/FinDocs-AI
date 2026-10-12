@@ -729,7 +729,7 @@ def extract_meaningful_keywords(text):
     if 'threshold transaction' in t_lower or 'ttr' in t_lower or 'सीमा कारोबार' in text:
         keywords.update(['सीमा कारोबार', 'त्त्च्', '१० लाख', '१५ दिन', 'नयब्ःी', 'goAML'])
     if any(c in t_lower for c in ['atm', 'debit', 'card', 'एटीएम', 'कार्ड']) and any(w in t_lower for w in ['withdraw', 'withdrawn', 'withdrawal', 'cash', 'झिक्ने', 'झिक्न', 'नगद', 'सीमा', 'limit', 'max', 'maximum', 'amount']):
-        keywords.update(['भुक्तानी', 'भुत्तफानी', 'कार्डबाट नगद', 'नगद झिक्ने', 'भिफक्ने', 'अधिकतम सीमा', 'डेबिट कार्ड', '५० हजार', '२० हजार', '२५ हजार', '१ लाख', '३ लाख', 'प्रतिकारोबार', 'प्रतिदिन'])
+        keywords.update(['भुक्तानी कार्ड', 'कार्डबाट नगद', 'नगद झिक्ने', 'अधिकतम सीमा', 'डेबिट कार्ड', '५० हजार', '२० हजार', 'प्रतिकारोबार', 'प्रतिदिन'])
     if 'c1' in t_lower or 'credit shock' in t_lower:
         keywords.update(['C1', 'Credit Shock', 'Substandard', '10 DBs', 'DBs'])
     if 'capital adequacy framework' in t_lower or 'framework' in t_lower:
@@ -1169,7 +1169,6 @@ RULES:
    - For example, if a directive states that a service is permitted in "X बाहेकका क्षेत्रमा" (areas except/excluding X), state definitively that it cannot be operated / is not permitted in X. Do not claim information is missing when the regulatory scope is explicitly defined.
 7. Only state "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents" if the subject matter is genuinely absent from the provided context.
 8. Strict Citation Boundary: Cite ONLY the specific document and page where the extracted provision or clause is actually stated. Do NOT invent, assume, or add speculative notes claiming that a clause or provision is also present in other documents or pages unless that exact clause is explicitly found in that other document within the provided context.
-9. Prevailing Active Regulation: If the user does not specify a target year, prioritize and present the latest active regulatory year's provision (e.g. Directive 2082 takes precedence over 2080/2081, and Annual Report 2024/2025 over earlier years) as the prevailing official rule. Clearly indicate the directive/report year cited.
 
 Context from files:
 {context_text}"""
