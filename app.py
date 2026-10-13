@@ -6,6 +6,7 @@ import math
 import time
 import subprocess
 import unicodedata
+import urllib.parse
 import lancedb
 import streamlit as st
 from sentence_transformers import SentenceTransformer
@@ -379,9 +380,11 @@ def render_verified_sources(cited_sources, key_prefix="src"):
         with col_info:
             st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
         with col_btn:
-            btn_key = f"{key_prefix}_btn_{idx}_{src_name}_{pg_num}"
-            if st.button(f"📖 Open Page {pg_num}", key=btn_key):
-                open_pdf_at_page(src_name, pg_num)
+            safe_filename = urllib.parse.quote(src_name)
+            st.link_button(
+                f"📖 Open Page {pg_num}", 
+                f"/app/static/{safe_filename}#page={pg_num}"
+            )
 
         if snippet_text:
             with st.expander(f"👁️ View Extracted Text from {src_name} (Page {pg_num})"):
@@ -973,15 +976,26 @@ with st.sidebar:
     st.subheader("📤 Add New Document")
     uploaded_file = st.file_uploader(
         "Drop a PDF, DOCX, or TXT file here",
-        type=["pdf", "docx", "txt"]
+        type=["pdf", "docx", "txt"],
+        key="doc_uploader"
     )
     if uploaded_file is not None:
         save_path = os.path.join("File_System", uploaded_file.name)
         if not os.path.exists(save_path):
             with open(save_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
-            st.success(f"Saved '{uploaded_file.name}' to folder!")
-            st.info("File saved. Ingest script or watcher will process it automatically.")
+            st.success(f"Saved '{uploaded_file.name}' to system!")
+        
+        # Immediate Indexing Button for remote / manager uploads
+        if st.button("⚡ Index Document Now", key="btn_index_now", use_container_width=True):
+            with st.spinner("Processing document and generating embeddings..."):
+                res = subprocess.run([sys.executable, "INGEST.PY"], capture_output=True, text=True)
+                if res.returncode == 0:
+                    st.success("✅ Successfully indexed into database!")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error(f"Error during ingestion: {res.stderr[:200]}")
 
 
 
