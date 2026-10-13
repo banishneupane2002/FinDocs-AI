@@ -10,38 +10,36 @@ The **Bank Regulatory Intelligence System** is an enterprise-grade, confidential
 The platform empowers central bank officials, compliance auditors, risk managers, and financial analysts to query complex statutory frameworks in **either formal Nepali or English** and receive **exact, verified regulatory limits, fee structures, capital ratios, balance sheet items, and official page citations** in under **1 to 2 seconds**, with **0% hallucination rate** and **100% local data privacy**.
 
 #### Key System Metrics
-* **Indexed Corpus:** 1,753 semantic chunks across 7 core NRB regulatory publications (`Annual_Report_2024.pdf`, `Annual_Report_2025.pdf`, `directive_2078.pdf` through `directive_2082.pdf`).
+* **Indexed Corpus:** 7,710 semantic chunks across 12 official NRB publications (5 Unified Directives, 5 Payment Directives, 2 Annual Supervision Reports).
 * **Vector Index Speed:** Sub-25ms hybrid retrieval latency across local LanceDB tables.
-* **Inference Speed:** ~400+ tokens/sec powered by Groq LPU (Language Processing Unit) hardware.
-* **Data Security:** Complete on-premise local vector embeddings; no banking documents ever leave the host machine during storage or indexing.
+* **Inference Speed:** Sub-second answer generation powered by Groq LPU (Language Processing Unit) hardware.
+* **Data Security:** Complete on-premise local vector embeddings; banking documents remain 100% on the local drive during storage and indexing.
 
 ---
 
 ### 2. Comprehensive Tools, Libraries & Frameworks Specification
 
-The table below catalogs every software library, hardware architecture, language engine, and database component used in the system, along with its specific operational responsibility:
+The table below catalogs every software library, language engine, and database component used in the system:
 
 | Layer / Subsystem | Tool / Library | Version / Class | Core Responsibility & Rationale |
 | :--- | :--- | :--- | :--- |
-| **PDF Extraction** | `pypdf` | `pypdf.PdfReader` | Extracts stream-based text and metadata page-by-page from official NRB directives and supervision reports. |
-| **Word Doc Parsing** | `python-docx` | `docx.Document` | Parses `.docx` circulars, extracting structured tables, clause lists, and formatted paragraphs. |
-| **Legacy Font Converter** | `preeti_unicode` | `convert_text()` | Detects legacy Nepali typewriter fonts (Preeti, Kantipur) and translates them into standard Devanagari Unicode. |
+| **PDF Extraction** | `pymupdf` (`fitz`) | `fitz.open()` | Primary font-aware span extractor; isolates Times New Roman English spans from Preeti Nepali spans on the same line. Fallback: `pypdf`. |
+| **Word Doc Parsing** | `python-docx` | `docx.Document` | Parses `.docx` circulars, extracting structured tables and formatted paragraphs. |
+| **Legacy Font Converter** | `preeti_unicode` | `convert_text()` | Detects legacy Nepali typewriter fonts (Preeti) and translates them into standard Devanagari Unicode. |
 | **Devanagari Normalizer** | `unicodedata` | `unicodedata.normalize('NFKC')` | Merges decomposed vowels (e.g. `\u093e\u0948` $\rightarrow$ `\u094c`), eliminating broken ligature search mismatches. |
 | **Linguistic Tokenizer** | `re` (Regular Expressions) | Python Standard Lib | Executes boundary-aware text chunking (`।`, `.`), clause boundary detection (`क.`, `(१)`), year extraction regex, and amount shielding. |
-| **Filesystem Watcher** | `watchdog` | `Observer`, `FileSystemEventHandler` | Native OS filesystem kernel event listener; triggers real-time automatic ingestion and purge on file create/modify/delete. |
-| **Database Synchronization** | `json` | Standard Lib | Manages `indexed_files.json` POSIX file modification timestamps (`os.path.getmtime`) for atomic sync. |
-| **Subprocess Manager** | `subprocess` | Standard Lib | Launches decoupled background worker ingestion tasks and invokes native OS browser processes for 1-click PDF viewing. |
+| **Filesystem Watcher** | `watchdog` | `Observer`, `FileSystemEventHandler` | Native OS filesystem event listener; automatically triggers re-indexing and purges on file create/modify/delete. |
+| **Database Synchronization** | `json` | Standard Lib | Manages `indexed_files.json` modification timestamps for atomic, zero-duplication sync. |
 | **Dense Vector Embeddings** | `sentence-transformers` | `paraphrase-multilingual-MiniLM-L12-v2` | Transforms bilingual English and Devanagari text into 384-dimensional dense semantic vectors. |
-| **Vector Lakehouse Engine** | `lancedb` | Serverless Rust/Arrow | Embedded, serverless, columnar ACID database with MVCC version snapshots, hosting vectors and full-text metadata. |
-| **Zero-Copy Memory Layer** | `pyarrow` / `pandas` | Apache Arrow | High-throughput in-memory dataframe filtering, scoring vector math, and metadata slicing. |
-| **Sparse Search (BM25/FTS)** | `lancedb` FTS / Tantivy | Inverted Index Search | Full-text sparse keyword index scoring exact tokens, legal clauses (`अनुसूची ११.१`), and rare financial acronyms. |
-| **Rank Aggregation** | Custom Multi-Channel RRF | Reciprocal Rank Fusion | Weighted fusion combining dense primary, sparse primary, translated dense, and translated sparse rankings. |
-| **Bilingual Query Expansion** | `groq` SDK | `Groq.chat.completions` | Maps colloquial queries into official NRB regulatory and supervisory lexicon across languages in ~180ms. |
-| **LLM Inference Hardware** | **Groq LPU** Hardware | Tensor Streaming Processor | Specialized AI hardware ASIC achieving sub-second token generation without local GPU bottlenecks. |
-| **Reasoning LLM Cluster** | `qwen/qwen3.8-27b` | Alibaba Cloud / Groq | Primary 27-Billion parameter bilingual foundation model with strict statutory grounding prompt. |
-| **Failover Models** | `llama-3.3-70b-versatile`, `llama-3.1-8b-instant` | Meta AI / Groq | Automatic multi-model fallback cascade activated dynamically upon HTTP 429 rate-limiting. |
-| **Web Dashboard** | `streamlit` | Python Web Framework | Institutional banking web interface with reactive chat state, document filters, verified source cards, and PDF openers. |
-| **Terminal Client** | `ask.py` | Native Python REPL | Interactive command-line client with real-time SSE token streaming and UTF-8 Windows terminal support. |
+| **Vector Lakehouse Engine** | `lancedb` | Serverless Columnar DB | Embedded, serverless database hosting vector coordinates and full-text inverted indexes on disk (`./lancedb_data/`). |
+| **Sparse Search (BM25/FTS)** | `lancedb` FTS / Tantivy | Inverted Index Search | Full-text sparse keyword index scoring exact tokens, Preeti ligatures (`भुत्तफानी`, `भिफक्ने`), numbers, and statutory terms. |
+| **Rank Aggregation** | Multi-Channel RRF | Reciprocal Rank Fusion | Weighted fusion combining dense primary, sparse primary, translated dense, and translated sparse rankings. |
+| **Bilingual Query Expansion** | `groq` SDK | `Groq.chat.completions` | Bridges English queries into official NRB Devanagari terminology and vice-versa in ~180ms. |
+| **LLM Inference Hardware** | **Groq LPU** Hardware | Cloud LPU Accelerator | Fast inference engine generating answers in ~0.8s without local GPU memory bottlenecks. |
+| **Reasoning LLM Cluster** | `qwen/qwen3.8-27b` | Alibaba / Groq | Primary 27B parameter bilingual foundation model with strict statutory grounding prompt. |
+| **Failover Models** | `openai/gpt-oss-120b`, `openai/gpt-oss-20b` | Groq Failover | Automatic multi-model fallback cascade activated dynamically upon HTTP 429 rate-limiting. |
+| **Web Dashboard** | `streamlit` | Python Web Framework | Institutional banking web interface with chat state, document filters, verified source cards, and in-browser PDF viewers. |
+| **Terminal Client** | `ask.py` | Native Python REPL | Interactive command-line client with real-time token streaming and UTF-8 terminal support. |
 
 ---
 
@@ -53,9 +51,9 @@ The following diagram illustrates the complete dataflow from document ingestion 
 flowchart TD
     subgraph Ingestion ["1. Real-Time Ingestion & Vector Lakehouse"]
         A["NRB Documents (PDF / DOCX) in File_System/"] --> B["watchdog Daemon (watcher.py)"]
-        B --> C["INGEST.PY Parser (pypdf / docx)"]
+        B --> C["INGEST.PY Parser (PyMuPDF / docx)"]
         C --> D["Preeti-to-Unicode Auto Converter"]
-        D --> E["Boundary-Aware Semantic Chunking (1,000-1,500 chars)"]
+        D --> E["Boundary-Aware Semantic Chunking (600-1,000 chars)"]
         E --> F["sentence-transformers (MiniLM-L12-v2)"]
         F --> G[("LanceDB Local Lakehouse (bank_documents Table)")]
     end
@@ -100,11 +98,11 @@ Here is the exact step-by-step technical breakdown of how every query is process
 #### Step 4.1: Real-Time Ingestion, Normalization & Chunking
 * **Script:** `INGEST.PY`
 * **Execution:**
-  1. `pypdf` streams page text from each file in `File_System/`.
-  2. If raw text contains legacy ASCII encoding markers (`af6`, `dfq`, `lgb]{zg`), `preeti_unicode.convert_text()` converts it to Devanagari.
-  3. `clean_nepali_artifacts()` corrects common typewriter converter glitches (e.g., `अधाविधक` $\rightarrow$ `अद्यावधिक`).
-  4. `chunk_page_text()` breaks each page into 1,000–1,500 character chunks using regex splitters on natural sentence boundaries (`।`, `.`) and line breaks. It never cuts numbers, tables, or numbered clauses (`क.`, `(१)`) in half.
-  5. The chunks are converted into 384-dimensional float vectors via `paraphrase-multilingual-MiniLM-L12-v2` and appended to LanceDB table `bank_documents`.
+  1. `PyMuPDF` (`fitz`) inspects character spans and fonts on each page. Non-Preeti fonts (e.g. Times New Roman English) are preserved untouched, while Preeti fonts are translated to Nepali Unicode. Fallback to `pypdf` is available.
+  2. `clean_nepali_artifacts()` corrects common typewriter converter glitches (e.g., `अधाविधक` $\rightarrow$ `अद्यावधिक`).
+  3. `chunk_page_text()` breaks each page into ~600–1,000 character chunks using regex splitters on natural sentence boundaries (`।`, `.`) and line breaks, maintaining an overlap so clauses aren't sliced in half.
+  4. The chunks are converted into 384-dimensional float vectors via `paraphrase-multilingual-MiniLM-L12-v2` and appended to LanceDB table `bank_documents`.
+  5. An inverted Full-Text Search (FTS) index is synchronized for fast keyword lookups.
 
 #### Step 4.2: Fiscal / Calendar Year Auto-Routing & Amount Shielding
 * **Functions:** `detect_document_years()`, `extract_query_years()`, `clean_query_for_search()`, `prioritize_matching_document()`
@@ -156,8 +154,8 @@ Here is the exact step-by-step technical breakdown of how every query is process
   For every candidate page $k = (\text{source}, \text{page})$, the system aggregates rank positions:
   $$\text{RRF Score}(k) = \frac{1.0}{30 + \text{rank}_{\text{dense\_pri}}} + \frac{1.2}{30 + \text{rank}_{\text{sparse\_pri}}} + \frac{0.6}{30 + \text{rank}_{\text{dense\_trans}}} + \frac{0.6}{30 + \text{rank}_{\text{sparse\_trans}}}$$
 * **Gentle Recency Preference:**
-  For unanchored general regulatory questions across unified circulars, a small progressive bonus is added:
-  $$\text{Score} += (\text{doc\_year} - 2078) \times 0.003$$
+  For unanchored general regulatory questions across unified circulars, a progressive bonus is added based on the document year (BS: `(doc_year - 2078) * 0.006`; AD: `(doc_year - 2020) * 0.006`):
+  $$\text{Score} += (\text{doc\_year} - \text{base\_year}) \times 0.006$$
   This ensures that when a rule is identical in 2080, 2081, and 2082, the latest active directive (`directive_2082.pdf`) naturally ranks #1.
 * **Page-Level Diversity Filter:** Eliminates duplicate chunks from the same page, preserving top candidate pages.
 
@@ -210,23 +208,20 @@ Here is the exact step-by-step technical breakdown of how every query is process
 * **Lexicon & Ligature Expansion:** `BANKING_DOMAIN_LEXICON` maps ATM queries (`withdrawn`, `atm`, `max`, `amount`) to both Unicode Devanagari and legacy Preeti ligature tokens (`भुक्तानी`, `भुत्तफानी`, `नगद झिक्ने`, `भिफक्ने`, `अधिकतम सीमा`, `डेबिट कार्ड`).
 * **Result:** Unanchored ATM queries automatically retrieve Directive 2082 Page 20 at Rank #1, providing the active Debit Card limits (Rs. 20,000 per txn, Rs. 50,000 per day, Rs. 3 Lakh per month).
 
-#### Step 4.11: Citation Verification & 1-Click Native PDF Launcher
-* **Function:** `extract_cited_sources()`, `render_verified_sources()`, `open_pdf_at_page()`
+#### Step 4.11: Citation Verification & Web-Native PDF Deep-Linking
+* **Function:** `extract_cited_sources()`, `render_verified_sources()`, `st.link_button()`
 * **Execution:**
   1. The UI parses the generated answer, identifying which documents and pages were cited.
-  2. Renders verified source cards showing document name, page number, and extracted text snippet.
-  3. Provides an interactive **"📖 Open Page X"** button that invokes Chrome or Edge directly:
-     ```python
-     target_url = f"file:///{abs_path}#page={page}"
-     subprocess.Popen([browser_path, target_url])
-     ```
-  4. The PDF opens immediately scrolled to the exact target page.
+  2. Renders verified source cards showing document name, page number, and an expandable preview of the extracted raw snippet.
+  3. Provides a web-native **"📖 Open Page X"** link button pointing to Streamlit's static file server (`/app/static/<filename>#page=N`).
+  4. **Remote Access & ngrok Compatibility:** Because files are served directly over HTTP via the static endpoint (backed by a directory junction to `File_System/`), remote users (e.g. supervisors accessing via ngrok or LAN) open the exact cited page inside their own browser, rather than launching an application on the host machine.
+  5. **Remote Document Upload & Instant Indexing:** Users can drop new PDFs, DOCX, or TXT files directly through the web UI sidebar and trigger immediate ingestion and vector embedding generation (`INGEST.PY`) with a single click.
 
 ---
 
 ### 5. Benchmark Performance & Data Privacy Guarantee
 
-* **Database Size:** 1,753 chunks across 7 core regulatory documents.
+* **Database Size:** 7,710 chunks across 12 official regulatory documents.
 * **Local Storage Footprint:** ~20 MB on disk (`./lancedb_data/`).
 * **Hybrid Search Latency:** 18–35 milliseconds.
 * **Cross-Lingual Alignment:** ~150–200 milliseconds.
