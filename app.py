@@ -134,6 +134,52 @@ st.markdown("""
         box-shadow: 0 4px 8px rgba(0, 51, 102, 0.1) !important;
     }
     
+    /* Clean Modern Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        border-bottom: 2px solid #E2E8F0;
+        padding-bottom: 2px;
+        margin-bottom: 20px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #64748B;
+        padding: 10px 22px;
+        border-radius: 8px 8px 0 0;
+        background: transparent;
+        border: none;
+        transition: all 0.2s ease;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #003366;
+        background-color: #F8FAFC;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #003366 !important;
+        border-bottom: 3px solid #003366 !important;
+        background-color: #F0F7FF !important;
+    }
+
+    /* Metric Cards */
+    div[data-testid="stMetric"] {
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 10px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 0.85rem !important;
+        color: #64748B !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stMetricValue"] {
+        font-size: 1.45rem !important;
+        color: #0A2540 !important;
+        font-weight: 700 !important;
+    }
+
     /* Verified Source Cards */
     .stTextArea textarea {
         background-color: #F8FAFC !important;
@@ -143,14 +189,59 @@ st.markdown("""
         font-size: 0.88rem !important;
     }
     
-    /* Chat Input Bar */
+    /* ChatGPT & Gemini Style Docked Chat Input Bar */
+    div[data-testid="stBottom"] {
+        background-color: rgba(255, 255, 255, 0.92) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
+        padding-top: 12px !important;
+        padding-bottom: 20px !important;
+        z-index: 999 !important;
+    }
+    div[data-testid="stBottom"] > div {
+        background: transparent !important;
+    }
     div[data-testid="stChatInput"] {
-        border-color: #CBD5E1 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+        max-width: 840px !important;
+        margin: 0 auto !important;
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 20px rgba(10, 37, 64, 0.08) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     div[data-testid="stChatInput"]:focus-within {
         border-color: #003366 !important;
-        box-shadow: 0 0 0 2px rgba(0, 51, 102, 0.15) !important;
+        box-shadow: 0 4px 24px rgba(0, 51, 102, 0.16) !important;
+    }
+    div[data-testid="stChatInput"] textarea {
+        font-size: 0.96rem !important;
+        line-height: 1.5 !important;
+    }
+
+    /* Clean Segmented Navigation Switch */
+    div[data-testid="stSegmentedControl"] {
+        background-color: #F1F5F9 !important;
+        padding: 4px !important;
+        border-radius: 12px !important;
+        margin-bottom: 1.5rem !important;
+        display: inline-flex !important;
+        border: 1px solid #E2E8F0 !important;
+    }
+    div[data-testid="stSegmentedControl"] button {
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
+        padding: 6px 18px !important;
+        border: none !important;
+        color: #475569 !important;
+        transition: all 0.2s ease !important;
+    }
+    div[data-testid="stSegmentedControl"] button[aria-checked="true"] {
+        background-color: #003366 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 2px 8px rgba(0, 51, 102, 0.2) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -319,83 +410,215 @@ def open_pdf_at_page(pdf_name: str, page: int):
     except Exception as e:
         st.error(f"Error opening document: {e}")
 
-def extract_cited_sources(response_text, retrieved_candidates, full_page_map=None):
+def extract_cited_sources(response_text, retrieved_candidates, full_page_map=None, live_table=None, target_years=None, target_doc=None):
     """
-    Filters retrieved candidate chunks so that ONLY the exact documents and pages
-    actually referenced/cited in the AI response are presented to the user.
+    Extracts verified document citations strictly aligned with the ground-truth source
+    that generated the AI response above, without artificial recency distortion.
     """
     cited = []
     seen = set()
     full_page_map = full_page_map or {}
 
+    # 1. Direct Regex Citation Extraction from AI Response
+    # Matches patterns like:
+    # "directive_2082.pdf | Page: 20", "directive_2082.pdf Page: 20", "directive_2080.pdf page 18", "[कागजात: directive_2082.pdf | पृष्ठ: 20]"
+    regex_patterns = [
+        r'([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s+(?:clause|section|दफा|खण्ड)\s*[^\n\r]{0,25}?\s*|\s*\n\s*)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)',
+        r'(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s*\n\s*)([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))',
+        r'\[\s*(?:कागजात|doc|document)?\s*[:\-]?\s*([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))\s*\|\s*(?:पृष्ठ|page)\s*[:\-]?\s*(\d+)\s*\]',
+        # Also match document names mentioned without .pdf if the file exists on disk
+        r'([a-zA-Z0-9_\-]+(?:directive|report)[a-zA-Z0-9_\-]*)(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s*\n\s*)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)'
+    ]
+
+    found_matches = []
+    for pat in regex_patterns:
+        for m in re.finditer(pat, response_text, re.IGNORECASE):
+            g1, g2 = m.group(1), m.group(2)
+            if g1.isdigit():
+                doc_name = g2
+                page_num = int(g1)
+            else:
+                doc_name = g1
+                page_num = int(g2)
+
+            if not doc_name.lower().endswith(('.pdf', '.docx', '.txt')):
+                if os.path.exists(os.path.join("File_System", f"{doc_name}.pdf")):
+                    doc_name = f"{doc_name}.pdf"
+
+            if os.path.exists(os.path.join("File_System", doc_name)):
+                found_matches.append((m.start(), doc_name, page_num))
+
+    # Sort matches by character position in the AI's response text (earliest mention in answer comes first!)
+    found_matches.sort(key=lambda x: x[0])
+
+    for pos, doc_name, page_num in found_matches:
+        key = (doc_name, page_num)
+        if key not in seen:
+            seen.add(key)
+            snippet = full_page_map.get(key, "")
+            if not snippet and live_table is not None:
+                try:
+                    recs = live_table.search().where(f"source = '{doc_name}' AND page = {page_num}").to_pandas()
+                    if len(recs) > 0:
+                        snippet = decode_preeti_text("\n".join(recs['text'].tolist()))
+                except Exception:
+                    pass
+            cited.append({
+                'source': doc_name,
+                'page': page_num,
+                'text': snippet,
+                'pos': pos
+            })
+
+    # 2. Match against retrieved candidate chunks
+    norm_resp = re.sub(r'[\s_\-]+', ' ', response_text.lower())
     for item in retrieved_candidates:
         src = item['source']
         pg = str(item['page'])
         base_src = src.replace('.pdf', '').replace('.docx', '').replace('.txt', '')
+        norm_base = re.sub(r'[\s_\-]+', ' ', base_src.lower())
 
-        # Check if source name appears in response
-        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower():
+        # Check if source name appears in response (exact, base, or normalized space name)
+        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower() or norm_base in norm_resp:
             # Check if page number appears in response
             pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*:?\s*{pg}\b'
-            if re.search(pg_pattern, response_text, re.IGNORECASE) or f" {pg} " in f" {response_text} ":
+            if re.search(pg_pattern, response_text, re.IGNORECASE) or f" {pg} " in f" {response_text} " or f"({pg})" in response_text or f": {pg}" in response_text:
                 key = (src, item['page'])
                 if key not in seen:
                     seen.add(key)
+                    # Find earliest position of source name in response text
+                    m_src = re.search(re.escape(src), response_text, re.IGNORECASE) or re.search(re.escape(base_src), response_text, re.IGNORECASE)
+                    pos = m_src.start() if m_src else 999999
                     cited.append({
                         'source': src,
                         'page': item['page'],
-                        'text': full_page_map.get(key, item['text'])
+                        'text': full_page_map.get(key, item.get('text', '')),
+                        'pos': pos
                     })
 
-    # Fallback to top-1 primary search match if no explicit citation format was matched
+    # 3. Fallback to top-1 primary search match if no explicit citation format was matched
     if not cited and retrieved_candidates:
         top_item = retrieved_candidates[0]
         key = (top_item['source'], top_item['page'])
         cited.append({
             'source': top_item['source'],
             'page': top_item['page'],
-            'text': full_page_map.get(key, top_item['text'])
+            'text': full_page_map.get(key, top_item.get('text', '')),
+            'pos': 0
         })
 
+    # 4. Sort cited sources:
+    #   (1) Target query match: If user asked for 2080 or a specific document, those sources rank first!
+    #   (2) Position of earliest mention in the AI response (the primary ground-truth source cited in the answer appears first!)
+    #   (3) Recency tiebreaker ONLY when no target year was specified.
+    def citation_sort_key(c):
+        pos = c.get('pos', 999999)
+        src = c['source']
+        ym = re.search(r'(20[78][0-9]|20[12][0-9])', src)
+        yr = int(ym.group(1)) if ym else 0
+
+        target_match = 1
+        if target_doc:
+            if isinstance(target_doc, (list, set, tuple)) and src in target_doc:
+                target_match = 0
+            elif isinstance(target_doc, str) and src == target_doc:
+                target_match = 0
+        elif target_years and yr in target_years:
+            target_match = 0
+
+        tiebreak_year = -yr if not target_years else 0
+        return (target_match, pos, tiebreak_year)
+
+    cited.sort(key=citation_sort_key)
     return cited
 
-def render_verified_sources(cited_sources, key_prefix="src"):
+def render_verified_sources(cited_sources, other_sources=None, key_prefix="src", target_years=None, target_doc=None):
     """Renders the verified ground truth sources with 1-click PDF page launcher and text viewer."""
-    if not cited_sources:
+    if not cited_sources and not other_sources:
         return
 
-    st.markdown("##### 🔍 Verified Source Document:")
-    for idx, c in enumerate(cited_sources):
-        if isinstance(c, dict):
-            src_name = c['source']
-            pg_num = c['page']
-            snippet_text = c.get('text', '').strip()
-        else:
-            # Handle legacy string format e.g. "**directive_3.pdf** (Page 15)"
-            src_name = str(c).replace("**", "")
-            pg_num = 1
-            snippet_text = ""
+    if cited_sources:
+        st.markdown("##### 🔍 Verified Source Document(s):")
+        for idx, c in enumerate(cited_sources):
+            if isinstance(c, dict):
+                src_name = c['source']
+                pg_num = c['page']
+                snippet_text = c.get('text', '').strip()
+            else:
+                src_name = str(c).replace("**", "")
+                pg_num = 1
+                snippet_text = ""
 
-        col_info, col_btn = st.columns([3, 1])
-        with col_info:
-            st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
-        with col_btn:
-            safe_filename = urllib.parse.quote(src_name)
-            st.link_button(
-                f"📖 Open Page {pg_num}", 
-                f"/app/static/{safe_filename}#page={pg_num}"
-            )
-
-        if snippet_text:
-            with st.expander(f"👁️ View Extracted Text from {src_name} (Page {pg_num})"):
-                st.text_area(
-                    "Extracted Context",
-                    value=snippet_text,
-                    height=160,
-                    disabled=True,
-                    key=f"{key_prefix}_txt_{idx}_{src_name}_{pg_num}",
-                    label_visibility="collapsed"
+            col_info, col_btn = st.columns([3, 1])
+            with col_info:
+                st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
+            with col_btn:
+                safe_filename = urllib.parse.quote(src_name)
+                st.link_button(
+                    f"📖 Open Page {pg_num}", 
+                    f"/app/static/{safe_filename}#page={pg_num}"
                 )
+
+            if snippet_text:
+                with st.expander(f"👁️ View Extracted Text from {src_name} (Page {pg_num})"):
+                    st.text_area(
+                        "Extracted Context",
+                        value=snippet_text,
+                        height=160,
+                        disabled=True,
+                        key=f"{key_prefix}_txt_{idx}_{src_name}_{pg_num}",
+                        label_visibility="collapsed"
+                    )
+
+    # Render all other retrieved candidate reference pages
+    if other_sources:
+        cited_keys = {(c['source'], c['page']) for c in cited_sources if isinstance(c, dict)}
+        remaining = [c for c in other_sources if (c['source'], c['page']) not in cited_keys]
+        if remaining:
+            def other_sort_key(c):
+                src = c['source']
+                ym = re.search(r'(20[78][0-9]|20[12][0-9])', src)
+                yr = int(ym.group(1)) if ym else 0
+                target_match = 0
+                if target_doc:
+                    if isinstance(target_doc, (list, set, tuple)) and src in target_doc:
+                        target_match = 0
+                    elif isinstance(target_doc, str) and src == target_doc:
+                        target_match = 0
+                elif target_years and yr in target_years:
+                    target_match = 0
+                else:
+                    target_match = 1
+                return (target_match, -yr if not target_years else 0, c.get('page', 0))
+
+            remaining.sort(key=other_sort_key)
+
+            with st.expander(f"📚 Other Retrieved Reference Pages ({len(remaining)})"):
+                for idx, c in enumerate(remaining):
+                    src_name = c['source']
+                    pg_num = c['page']
+                    snippet_text = c.get('text', '').strip()
+
+                    col_info, col_btn = st.columns([3, 1])
+                    with col_info:
+                        st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
+                    with col_btn:
+                        safe_filename = urllib.parse.quote(src_name)
+                        st.link_button(
+                            f"📖 Open Page {pg_num}", 
+                            f"/app/static/{safe_filename}#page={pg_num}"
+                        )
+
+                    if snippet_text:
+                        with st.expander(f"👁️ View Text from {src_name} (Page {pg_num})"):
+                            st.text_area(
+                                "Reference Context",
+                                value=snippet_text,
+                                height=130,
+                                disabled=True,
+                                key=f"{key_prefix}_oth_txt_{idx}_{src_name}_{pg_num}",
+                                label_visibility="collapsed"
+                            )
 
 # --- AUTOMATIC YEAR DETECTION & QUERY ROUTING ENGINE ---
 PREETI_NUM_MAP = {'!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9', ')': '0'}
@@ -471,6 +694,9 @@ def extract_query_years(query: str, available_years: set = None) -> set:
     - Standalone numbers not matching any active corpus document year
     - Non-year numbers (e.g. clause numbers, branch codes)
     """
+    if not query:
+        return set()
+
     if available_years is None:
         available_years = {2079, 2080, 2081, 2082, 2023, 2024}
 
@@ -509,9 +735,9 @@ def extract_query_years(query: str, available_years: set = None) -> set:
         pre_ctx = query[max(0, start_idx - 15):start_idx].lower()
         post_ctx = query[end_idx:min(len(query), end_idx + 15)].lower()
 
-        if re.search(r'(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|amount|deposit|withdraw|transfer|fee|charge|limit)\s*$', pre_ctx):
+        if re.search(r'(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees)\s*$', pre_ctx):
             continue
-        if re.search(r'^\s*(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|हजार|लाख|per|प्रति)', post_ctx):
+        if re.search(r'^\s*(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|हजार|लाख)', post_ctx):
             continue
 
         # If it's a known document year in the corpus, add it
@@ -661,7 +887,38 @@ BANKING_DOMAIN_LEXICON = {
     'threshold': ['सीमा कारोबार', 'त्त्च्', '१० लाख', '१५ दिन', 'नयब्ःी', 'त्जचभकजयमि'],
     'goaml': ['goAML', 'नयब्ःी'],
     'fiu': ['वित्तीय जानकारी र्इकार्इ', 'इकाइ'],
-    'npl': ['NPL', 'खराब कर्जा', 'Table 1.2', '10.31', '3.97'],
+    'npl': ['NPL', 'खराब कर्जा', 'निष्क्रिय कर्जा', 'कमसल', 'शंकास्पद', 'खराब', 'Table 1.2', '10.31', '3.97'],
+    'loan': ['कर्जा', 'सापट', 'ऋण', 'loan', 'loans'],
+    'loans': ['कर्जा', 'सापट', 'ऋण', 'loan', 'loans'],
+    'कर्जा': ['कर्जा', 'सापट', 'ऋण', 'loan', 'loans'],
+    'सापट': ['सापट', 'कर्जा', 'ऋण', 'loan'],
+    'ऋण': ['ऋण', 'कर्जा', 'सापट', 'loan'],
+    'bad': ['खराब', 'निष्क्रिय', 'कमसल', 'शंकास्पद', 'bad'],
+    'खराब': ['खराब', 'निष्क्रिय', 'bad', 'loss'],
+    'निष्क्रिय': ['निष्क्रिय', 'खराब', 'कमसल', 'शंकास्पद', 'non-performing', 'npl'],
+    'सक्रिय': ['सक्रिय', 'असल', 'सूक्ष्म निगरानी', 'performing'],
+    'classification': ['वर्गीकरण', 'classification', 'सक्रिय', 'निष्क्रिय'],
+    'classify': ['वर्गीकरण', 'classification'],
+    'classified': ['वर्गीकरण', 'classification'],
+    'categories': ['वर्गीकरण', 'प्रकार', 'श्रेणी'],
+    'category': ['वर्गीकरण', 'प्रकार', 'श्रेणी'],
+    'वर्गीकरण': ['वर्गीकरण', 'classification', 'कर्जा'],
+    'substandard': ['कमसल', 'Substandard', 'निष्क्रिय'],
+    'कमसल': ['कमसल', 'substandard'],
+    'doubtful': ['शंकास्पद', 'Doubtful', 'निष्क्रिय'],
+    'शंकास्पद': ['शंकास्पद', 'doubtful'],
+    'loss': ['खराब', 'Loss', 'नोक्सानी', 'निष्क्रिय'],
+    'pass': ['असल', 'Pass', 'सक्रिय कर्जा'],
+    'असल': ['असल', 'pass'],
+    'watchlist': ['सूक्ष्म निगरानी', 'Watchlist'],
+    'निगरानी': ['सूक्ष्म निगरानी', 'watchlist'],
+    'provision': ['नोक्सानी व्यवस्था', 'कर्जा नोक्सानी', 'provision'],
+    'provisioning': ['नोक्सानी व्यवस्था', 'कर्जा नोक्सानी', 'provisioning'],
+    'नोक्सानी': ['नोक्सानी', 'provision', 'कर्जा नोक्सानी', 'नोक्सानी व्यवस्था'],
+    'व्यवस्था': ['व्यवस्था', 'नोक्सानी व्यवस्था'],
+    'performing': ['सक्रिय कर्जा', 'असल', 'सूक्ष्म निगरानी'],
+    'non-performing': ['निष्क्रिय कर्जा', 'कमसल', 'शंकास्पद', 'खराब', 'npl'],
+    'types': ['प्रकार', 'किसिम', 'वर्गीकरण'],
     'directors': ['directors', 'सञ्चालक', 'loan', 'loans'],
     'borrowing': ['borrowing', 'ऋण', 'सञ्चालक'],
     'shock': ['shock', 'C1', 'Substandard', '10 DBs', 'Credit Shock', 'Development Banks'],
@@ -750,15 +1007,29 @@ def extract_meaningful_keywords(text):
 
     return clean_tokens
 
+def build_where_filter(doc_spec):
+    if not doc_spec or doc_spec == "All Documents":
+        return None
+    if isinstance(doc_spec, (list, set, tuple)):
+        doc_list = [str(d) for d in doc_spec]
+        if not doc_list:
+            return None
+        if len(doc_list) == 1:
+            return f"source = '{doc_list[0]}'"
+        doc_in_str = ", ".join(f"'{d}'" for d in doc_list)
+        return f"source IN ({doc_in_str})"
+    return f"source = '{doc_spec}'"
+
 def hybrid_search(user_query, table, model, translated_terms="", selected_doc="All Documents", top_k=6):
     k_const = 30  # Standard RRF constant
+    where_filter = build_where_filter(selected_doc)
 
     # 1. Primary Dense Search (Direct Query Intent)
     d_pri = {}
     q_vec = model.encode(user_query).tolist()
     search_q = table.search(q_vec)
-    if selected_doc and selected_doc != "All Documents":
-        search_q = search_q.where(f"source = '{selected_doc}'")
+    if where_filter:
+        search_q = search_q.where(where_filter)
     for rank, (_, row) in enumerate(search_q.limit(100).to_pandas().iterrows(), 1):
         k = (row['source'], int(row['page']))
         if k not in d_pri:
@@ -769,8 +1040,8 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
     if translated_terms and translated_terms.strip():
         t_vec = model.encode(translated_terms).tolist()
         search_t = table.search(t_vec)
-        if selected_doc and selected_doc != "All Documents":
-            search_t = search_t.where(f"source = '{selected_doc}'")
+        if where_filter:
+            search_t = search_t.where(where_filter)
         for rank, (_, row) in enumerate(search_t.limit(100).to_pandas().iterrows(), 1):
             k = (row['source'], int(row['page']))
             if k not in d_trans:
@@ -783,8 +1054,8 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
     if clean_pri_fts.strip():
         try:
             search_fts1 = table.search(clean_pri_fts)
-            if selected_doc and selected_doc != "All Documents":
-                search_fts1 = search_fts1.where(f"source = '{selected_doc}'")
+            if where_filter:
+                search_fts1 = search_fts1.where(where_filter)
             for rank, (_, row) in enumerate(search_fts1.limit(100).to_pandas().iterrows(), 1):
                 k = (row['source'], int(row['page']))
                 if k not in s_pri:
@@ -800,8 +1071,8 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
         if clean_trans_fts.strip():
             try:
                 search_fts2 = table.search(clean_trans_fts)
-                if selected_doc and selected_doc != "All Documents":
-                    search_fts2 = search_fts2.where(f"source = '{selected_doc}'")
+                if where_filter:
+                    search_fts2 = search_fts2.where(where_filter)
                 for rank, (_, row) in enumerate(search_fts2.limit(100).to_pandas().iterrows(), 1):
                     k = (row['source'], int(row['page']))
                     if k not in s_trans:
@@ -828,7 +1099,7 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
         rrf_score = (1.0 / (k_const + dp)) + (1.2 / (k_const + sp)) + (0.6 / (k_const + dt)) + (0.6 / (k_const + st))
 
         # Gentle Recency Preference for general unanchored regulatory questions (latest active rules take precedence)
-        if not selected_doc or selected_doc == "All Documents":
+        if not where_filter:
             src = row['source']
             fn_m = re.search(r'(20[78][0-9]|20[12][0-9])', src)
             if fn_m:
@@ -964,213 +1235,334 @@ except Exception as e:
     st.error(f"⚠️ Failed to connect to database or Groq. Error: {e}")
     st.stop()
 
-# 3. Sidebar: System Status & Document Management
-with st.sidebar:
-    st.title("🏦 Bank Document System")
-    # st.caption("Powered by **Qwen 27B** (Groq LPU) • Multilingual (नेपाली / EN)")
-    st.divider()
+# 3. Document Administration & Ingestion Helpers
+def run_ingestion():
+    """Runs INGEST.PY to synchronize all files in File_System/ with LanceDB."""
+    return subprocess.run([sys.executable, "INGEST.PY"], capture_output=True, text=True)
 
-
-
-    # File Uploader
-    st.subheader("📤 Add New Document")
-    uploaded_file = st.file_uploader(
-        "Drop a PDF, DOCX, or TXT file here",
-        type=["pdf", "docx", "txt"],
-        key="doc_uploader"
-    )
-    if uploaded_file is not None:
-        save_path = os.path.join("File_System", uploaded_file.name)
-        if not os.path.exists(save_path):
-            with open(save_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success(f"Saved '{uploaded_file.name}' to system!")
-        
-        # Immediate Indexing Button for remote / manager uploads
-        if st.button("⚡ Index Document Now", key="btn_index_now", use_container_width=True):
-            with st.spinner("Processing document and generating embeddings..."):
-                res = subprocess.run([sys.executable, "INGEST.PY"], capture_output=True, text=True)
-                if res.returncode == 0:
-                    st.success("✅ Successfully indexed into database!")
-                    time.sleep(1)
-                    st.rerun()
-                else:
-                    st.error(f"Error during ingestion: {res.stderr[:200]}")
-
-
-
-    # Active Documents in Database
-    st.subheader("📚 Indexed Documents")
+def delete_document(filename: str):
+    """Safely removes a file from File_System, cleans up LanceDB records, and updates tracker."""
+    file_path = os.path.join("File_System", filename)
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except Exception:
+            pass
+    
+    # Clean from LanceDB
     try:
-        df = table.to_pandas()
-        sources_summary = df["source"].value_counts()
-        for doc_name, count in sources_summary.items():
-            st.write(f"• **{doc_name}** ({count} chunks)")
-        doc_options = ["All Documents"] + list(sources_summary.index)
+        tbl = get_live_table()
+        tbl.delete(f"source = '{filename}'")
     except Exception:
-        doc_options = ["Auto (AI-Detected Document)"]
+        pass
+        
+    # Clean from tracker
+    tracker_file = "indexed_files.json"
+    if os.path.exists(tracker_file):
+        try:
+            with open(tracker_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if filename in data:
+                del data[filename]
+            with open(tracker_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4)
+        except Exception:
+            pass
+    return True
 
+def extract_sample_text_from_file(filename: str, df=None) -> str:
+    """Extracts first pages of text from LanceDB cache or directly from disk."""
+    if df is not None:
+        try:
+            matching = df[df["source"] == filename]["text"].head(6).tolist()
+            if matching:
+                return " ".join(matching)
+        except Exception:
+            pass
+            
+    file_path = os.path.join("File_System", filename)
+    if not os.path.exists(file_path):
+        return ""
+        
+    ext = os.path.splitext(filename)[1].lower()
+    if ext == ".pdf":
+        try:
+            import fitz
+            doc = fitz.open(file_path)
+            pages = [doc[i].get_text() for i in range(min(4, len(doc)))]
+            return " ".join(pages)
+        except Exception:
+            try:
+                import pypdf
+                reader = pypdf.PdfReader(file_path)
+                pages = [reader.pages[i].extract_text() or "" for i in range(min(4, len(reader.pages)))]
+                return " ".join(pages)
+            except Exception:
+                pass
+    elif ext in [".txt", ".docx"]:
+        try:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                return f.read(5000)
+        except Exception:
+            pass
+    return ""
+
+def categorize_file(filename: str, sample_text: str = "") -> str:
+    """
+    Intelligently categorizes documents into official regulatory classifications
+    by analyzing document content first, falling back to filename.
+    Even if the filename is completely random (e.g. scan_102.pdf), content analysis detects the true category.
+    """
+    t = sample_text.lower()
+    
+    # 1. Payment system indicators (content-level)
+    if any(k in t for k in [
+        'भुक्तानी', 'भुत्तफानी', 'भुत्तानी', 'payment', 'psdept', 
+        'वालेट', 'wallet', 'पिएसपी', 'pso', 'psp', "5u'rft", "5m-rfi"
+    ]):
+        return 'payment'
+        
+    # 2. Unified directives for BFIs (content-level)
+    if any(k in t for k in [
+        'एकीकृत निर्देशन', 'एकीकृत निदर्ेशन', 'इजाजतपत्रप्राप्त', 
+        'वर्गका इजाजतपत्र', 'unified directive', 'prudential'
+    ]):
+        return 'unified'
+        
+    # 3. Supervision & Annual reports (content-level)
+    if any(k in t for k in [
+        'supervision report', 'annual report', 'सुपरीवेक्षण प्रतिवेदन', 
+        'वार्षिक प्रतिवेदन', 'financial institutions supervision'
+    ]):
+        return 'report'
+        
+    # 4. Fallback to filename analysis if sample text was empty or scanned without OCR
+    f = filename.lower()
+    if 'unified' in f:
+        return 'unified'
+    elif 'payment' in f or 'directive' in f or 'bhuktani' in f:
+        return 'payment'
+    elif 'report' in f or 'annual' in f or 'supervision' in f:
+        return 'report'
+        
+    return 'other'
+
+def get_file_metadata(filename: str, sources_summary: dict, df=None):
+    """Gathers file size, detected fiscal years, chunk count, and category for a file."""
+    file_path = os.path.join("File_System", filename)
+    size_mb = os.path.getsize(file_path) / (1024 * 1024) if os.path.exists(file_path) else 0.0
+    sample_text = extract_sample_text_from_file(filename, df)
+    detected_yrs = detect_document_years(filename, sample_text)
+    years_str = ", ".join(str(y) for y in sorted(detected_yrs)) if detected_yrs else "—"
+    chunk_count = sources_summary.get(filename, 0)
+    category = categorize_file(filename, sample_text)
+    return {
+        "filename": filename,
+        "size_mb": size_mb,
+        "years_str": years_str,
+        "chunk_count": chunk_count,
+        "category": category
+    }
+
+# 4. Live Repository State
+try:
+    df = table.to_pandas()
+    sources_summary = df["source"].value_counts().to_dict()
+    doc_options = ["All Documents"] + list(sources_summary.keys())
+except Exception:
+    df = None
+    sources_summary = {}
+    doc_options = ["All Documents"]
+
+all_disk_files = [f for f in os.listdir("File_System") if f.lower().endswith((".pdf", ".docx", ".txt"))] if os.path.exists("File_System") else []
+
+# 5. Clean Executive Sidebar
+with st.sidebar:
+    st.markdown("### 🏦Institutional Regulatory Intelligence Engine")
+    
     st.divider()
 
-    # Document Scope (Auto-routed by default)
-    st.subheader("🎯 Document Focus")
+    # Document Scope Filter
+    st.subheader(" Filter Search")
     selected_doc = st.selectbox(
-        "Target Document:",
+        "Search Scope:",
         options=doc_options,
         index=0,
-        help="Leave on 'Auto' so the AI automatically routes to the right document and year based on your question."
+        help="Leave on 'All Documents' so AI auto-selects the right directive and fiscal year based on your question."
     )
-
+    st.caption("💡 *'All Documents' automatically selects the right directive and year based on your question.*")
     st.divider()
 
 
+    # Chat Actions
+    st.subheader("🧹 Actions")
+    if st.button("🗑️ Clear Chat History", use_container_width=True):
+        st.session_state.messages = [
+            {
+                "role": "assistant",
+                "content": "नमस्ते! म यस संस्था सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
+                "sources": [],
+                "latency": None
+            }
+        ]
+        st.rerun()
 
+# 6. Top-Level Workspace Navigation (ChatGPT & Gemini Style View Switcher)
+active_tab = st.segmented_control(
+    "Workspace View",
+    options=["💬 Regulatory Assistant", "📁 Document Management & Admin"],
+    default="💬 Regulatory Assistant",
+    label_visibility="collapsed"
+)
+if not active_tab:
+    active_tab = "💬 Regulatory Assistant"
 
-    
-
-# 4. Main Chat Interface
-st.markdown("""
-<div class="finance-header">
-    <div class="finance-header-text">
-        <h1>🏦 Document Extraction Intelligence</h1>
-        <p>Institutional Document Search, Statutory Verification & Audit Clauses • Multilingual (नेपाली / EN)</p>
+# ==========================================
+# VIEW 1: CLEAN REGULATORY CHATBOT
+# ==========================================
+if active_tab == "💬 Regulatory Assistant":
+    # 1. Clean, Modern Header 
+    st.markdown("""
+    <div style="margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid #E2E8F0;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div>
+                <h2 style="margin: 0; font-size: 1.6rem; font-weight: 700; color: #0A2540; letter-spacing: -0.01em;">
+                    💬 Document Assistant
+                </h2>
+            </div>
+        </div>
     </div>
-    <div class="finance-badge">
-        CONFIDENTIAL & SECURE
-    </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# Quick Demo Prompt Buttons (Executive Showcase)
-st.markdown("##### ⚡ Quick Showcase Questions (Click to test):")
-col1, col2 = st.columns(2)
-with col1:
-    btn1 = st.button(" स्वःघोषणासम्बन्धी व्यवस्था (Self-Declaration)")
-    btn2 = st.button(" एजेन्टमार्फत नगद जम्मा गर्ने सीमा (Agent Limits)")
-with col2:
-    btn3 = st.button("what are parameters to categorize bad loans")
-    btn4 = st.button(" Daily & monthly cash deposit limits (English)")
+    # 2. Quick Showcase Questions (Clean 2-column pills)
+    # st.markdown("<p style='font-size: 0.82rem; font-weight: 600; color: #475569; margin-bottom: 6px;'>⚡ Quick Showcase Questions (Click to test):</p>", unsafe_allow_html=True)
+    # col1, col2 = st.columns(2)
+    # with col1:
+    #     btn1 = st.button("🏛️ स्वःघोषणासम्बन्धी व्यवस्था (Self-Declaration)", use_container_width=True)
+    #     btn2 = st.button("💳 एजेन्टमार्फत नगद जम्मा गर्ने सीमा (Agent Limits)", use_container_width=True)
+    # with col2:
+    #     btn3 = st.button("📉 What are parameters to categorize bad loans?", use_container_width=True)
+    #     btn4 = st.button("💵 Daily & monthly cash deposit limits (English)", use_container_width=True)
 
-# Chat History in Session State
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {
-            "role": "assistant",
-            "content": "नमस्ते! म यस संस्था सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
-            "sources": [],
-            "latency": None
-        }
-    ]
+    # st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
 
-# Display Previous Messages
-for i, msg in enumerate(st.session_state.messages):
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-        if msg.get("latency"):
-            st.caption(f"⚡ {msg['latency']}")
-        if msg.get("sources"):
-            render_verified_sources(msg["sources"], key_prefix=f"hist_{i}")
+    # 3. Chat History in Session State
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {
+                "role": "assistant",
+                "content": "नमस्ते! म यस संस्था सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
+                "sources": [],
+                "other_sources": [],
+                "target_years": [],
+                "target_doc": None,
+                "latency": None
+            }
+        ]
 
-# Determine Active User Input (from typing or click)
-preset_query = None
-if btn1:
-    preset_query = "स्वःघोषणासम्बन्धी व्यवस्था बारेमा भन्नुहोस"
-elif btn2:
-    preset_query = "एजेन्टमार्फत वालेटमा प्रतिदिन र प्रतिमहिना कति रकमसम्म नगद जम्मा गर्न पाइन्छ?"
-elif btn3:
-    preset_query = "Tell us about the self-declaration system."
-elif btn4:
-    preset_query = "What is the daily and monthly cash deposit limit in a wallet through an authorized agent?"
+    # 4. Display Previous Messages
+    for i, msg in enumerate(st.session_state.messages):
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+            if msg.get("latency"):
+                st.caption(f"⚡ {msg['latency']}")
+            if msg.get("sources") or msg.get("other_sources"):
+                render_verified_sources(
+                    msg.get("sources", []), 
+                    other_sources=msg.get("other_sources", []), 
+                    key_prefix=f"hist_{i}",
+                    target_years=set(msg.get("target_years", [])) if msg.get("target_years") else None,
+                    target_doc=msg.get("target_doc")
+                )
 
-chat_input_val = st.chat_input("Type your question here (उदा: स्वःघोषणासम्बन्धी व्यवस्था बारेमा भन्नुहोस)...")
-active_query = preset_query or chat_input_val
+    # 5. Input Box ALWAYS AT BOTTOM OF SCREEN
+    active_query = st.chat_input("Ask a question about NRB directives, rules, or limits (उदा: स्वःघोषणासम्बन्धी व्यवस्था)...")
 
-if active_query:
-    start_time = time.time()
-    # 1. Display User Message
-    st.session_state.messages.append({"role": "user", "content": active_query})
-    with st.chat_message("user"):
-        st.markdown(active_query)
+    if active_query:
+        start_time = time.time()
+        st.session_state.messages.append({"role": "user", "content": active_query})
+        with st.chat_message("user"):
+            st.markdown(active_query)
 
-    # 2. Automatic Query Year Routing & Document Selection
-    live_table = get_live_table()
-    doc_year_map = build_document_year_map(live_table)
-    available_years = set.union(*doc_year_map.values()) if doc_year_map else set()
-    matched_years = extract_query_years(active_query, available_years)
+        # Automatic Query Year Routing & Document Selection
+        live_table = get_live_table()
+        doc_year_map = build_document_year_map(live_table)
+        available_years = set.union(*doc_year_map.values()) if doc_year_map else set()
+        matched_years = extract_query_years(active_query, available_years)
 
-    effective_doc = None if selected_doc in ["Auto (AI-Detected Document)", "All Documents"] else selected_doc
-    routed_badge = None
+        effective_doc = None if selected_doc in ["Auto (AI-Detected Document)", "All Documents"] else selected_doc
+        routed_badge = None
 
-    if effective_doc is None:
-        if len(matched_years) == 1:
-            target_yr = list(matched_years)[0]
-            matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
-            if matching_docs:
-                effective_doc = prioritize_matching_document(target_yr, matching_docs)
-                routed_badge = f"🎯 Auto-routed to {target_yr} Directive / Report (`{effective_doc}`)"
-        elif len(matched_years) > 1:
-            yrs_str = ", ".join(str(y) for y in sorted(matched_years))
-            routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
+        if effective_doc is None:
+            if len(matched_years) == 1:
+                target_yr = list(matched_years)[0]
+                matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
+                if matching_docs:
+                    effective_doc = matching_docs if len(matching_docs) > 1 else matching_docs[0]
+                    doc_names_str = ", ".join(f"`{d}`" for d in matching_docs)
+                    routed_badge = f"🎯 Auto-routed to {target_yr} Directives / Reports ({doc_names_str})"
+            elif len(matched_years) > 1:
+                yrs_str = ", ".join(str(y) for y in sorted(matched_years))
+                routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
 
-    search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
-    if not search_query.strip():
-        search_query = active_query
+        search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
+        if not search_query.strip():
+            search_query = active_query
 
-    if routed_badge:
-        st.caption(routed_badge)
+        if routed_badge:
+            st.caption(routed_badge)
 
-    # 3. Cross-Lingual Dual-Pass Hybrid Retrieval
-    translated_terms = expand_query_crosslingual(search_query, groq_client)
-    results = hybrid_search(search_query, live_table, embedding_model, translated_terms=translated_terms, selected_doc=effective_doc, top_k=6)
+        # Cross-Lingual Dual-Pass Hybrid Retrieval
+        translated_terms = expand_query_crosslingual(search_query, groq_client)
+        results = hybrid_search(search_query, live_table, embedding_model, translated_terms=translated_terms, selected_doc=effective_doc, top_k=6)
 
-    # For comparative multi-year queries, interleave results across matched documents so all target years enter context
-    if len(matched_years) > 1:
-        target_docs = set()
-        for yr in matched_years:
-            for d, yrs in doc_year_map.items():
-                if yr in yrs:
-                    target_docs.add(d)
-        if target_docs:
-            by_doc = {d: [] for d in target_docs}
-            for item in results:
-                if item['source'] in by_doc:
-                    by_doc[item['source']].append(item)
-            interleaved = []
-            for i in range(3):
-                for d in sorted(by_doc.keys()):
-                    if i < len(by_doc[d]):
-                        interleaved.append(by_doc[d][i])
-            if interleaved:
-                results = interleaved
+        # For comparative multi-year queries, interleave results across matched documents
+        if len(matched_years) > 1:
+            target_docs = set()
+            for yr in matched_years:
+                for d, yrs in doc_year_map.items():
+                    if yr in yrs:
+                        target_docs.add(d)
+            if target_docs:
+                by_doc = {d: [] for d in target_docs}
+                for item in results:
+                    if item['source'] in by_doc:
+                        by_doc[item['source']].append(item)
+                interleaved = []
+                for i in range(3):
+                    for d in sorted(by_doc.keys()):
+                        if i < len(by_doc[d]):
+                            interleaved.append(by_doc[d][i])
+                if interleaved:
+                    results = interleaved
 
-    # Parent Document Context Windowing: provide full page text so clauses are never severed mid-rule
-    seen_pages = set()
-    full_page_context = []
-    full_page_map = {}
-    total_chars = 0
-    for item in results:
-        sp = (item['source'], item['page'])
-        if sp not in seen_pages:
-            seen_pages.add(sp)
-            try:
-                page_records = live_table.search().where(f"source = '{item['source']}' AND page = {item['page']}").to_pandas()
-                full_page_text = "\n".join(page_records['text'].tolist())
-            except Exception:
-                full_page_text = item['text']
+        # Parent Document Context Windowing
+        seen_pages = set()
+        full_page_context = []
+        full_page_map = {}
+        total_chars = 0
+        for item in results:
+            sp = (item['source'], item['page'])
+            if sp not in seen_pages:
+                seen_pages.add(sp)
+                try:
+                    page_records = live_table.search().where(f"source = '{item['source']}' AND page = {item['page']}").to_pandas()
+                    full_page_text = "\n".join(page_records['text'].tolist())
+                except Exception:
+                    full_page_text = item['text']
 
-            # Decode legacy Preeti font artifacts before providing to LLM
-            full_page_text = decode_preeti_text(full_page_text)
-            full_page_map[sp] = full_page_text
+                full_page_text = decode_preeti_text(full_page_text)
+                full_page_map[sp] = full_page_text
 
-            full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}]:\n{full_page_text}\n")
-            total_chars += len(full_page_text)
-            if len(seen_pages) >= 4 or total_chars > 12000:
-                break
+                full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}]:\n{full_page_text}\n")
+                total_chars += len(full_page_text)
+                if len(seen_pages) >= 4 or total_chars > 12000:
+                    break
 
-    context_text = "\n".join(full_page_context)
+        context_text = "\n".join(full_page_context)
 
-    # 3. Professional Banking System Prompt
-    system_prompt = f"""You are an official banking document intelligence assistant for Nepal Rastra Bank.
+        # Professional Banking System Prompt
+        system_prompt = f"""You are an official banking document intelligence assistant for Nepal Rastra Bank.
 Your job is to extract exact figures, limits, fee tiers, and regulatory clauses from the provided context.
 
 RULES:
@@ -1183,68 +1575,262 @@ RULES:
    - For example, if a directive states that a service is permitted in "X बाहेकका क्षेत्रमा" (areas except/excluding X), state definitively that it cannot be operated / is not permitted in X. Do not claim information is missing when the regulatory scope is explicitly defined.
 7. Only state "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents" if the subject matter is genuinely absent from the provided context.
 8. Strict Citation Boundary: Cite ONLY the specific document and page where the extracted provision or clause is actually stated. Do NOT invent, assume, or add speculative notes claiming that a clause or provision is also present in other documents or pages unless that exact clause is explicitly found in that other document within the provided context.
+9. Recency & Conciseness: Unless the user explicitly asks for a comparative analysis across multiple years, prioritize and provide the operative provisions from the latest applicable directive directly. Do NOT append unsolicited historical comparisons or long essays discussing superseded older directives. Keep the answer direct, authoritative, and concise.
 
 Context from files:
 {context_text}"""
 
-    # 4. Stream Groq Response to UI with Automatic Failover on 429
-    with st.chat_message("assistant"):
-        response_placeholder = st.empty()
-        full_response = ""
-        MODELS_TO_TRY = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"]
-        active_model_used = None
+        # Stream Groq Response to UI
+        with st.chat_message("assistant"):
+            response_placeholder = st.empty()
+            full_response = ""
+            active_model_used = None
 
-        try:
-            last_err = None
-            for model_cand in MODELS_TO_TRY:
-                try:
-                    stream = groq_client.chat.completions.create(
-                        model=model_cand,
-                        messages=[
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": active_query}
-                        ],
-                        temperature=0.1,
-                        max_tokens=900,
-                        stream=True
-                    )
-                    active_model_used = model_cand
-                    for chunk in stream:
-                        token = chunk.choices[0].delta.content or ""
-                        full_response += token
-                        response_placeholder.markdown(full_response + "▌")
-                    response_placeholder.markdown(full_response)
-                    break
-                except Exception as model_err:
-                    last_err = model_err
-                    if "429" in str(model_err) or "rate_limit" in str(model_err).lower():
-                        continue
+            try:
+                last_err = None
+                for model_cand in MODELS_TO_TRY:
+                    try:
+                        stream = groq_client.chat.completions.create(
+                            model=model_cand,
+                            messages=[
+                                {"role": "system", "content": system_prompt},
+                                {"role": "user", "content": active_query}
+                            ],
+                            temperature=0.1,
+                            max_tokens=1100,
+                            stream=True
+                        )
+                        active_model_used = model_cand
+                        for chunk in stream:
+                            token = chunk.choices[0].delta.content or ""
+                            full_response += token
+                            response_placeholder.markdown(full_response + "▌")
+                        response_placeholder.markdown(full_response)
+                        break
+                    except Exception as model_err:
+                        last_err = model_err
+                        if "429" in str(model_err) or "rate_limit" in str(model_err).lower():
+                            continue
+                        else:
+                            raise model_err
+
+                if not full_response and last_err:
+                    raise last_err
+
+                # Track tokens used in session
+                approx_tokens = (len(system_prompt) + len(active_query) + len(full_response)) // 4
+                if active_model_used:
+                    st.session_state.model_usage[active_model_used] = st.session_state.model_usage.get(active_model_used, 0) + approx_tokens
+
+                elapsed_sec = time.time() - start_time
+                latency_str = f"Answered in {elapsed_sec:.2f}s via {active_model_used} on Groq LPU"
+                st.caption(f"⚡ {latency_str}")
+
+                # Extract and display verified sources cited strictly based on answer and target
+                cited_sources = extract_cited_sources(
+                    full_response, 
+                    results, 
+                    full_page_map, 
+                    live_table=live_table,
+                    target_years=matched_years,
+                    target_doc=effective_doc
+                )
+
+                # Collect other retrieved candidates so all citations & related pages are accessible
+                other_candidates = []
+                seen_cand = set()
+                for r in results:
+                    k = (r['source'], r['page'])
+                    if k not in seen_cand:
+                        seen_cand.add(k)
+                        other_candidates.append({
+                            'source': r['source'],
+                            'page': r['page'],
+                            'text': full_page_map.get(k, r.get('text', ''))
+                        })
+
+                render_verified_sources(
+                    cited_sources, 
+                    other_sources=other_candidates, 
+                    key_prefix=f"curr_{len(st.session_state.messages)}",
+                    target_years=matched_years,
+                    target_doc=effective_doc
+                )
+
+                # Save to Session State
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": full_response,
+                    "sources": cited_sources,
+                    "other_sources": other_candidates,
+                    "target_years": list(matched_years) if matched_years else [],
+                    "target_doc": effective_doc if isinstance(effective_doc, (str, list)) else None,
+                    "latency": latency_str
+                })
+
+            except Exception as e:
+                st.error(f"⚠️ Error querying Groq: {e}")
+
+    # Bottom spacer so the final message and citations are never obscured by the docked input bar
+    st.markdown("<div style='height: 110px;'></div>", unsafe_allow_html=True)
+
+# ==========================================
+# VIEW 2: ORGANIZED DOCUMENT MANAGEMENT & ADMIN
+# ==========================================
+else:
+    st.markdown("""
+    <div style="margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid #E2E8F0;">
+        <h2 style="margin: 0; font-size: 1.6rem; font-weight: 700; color: #0A2540; letter-spacing: -0.01em;">
+            📁 Document Management & Admin Panel
+        </h2>
+        <p style="margin: 4px 0 0 0; font-size: 0.92rem; color: #64748B;">
+            Organize, upload, inspect, and synchronize regulatory documents with the LanceDB vector store.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 1. Executive Health Metrics
+    total_docs = len(all_disk_files)
+    total_chunks = len(df) if df is not None else 0
+
+    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+    with col_m1:
+        st.metric("📚 Total Documents", f"{total_docs} Files")
+    with col_m2:
+        st.metric("🧩 Indexed Chunks", f"{total_chunks:,}")
+
+
+    st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
+
+    # 2. Upload and Ingestion Container
+    with st.expander("📤 Add New Documents (Upload & Index)", expanded=True):
+        st.markdown("<p style='font-size: 0.9rem; color: #475569; margin-bottom: 8px;'>Drag and drop institutional PDF, DOCX, or TXT documents. Once uploaded, click <b>Index Documents Now</b> to process Preeti text, chunk, and generate embeddings.</p>", unsafe_allow_html=True)
+        uploaded_files = st.file_uploader(
+            "Select files",
+            type=["pdf", "docx", "txt"],
+            accept_multiple_files=True,
+            key="admin_doc_uploader",
+            label_visibility="collapsed"
+        )
+        if uploaded_files:
+            new_saved = []
+            for up_file in uploaded_files:
+                save_path = os.path.join("File_System", up_file.name)
+                if not os.path.exists(save_path):
+                    with open(save_path, "wb") as f:
+                        f.write(up_file.getbuffer())
+                    new_saved.append(up_file.name)
+            if new_saved:
+                st.success(f"✅ Successfully saved {len(new_saved)} new file(s) to File_System: {', '.join(new_saved)}")
+
+        col_act1, col_act2 = st.columns([1, 1])
+        with col_act1:
+            if st.button("⚡ Ingest & Index Documents Now", use_container_width=True, type="primary"):
+                with st.spinner("Extracting text, resolving Preeti fonts, generating embeddings, and updating LanceDB..."):
+                    res = run_ingestion()
+                    if res.returncode == 0:
+                        st.success("✅ Successfully indexed all documents into database!")
+                        time.sleep(1)
+                        st.rerun()
                     else:
-                        raise model_err
+                        st.error(f"Error during ingestion: {res.stderr[:300]}")
+        with col_act2:
+            if st.button("🔄 Full Database Re-Sync", use_container_width=True):
+                with st.spinner("Re-syncing files with vector store..."):
+                    res = run_ingestion()
+                    if res.returncode == 0:
+                        st.success("✅ Database synchronized with filesystem!")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.error(f"Error: {res.stderr[:300]}")
 
-            if not full_response and last_err:
-                raise last_err
+    st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
 
-            # Track tokens used in session
-            approx_tokens = (len(system_prompt) + len(active_query) + len(full_response)) // 4
-            if active_model_used:
-                st.session_state.model_usage[active_model_used] = st.session_state.model_usage.get(active_model_used, 0) + approx_tokens
+    # 3. Organized Document Catalog
+    st.subheader("📑 Document Catalog (Organized by Category)")
+    
+    admin_filter = st.text_input(
+        "🔍 Filter documents:",
+        placeholder="Filter by filename, year (e.g. 2082), or keyword...",
+        key="admin_search_input"
+    ).strip().lower()
 
-            elapsed_sec = time.time() - start_time
-            latency_str = f"Answered in {elapsed_sec:.2f}s via {active_model_used} on Groq LPU"
-            st.caption(f"⚡ {latency_str}")
+    # Build metadata for all files in File_System
+    all_metadata = [get_file_metadata(f, sources_summary, df=df) for f in all_disk_files]
 
-            # Extract and display only the exact verified sources cited in the response
-            cited_sources = extract_cited_sources(full_response, results, full_page_map)
-            render_verified_sources(cited_sources, key_prefix=f"curr_{len(st.session_state.messages)}")
+    # Category definitions with human-friendly Nepali & English titles
+    CATEGORY_SECTIONS = [
+        {
+            "id": "unified",
+            "title": "🏦 Unified Directives (बैंक तथा वित्तीय संस्था सम्बन्धी एकीकृत निर्देशन)",
+            "description": "Comprehensive prudential regulations, capital adequacy, credit classification, and governance directives."
+        },
+        {
+            "id": "payment",
+            "title": "💳 Payment System Directives (भुक्तानी प्रणाली सम्बन्धी एकीकृत निर्देशन)",
+            "description": "Digital payments, wallet limits, interchange fees, settlement, and PSP/PSO regulations."
+        },
+        {
+            "id": "report",
+            "title": "📊 Annual Supervision Reports (वार्षिक सुपरीवेक्षण तथा निरीक्षण प्रतिवेदन)",
+            "description": "Official annual banking supervision reports, balance sheets, and sector reviews."
+        },
+        {
+            "id": "other",
+            "title": "📑 Circulars & Other Documents (अन्य परिपत्र तथा सूचनाहरू)",
+            "description": "General circulars, press releases, AML/CFT guidelines, and custom uploaded manuals."
+        }
+    ]
 
-            # Save to Session State
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": full_response,
-                "sources": cited_sources,
-                "latency": latency_str
-            })
+    for cat in CATEGORY_SECTIONS:
+        # Filter docs belonging to this category
+        cat_docs = [m for m in all_metadata if m["category"] == cat["id"]]
+        if admin_filter:
+            cat_docs = [m for m in cat_docs if admin_filter in m["filename"].lower() or admin_filter in m["years_str"].lower()]
 
-        except Exception as e:
-            st.error(f"⚠️ Error querying Groq: {e}")
+        # Sort docs by detected year descending, then by filename
+        cat_docs.sort(key=lambda m: (m["years_str"], m["filename"]), reverse=True)
+
+        exp_label = f"{cat['title']} — {len(cat_docs)} Document(s)"
+        with st.expander(exp_label, expanded=(len(cat_docs) > 0 and cat["id"] in ["unified", "payment"])):
+            st.caption(cat["description"])
+            
+            if not cat_docs:
+                st.info("No documents currently in this category.")
+                continue
+
+            # Table Header
+            col_h1, col_h2, col_h3, col_h4, col_h5, col_h6 = st.columns([3.6, 1.2, 1.2, 1.3, 1.5, 1.0])
+            with col_h1: st.caption("📄 **Document Name**")
+            with col_h2: st.caption("🗓️ **Year(s)**")
+            with col_h3: st.caption("💾 **File Size**")
+            with col_h4: st.caption("🧩 **Chunks**")
+            with col_h5: st.caption("📖 **View PDF**")
+            with col_h6: st.caption("⚙️ **Action**")
+
+            for doc in cat_docs:
+                fname = doc["filename"]
+                safe_name = urllib.parse.quote(fname)
+                c1, c2, c3, c4, c5, c6 = st.columns([3.6, 1.2, 1.2, 1.3, 1.5, 1.0])
+                
+                with c1:
+                    st.markdown(f"**{fname}**")
+                with c2:
+                    st.markdown(f"`{doc['years_str']}`")
+                with c3:
+                    st.markdown(f"{doc['size_mb']:.2f} MB")
+                with c4:
+                    if doc['chunk_count'] > 0:
+                        st.markdown(f"✅ {doc['chunk_count']:,}")
+                    else:
+                        st.markdown("⚠️ *Not indexed*")
+                with c5:
+                    st.link_button("📖 View PDF", f"/app/static/{safe_name}", use_container_width=True)
+                with c6:
+                    if st.button("🗑️", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary"):
+                        success = delete_document(fname)
+                        if success:
+                            st.toast(f"Removed '{fname}' from system and database!")
+                            time.sleep(0.6)
+                            st.rerun()

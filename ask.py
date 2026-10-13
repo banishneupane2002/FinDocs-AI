@@ -154,40 +154,107 @@ def decode_preeti_text(text):
         text = text.replace(err, fix)
     return text
 
-def extract_cited_sources(response_text, retrieved_candidates):
+def extract_cited_sources(response_text, retrieved_candidates, target_years=None, target_doc=None):
     """
     Filters retrieved candidate chunks so that ONLY the exact documents and pages
-    actually referenced/cited in the AI response are presented to the user.
+    actually referenced/cited in the AI response are presented to the user,
+    strictly aligned with the ground-truth source that generated the answer.
     """
     cited = []
     seen = set()
 
+    # 1. Direct Regex Citation Extraction from AI Response
+    regex_patterns = [
+        r'([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s+(?:clause|section|दफा|खण्ड)\s*[^\n\r]{0,25}?\s*|\s*\n\s*)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)',
+        r'(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s*\n\s*)([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))',
+        r'\[\s*(?:कागजात|doc|document)?\s*[:\-]?\s*([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))\s*\|\s*(?:पृष्ठ|page)\s*[:\-]?\s*(\d+)\s*\]',
+        r'([a-zA-Z0-9_\-]+(?:directive|report)[a-zA-Z0-9_\-]*)(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s*\n\s*)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)'
+    ]
+
+    found_matches = []
+    for pat in regex_patterns:
+        for m in re.finditer(pat, response_text, re.IGNORECASE):
+            g1, g2 = m.group(1), m.group(2)
+            if g1.isdigit():
+                doc_name = g2
+                page_num = int(g1)
+            else:
+                doc_name = g1
+                page_num = int(g2)
+
+            if not doc_name.lower().endswith(('.pdf', '.docx', '.txt')):
+                if os.path.exists(os.path.join("File_System", f"{doc_name}.pdf")):
+                    doc_name = f"{doc_name}.pdf"
+
+            if os.path.exists(os.path.join("File_System", doc_name)):
+                found_matches.append((m.start(), doc_name, page_num))
+
+    # Sort matches by appearance position in AI response text
+    found_matches.sort(key=lambda x: x[0])
+
+    for pos, doc_name, page_num in found_matches:
+        key = (doc_name, page_num)
+        if key not in seen:
+            seen.add(key)
+            cited.append({
+                'source': doc_name,
+                'page': page_num,
+                'pos': pos
+            })
+
+    # 2. Match against retrieved candidates
+    norm_resp = re.sub(r'[\s_\-]+', ' ', response_text.lower())
     for item in retrieved_candidates:
         src = item['source']
         pg = str(item['page'])
         base_src = src.replace('.pdf', '').replace('.docx', '').replace('.txt', '')
+        norm_base = re.sub(r'[\s_\-]+', ' ', base_src.lower())
 
-        # Check if source name appears in response
-        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower():
+        # Check if source name appears in response (exact, base, or normalized space name)
+        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower() or norm_base in norm_resp:
             # Check if page number appears in response
             pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*:?\s*{pg}\b'
-            if re.search(pg_pattern, response_text, re.IGNORECASE) or f" {pg} " in f" {response_text} ":
+            if re.search(pg_pattern, response_text, re.IGNORECASE) or f" {pg} " in f" {response_text} " or f"({pg})" in response_text or f": {pg}" in response_text:
                 key = (src, item['page'])
                 if key not in seen:
                     seen.add(key)
+                    m_src = re.search(re.escape(src), response_text, re.IGNORECASE) or re.search(re.escape(base_src), response_text, re.IGNORECASE)
+                    pos = m_src.start() if m_src else 999999
                     cited.append({
                         'source': src,
-                        'page': item['page']
+                        'page': item['page'],
+                        'pos': pos
                     })
 
-    # Fallback to top-1 primary search match if no explicit citation format was matched
+    # 3. Fallback to top-1 primary search match if no explicit citation format was matched
     if not cited and retrieved_candidates:
         top_item = retrieved_candidates[0]
         cited.append({
             'source': top_item['source'],
-            'page': top_item['page']
+            'page': top_item['page'],
+            'pos': 0
         })
 
+    # 4. Sort cited sources:
+    def citation_sort_key(c):
+        pos = c.get('pos', 999999)
+        src = c['source']
+        ym = re.search(r'(20[78][0-9]|20[12][0-9])', src)
+        yr = int(ym.group(1)) if ym else 0
+
+        target_match = 1
+        if target_doc:
+            if isinstance(target_doc, (list, set, tuple)) and src in target_doc:
+                target_match = 0
+            elif isinstance(target_doc, str) and src == target_doc:
+                target_match = 0
+        elif target_years and yr in target_years:
+            target_match = 0
+
+        tiebreak_year = -yr if not target_years else 0
+        return (target_match, pos, tiebreak_year)
+
+    cited.sort(key=citation_sort_key)
     return cited
 
 # --- AUTOMATIC YEAR DETECTION & QUERY ROUTING ENGINE ---
@@ -264,6 +331,9 @@ def extract_query_years(query: str, available_years: set = None) -> set:
     - Standalone numbers not matching any active corpus document year
     - Non-year numbers (e.g. clause numbers, branch codes)
     """
+    if not query:
+        return set()
+
     if available_years is None:
         available_years = {2079, 2080, 2081, 2082, 2023, 2024}
 
@@ -302,9 +372,9 @@ def extract_query_years(query: str, available_years: set = None) -> set:
         pre_ctx = query[max(0, start_idx - 15):start_idx].lower()
         post_ctx = query[end_idx:min(len(query), end_idx + 15)].lower()
 
-        if re.search(r'(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|amount|deposit|withdraw|transfer|fee|charge|limit)\s*$', pre_ctx):
+        if re.search(r'(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees)\s*$', pre_ctx):
             continue
-        if re.search(r'^\s*(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|हजार|लाख|per|प्रति)', post_ctx):
+        if re.search(r'^\s*(?:रु\.?|रु|rs\.?|rs|npr|रुपैयाँ|रुपैंया|rupees|हजार|लाख)', post_ctx):
             continue
 
         # If it's a known document year in the corpus, add it
@@ -454,7 +524,38 @@ BANKING_DOMAIN_LEXICON = {
     'threshold': ['सीमा कारोबार', 'त्त्च्', '१० लाख', '१५ दिन', 'नयब्ःी', 'त्जचभकजयमि'],
     'goaml': ['goAML', 'नयब्ःी'],
     'fiu': ['वित्तीय जानकारी र्इकार्इ', 'इकाइ'],
-    'npl': ['NPL', 'खराब कर्जा', 'Table 1.2', '10.31', '3.97'],
+    'npl': ['NPL', 'खराब कर्जा', 'निष्क्रिय कर्जा', 'कमसल', 'शंकास्पद', 'खराब', 'Table 1.2', '10.31', '3.97'],
+    'loan': ['कर्जा', 'सापट', 'ऋण', 'loan', 'loans'],
+    'loans': ['कर्जा', 'सापट', 'ऋण', 'loan', 'loans'],
+    'कर्जा': ['कर्जा', 'सापट', 'ऋण', 'loan', 'loans'],
+    'सापट': ['सापट', 'कर्जा', 'ऋण', 'loan'],
+    'ऋण': ['ऋण', 'कर्जा', 'सापट', 'loan'],
+    'bad': ['खराब', 'निष्क्रिय', 'कमसल', 'शंकास्पद', 'bad'],
+    'खराब': ['खराब', 'निष्क्रिय', 'bad', 'loss'],
+    'निष्क्रिय': ['निष्क्रिय', 'खराब', 'कमसल', 'शंकास्पद', 'non-performing', 'npl'],
+    'सक्रिय': ['सक्रिय', 'असल', 'सूक्ष्म निगरानी', 'performing'],
+    'classification': ['वर्गीकरण', 'classification', 'सक्रिय', 'निष्क्रिय'],
+    'classify': ['वर्गीकरण', 'classification'],
+    'classified': ['वर्गीकरण', 'classification'],
+    'categories': ['वर्गीकरण', 'प्रकार', 'श्रेणी'],
+    'category': ['वर्गीकरण', 'प्रकार', 'श्रेणी'],
+    'वर्गीकरण': ['वर्गीकरण', 'classification', 'कर्जा'],
+    'substandard': ['कमसल', 'Substandard', 'निष्क्रिय'],
+    'कमसल': ['कमसल', 'substandard'],
+    'doubtful': ['शंकास्पद', 'Doubtful', 'निष्क्रिय'],
+    'शंकास्पद': ['शंकास्पद', 'doubtful'],
+    'loss': ['खराब', 'Loss', 'नोक्सानी', 'निष्क्रिय'],
+    'pass': ['असल', 'Pass', 'सक्रिय कर्जा'],
+    'असल': ['असल', 'pass'],
+    'watchlist': ['सूक्ष्म निगरानी', 'Watchlist'],
+    'निगरानी': ['सूक्ष्म निगरानी', 'watchlist'],
+    'provision': ['नोक्सानी व्यवस्था', 'कर्जा नोक्सानी', 'provision'],
+    'provisioning': ['नोक्सानी व्यवस्था', 'कर्जा नोक्सानी', 'provisioning'],
+    'नोक्सानी': ['नोक्सानी', 'provision', 'कर्जा नोक्सानी', 'नोक्सानी व्यवस्था'],
+    'व्यवस्था': ['व्यवस्था', 'नोक्सानी व्यवस्था'],
+    'performing': ['सक्रिय कर्जा', 'असल', 'सूक्ष्म निगरानी'],
+    'non-performing': ['निष्क्रिय कर्जा', 'कमसल', 'शंकास्पद', 'खराब', 'npl'],
+    'types': ['प्रकार', 'किसिम', 'वर्गीकरण'],
     'directors': ['directors', 'सञ्चालक', 'loan', 'loans'],
     'borrowing': ['borrowing', 'ऋण', 'सञ्चालक'],
     'shock': ['shock', 'C1', 'Substandard', '10 DBs', 'Credit Shock', 'Development Banks'],
@@ -543,15 +644,29 @@ def extract_meaningful_keywords(text):
 
     return clean_tokens
 
+def build_where_filter(doc_spec):
+    if not doc_spec or doc_spec == "All Documents":
+        return None
+    if isinstance(doc_spec, (list, set, tuple)):
+        doc_list = [str(d) for d in doc_spec]
+        if not doc_list:
+            return None
+        if len(doc_list) == 1:
+            return f"source = '{doc_list[0]}'"
+        doc_in_str = ", ".join(f"'{d}'" for d in doc_list)
+        return f"source IN ({doc_in_str})"
+    return f"source = '{doc_spec}'"
+
 def hybrid_search(user_query, table, model, translated_terms="", selected_doc="All Documents", top_k=6):
     k_const = 30  # Standard RRF constant
+    where_filter = build_where_filter(selected_doc)
 
     # 1. Primary Dense Search (Direct Query Intent)
     d_pri = {}
     q_vec = model.encode(user_query).tolist()
     search_q = table.search(q_vec)
-    if selected_doc and selected_doc != "All Documents":
-        search_q = search_q.where(f"source = '{selected_doc}'")
+    if where_filter:
+        search_q = search_q.where(where_filter)
     for rank, (_, row) in enumerate(search_q.limit(100).to_pandas().iterrows(), 1):
         k = (row['source'], int(row['page']))
         if k not in d_pri:
@@ -562,8 +677,8 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
     if translated_terms and translated_terms.strip():
         t_vec = model.encode(translated_terms).tolist()
         search_t = table.search(t_vec)
-        if selected_doc and selected_doc != "All Documents":
-            search_t = search_t.where(f"source = '{selected_doc}'")
+        if where_filter:
+            search_t = search_t.where(where_filter)
         for rank, (_, row) in enumerate(search_t.limit(100).to_pandas().iterrows(), 1):
             k = (row['source'], int(row['page']))
             if k not in d_trans:
@@ -576,8 +691,8 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
     if clean_pri_fts.strip():
         try:
             search_fts1 = table.search(clean_pri_fts)
-            if selected_doc and selected_doc != "All Documents":
-                search_fts1 = search_fts1.where(f"source = '{selected_doc}'")
+            if where_filter:
+                search_fts1 = search_fts1.where(where_filter)
             for rank, (_, row) in enumerate(search_fts1.limit(100).to_pandas().iterrows(), 1):
                 k = (row['source'], int(row['page']))
                 if k not in s_pri:
@@ -593,8 +708,8 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
         if clean_trans_fts.strip():
             try:
                 search_fts2 = table.search(clean_trans_fts)
-                if selected_doc and selected_doc != "All Documents":
-                    search_fts2 = search_fts2.where(f"source = '{selected_doc}'")
+                if where_filter:
+                    search_fts2 = search_fts2.where(where_filter)
                 for rank, (_, row) in enumerate(search_fts2.limit(100).to_pandas().iterrows(), 1):
                     k = (row['source'], int(row['page']))
                     if k not in s_trans:
@@ -621,7 +736,7 @@ def hybrid_search(user_query, table, model, translated_terms="", selected_doc="A
         rrf_score = (1.0 / (k_const + dp)) + (1.2 / (k_const + sp)) + (0.6 / (k_const + dt)) + (0.6 / (k_const + st))
 
         # Gentle Recency Preference for general unanchored regulatory questions (latest active rules take precedence)
-        if not selected_doc or selected_doc == "All Documents":
+        if not where_filter:
             src = row['source']
             fn_m = re.search(r'(20[78][0-9]|20[12][0-9])', src)
             if fn_m:
@@ -783,8 +898,9 @@ def main():
             target_yr = list(matched_years)[0]
             matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
             if matching_docs:
-                effective_doc = prioritize_matching_document(target_yr, matching_docs)
-                print(f"   🎯 Auto-routed to {target_yr} Directive / Report ({effective_doc})")
+                effective_doc = matching_docs if len(matching_docs) > 1 else matching_docs[0]
+                doc_names_str = ", ".join(f"`{d}`" for d in matching_docs)
+                print(f"   🎯 Auto-routed to {target_yr} Directives / Reports ({doc_names_str})")
         elif len(matched_years) > 1:
             yrs_str = ", ".join(str(y) for y in sorted(matched_years))
             print(f"   📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})")
@@ -880,10 +996,40 @@ Context from files:
                 print(content, end="", flush=True)
 
             print(f"\n\n(Generated via {model_used})")
-            cited_sources = extract_cited_sources(full_response, results)
+            cited_sources = extract_cited_sources(full_response, results, target_years=matched_years, target_doc=effective_doc)
             print("Verified Source(s) Cited:")
             for c in cited_sources:
                 print(f"   * {c['source']} (Page {c['page']})")
+
+            # Also display other retrieved candidate pages
+            cited_keys = {(c['source'], c['page']) for c in cited_sources}
+            remaining = [r for r in results if (r['source'], r['page']) not in cited_keys]
+            if remaining:
+                def other_sort_key(c):
+                    src = c['source']
+                    ym = re.search(r'(20[78][0-9]|20[12][0-9])', src)
+                    yr = int(ym.group(1)) if ym else 0
+                    target_match = 0
+                    if effective_doc:
+                        if isinstance(effective_doc, (list, set, tuple)) and src in effective_doc:
+                            target_match = 0
+                        elif isinstance(effective_doc, str) and src == effective_doc:
+                            target_match = 0
+                    elif matched_years and yr in matched_years:
+                        target_match = 0
+                    else:
+                        target_match = 1
+                    return (target_match, -yr if not matched_years else 0, c.get('page', 0))
+
+                remaining.sort(key=other_sort_key)
+                print("\nOther Retrieved Reference Pages:")
+                seen_rem = set()
+                for r in remaining:
+                    rk = (r['source'], r['page'])
+                    if rk not in seen_rem:
+                        seen_rem.add(rk)
+                        print(f"   - {r['source']} (Page {r['page']})")
+
             print("-" * 65 + "\n")
 
         except Exception as e:
