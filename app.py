@@ -220,15 +220,55 @@ st.markdown("""
         line-height: 1.5 !important;
     }
 
+    /* Header & Main Container Spacing */
+    header[data-testid="stHeader"] {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        z-index: 996 !important;
+    }
+
+    .block-container {
+        padding-top: 3.2rem !important;
+        padding-bottom: 7rem !important;
+    }
+
+    /* Sticky Navbar Container for Assistant & Admin Selector */
+    .stElementContainer.st-key-main_workspace_view,
+    div.st-key-main_workspace_view,
+    div[data-testid="stVerticalBlock"] > div:has(.stButtonGroup),
+    .stElementContainer:has(div[data-testid="stButtonGroup"]) {
+        position: sticky !important;
+        top: 2.875rem !important;
+        z-index: 995 !important;
+        background-color: rgba(255, 255, 255, 0.96) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        padding: 8px 0 !important;
+        margin-top: -6px !important;
+        margin-bottom: 1.2rem !important;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 4px 12px rgba(10, 37, 64, 0.04) !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+    }
+
     /* Clean Segmented Navigation Switch */
+    div.st-key-main_workspace_view div[data-testid="stButtonGroup"],
+    div[data-testid="stButtonGroup"]:has(button[data-variant="segmented_control"]),
     div[data-testid="stSegmentedControl"] {
         background-color: #F1F5F9 !important;
         padding: 4px !important;
         border-radius: 12px !important;
-        margin-bottom: 1.5rem !important;
+        margin-bottom: 0 !important;
         display: inline-flex !important;
         border: 1px solid #E2E8F0 !important;
+        white-space: nowrap !important;
     }
+    div.st-key-main_workspace_view button[data-variant="segmented_control"],
+    div[data-testid="stButtonGroup"] button[data-variant="segmented_control"],
     div[data-testid="stSegmentedControl"] button {
         border-radius: 8px !important;
         font-weight: 600 !important;
@@ -238,6 +278,8 @@ st.markdown("""
         color: #475569 !important;
         transition: all 0.2s ease !important;
     }
+    div.st-key-main_workspace_view button[data-variant="segmented_control"][aria-checked="true"],
+    div[data-testid="stButtonGroup"] button[data-variant="segmented_control"][aria-checked="true"],
     div[data-testid="stSegmentedControl"] button[aria-checked="true"] {
         background-color: #003366 !important;
         color: #FFFFFF !important;
@@ -1407,11 +1449,12 @@ with st.sidebar:
         ]
         st.rerun()
 
-# 6. Top-Level Workspace Navigation (ChatGPT & Gemini Style View Switcher)
+# 6. Top-Level Workspace Navigation (ChatGPT & Gemini Style View Switcher - Sticky Navbar)
 active_tab = st.segmented_control(
     "Workspace View",
     options=["💬 Regulatory Assistant", "📁 Document Management & Admin"],
     default="💬 Regulatory Assistant",
+    key="main_workspace_view",
     label_visibility="collapsed"
 )
 if not active_tab:
@@ -1423,14 +1466,10 @@ if not active_tab:
 if active_tab == "💬 Regulatory Assistant":
     # 1. Clean, Modern Header 
     st.markdown("""
-    <div style="margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid #E2E8F0;">
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <div>
-                <h2 style="margin: 0; font-size: 1.6rem; font-weight: 700; color: #0A2540; letter-spacing: -0.01em;">
-                    💬 Document Assistant
-                </h2>
-            </div>
-        </div>
+    <div style="margin-bottom: 1.1rem; padding-bottom: 0.5rem;">
+        <h2 style="margin: 0; font-size: 1.45rem; font-weight: 700; color: #0A2540; letter-spacing: -0.01em;">
+            💬 Document Assistant
+        </h2>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1793,7 +1832,7 @@ else:
         cat_docs.sort(key=lambda m: (m["years_str"], m["filename"]), reverse=True)
 
         exp_label = f"{cat['title']} — {len(cat_docs)} Document(s)"
-        with st.expander(exp_label, expanded=(len(cat_docs) > 0 and cat["id"] in ["unified", "payment"])):
+        with st.expander(exp_label, expanded=False):
             st.caption(cat["description"])
             
             if not cat_docs:
@@ -1801,33 +1840,30 @@ else:
                 continue
 
             # Table Header
-            col_h1, col_h2, col_h3, col_h4, col_h5, col_h6 = st.columns([3.6, 1.2, 1.2, 1.3, 1.5, 1.0])
+            col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([3.6,1.2, 1.3, 1.5, 1.0])
             with col_h1: st.caption("📄 **Document Name**")
-            with col_h2: st.caption("🗓️ **Year(s)**")
-            with col_h3: st.caption("💾 **File Size**")
-            with col_h4: st.caption("🧩 **Chunks**")
-            with col_h5: st.caption("📖 **View PDF**")
-            with col_h6: st.caption("⚙️ **Action**")
+            with col_h2: st.caption("💾 **File Size**")
+            with col_h3: st.caption("🧩 **Chunks**")
+            with col_h4: st.caption("📖 **View PDF**")
+            with col_h5: st.caption("⚙️ **Action**")
 
             for doc in cat_docs:
                 fname = doc["filename"]
                 safe_name = urllib.parse.quote(fname)
-                c1, c2, c3, c4, c5, c6 = st.columns([3.6, 1.2, 1.2, 1.3, 1.5, 1.0])
+                c1, c2, c3, c4, c5 = st.columns([3.6, 1.2, 1.3, 1.5, 1.0])
                 
                 with c1:
                     st.markdown(f"**{fname}**")
                 with c2:
-                    st.markdown(f"`{doc['years_str']}`")
-                with c3:
                     st.markdown(f"{doc['size_mb']:.2f} MB")
-                with c4:
+                with c3:
                     if doc['chunk_count'] > 0:
                         st.markdown(f"✅ {doc['chunk_count']:,}")
                     else:
                         st.markdown("⚠️ *Not indexed*")
-                with c5:
+                with c4:
                     st.link_button("📖 View PDF", f"/app/static/{safe_name}", use_container_width=True)
-                with c6:
+                with c5:
                     if st.button("🗑️", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary"):
                         success = delete_document(fname)
                         if success:
