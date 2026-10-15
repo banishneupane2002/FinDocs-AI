@@ -14,7 +14,9 @@ if sys.platform == "win32":
         sys.stdout.reconfigure(encoding='utf-8')
 
 # Connect to LanceDB & local embedding model (Zero API calls, 100% offline)
-db = lancedb.connect("./lancedb_data")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(PROJECT_ROOT, "lancedb_data")
+db = lancedb.connect(DB_PATH)
 table = db.open_table("bank_documents")
 embedding_model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
