@@ -180,9 +180,9 @@ def auto_convert_nepali(text: str) -> str:
             
     return text
 
-def chunk_page_text(text: str, target_size: int = 1000, max_size: int = 1500) -> list:
+def chunk_page_text(text: str, target_size: int = 1000, max_size: int = 1500, overlap_size: int = 250) -> list:
     """Intelligently chunks text preserving paragraphs, numbered clauses,
-    and tables rather than cutting mid-sentence or mid-table."""
+    and tables with semantic overlap rather than cutting mid-sentence or mid-clause."""
     import re
     paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
     chunks = []
@@ -193,8 +193,17 @@ def chunk_page_text(text: str, target_size: int = 1000, max_size: int = 1500) ->
         p_len = len(p)
         if curr_len + p_len > target_size and current:
             chunks.append("\n".join(current))
-            current = []
-            curr_len = 0
+            # Preserve semantic overlap from previous clause
+            overlap = []
+            o_len = 0
+            for prev in reversed(current):
+                if o_len + len(prev) <= overlap_size:
+                    overlap.insert(0, prev)
+                    o_len += len(prev)
+                else:
+                    break
+            current = overlap
+            curr_len = sum(len(x) + 1 for x in current)
         
         if p_len > max_size:
             sentences = [s.strip() for s in re.split(r'([।\.\n])', p) if s.strip()]

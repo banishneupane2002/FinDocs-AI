@@ -1,0 +1,477 @@
+[
+  {
+    "id": "Q1",
+    "category": "Credit Classification & Provisioning",
+    "query": "What are the conditions for classifying a loan as a Watchlist (सूक्ष्म निगरानी) loan, and what is the required loan loss provision for it?",
+    "is_pass": true,
+    "matched_targets": [
+      "सूक्ष्म निगरानी",
+      "५",
+      "Watchlist",
+      "महिना"
+    ],
+    "missing_targets": [
+      "5",
+      "१ देखि ३"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2081.pdf (Page 7)",
+      "Unified_directive_2082.pdf (Page 7)",
+      "Unified_directive_2081.pdf (Page 8)",
+      "Unified_directive_2082.pdf (Page 17)"
+    ],
+    "context_length": 9067,
+    "context_snippet": "\n[कागजात: Unified_directive_2081.pdf | पृष्ठ: 7]:\nघ\nनेपाल राष्ट्र बैंक\nकेन्द्रीय कार्यालय\nबैंक तथा वित्तीय संस्था नियमन विभाग\nइ.प्रा.निदर्ेशन नं. २/०८१\nकर्जा प्रवाह, वगर्ीकरण तथा कर्जा नोक्सानी सम्बन्धी व्यवस्था ।\nयस बैंकबाट æकÆ, æखÆ र æगÆ वर्गका इजाजतपत्रप्राप्त संस्थाले प्रवाह गरेको कर्जा सापटको वगर्ीकरण र\nसोको सम्भावित नोक्सानीमा कायम गनर्ु पनर्े व्यवस्थाका सम्बन्धमा नेपाल राष्ट्र बैंक एेन, २०५८ को दफा ७९ ले\nदिएको अधिकार प्रयोग गरी देहायका निदर्ेशन जारी गरिएको छ ।\nज्ञ। कर्जा सापटको वगर्ीकरण\nइजाजतपत्रप्राप्त संस्थाले प्रवाह गरेको कर्जा/सापटको साँवा वा ब्याज भुक्तानी हुनुपनर्े भाखा नाघेको अवध"
+  },
+  {
+    "id": "Q2",
+    "category": "Credit Classification & Provisioning",
+    "query": "If a loan is fully secured by a personal guarantee (व्यक्तिगत जमानी) only, what is the additional loan loss provision required?",
+    "is_pass": true,
+    "matched_targets": [
+      "२०",
+      "20"
+    ],
+    "missing_targets": [
+      "व्यक्तिगत जमानी"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2081.pdf (Page 16)",
+      "Unified_directive_2082.pdf (Page 266)",
+      "Unified_directive_2082.pdf (Page 222)",
+      "Unified_directive_2082.pdf (Page 264)"
+    ],
+    "context_length": 13194,
+    "context_snippet": "\n[कागजात: Unified_directive_2081.pdf | पृष्ठ: 16]:\nज्ञद्द\nवर्गमा तोकिएको प्रतिशतको अतिरिक्त २० प्रतिशत थप कर्जा नोक्सानी व्यवस्था कायम गनर्ु पनर्ेछ ।\nऋणीको अन्य सम्पत्तिको सुरक्षणले नखाम्ने भई थप सुरक्षण वापत तेस्रो पक्षको धितो समेत लिई कर्जा\nप्रवाह गरेको अवस्थामा ऋणीको अन्य सम्पत्तिको सुरक्षणले नखामेको जति कर्जामा माथि उल्लेख भए\nबमोजिम थप कर्जा नोक्सानी व्यवस्था गनर्ु पनर्ेछ । यस्ता कर्जाको छु§ै विवरण तयार गनर्ु पनर्ेछ ।\n(अ) ऋणी व्यक्ति भएमा निजको एकाघर परिवारका सदस्यको नाममा भएको धितो ।\n(आ) ऋणी फर्म भएमा सो फर्मको प्रोप्राइटर, साभफेदार वा निजको एकाघर परिवारका सदस्यको नाममा\nभएको धितो ।\n(इ) जग"
+  },
+  {
+    "id": "Q3",
+    "category": "Credit Classification & Provisioning",
+    "query": "If a borrower is blacklisted by the Credit Information Bureau (CIC), how should we classify their loan and what provision is needed?",
+    "is_pass": true,
+    "matched_targets": [
+      "कालोसूची",
+      "१००"
+    ],
+    "missing_targets": [
+      "खराब",
+      "100",
+      "Bad"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 450)",
+      "Unified_directive_2082.pdf (Page 448)",
+      "Unified_directive_2082.pdf (Page 113)",
+      "Unified-Directives-2078.pdf (Page 422)"
+    ],
+    "context_length": 12066,
+    "context_snippet": "\n[कागजात: Unified_directive_2082.pdf | पृष्ठ: 450]:\nv08 ævÆ 249\n4.12.5 Investment in shares and debentures exceeding the limits\n4.12.6 Investment in private equity and venture capital\n4.12.7 Review of the investment portfolio\n4.12.8 Adequacy of provisioning requirements\n4.12.9 Adequacy of investment adjustment fund requirements\n4.12.10 Compliance with directives of Investment in shares and other securities of subsidiary(ies).\n4.12.11 Compliance with directives on purchase/construction of fixed assets for self-utilization\n4.12.12 Adequacy of consolidation of transactions with the subsidiary(ies"
+  },
+  {
+    "id": "Q4",
+    "category": "Capital Adequacy & Core Ratios",
+    "query": "What is the maximum allowed Credit-Deposit (CD) Ratio for our finance company, and what is the penalty for breaching it?",
+    "is_pass": true,
+    "matched_targets": [
+      "९०",
+      "Credit-Deposit",
+      "CD",
+      "हर्जाना",
+      "बैंक दर"
+    ],
+    "missing_targets": [
+      "90",
+      "penalty"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2081.pdf (Page 50)",
+      "Unified_directive_2081.pdf (Page 37)",
+      "Unified-Directives-2078.pdf (Page 37)",
+      "Unified-Directives-2078.pdf (Page 131)"
+    ],
+    "context_length": 12063,
+    "context_snippet": "\n[कागजात: Unified_directive_2081.pdf | पृष्ठ: 50]:\nद्धट\nअनुमान संस्था स्वयंले गनर्ु पनर्ेछ । सामान्यतः स्थायी रुपमा रहिरहने चल्ती निक्ष्ोपको अंशलाई प्राथमिक\nनिक्ष्ोपको रुपमा लिनु पनर्ेछ ।\n(६) बैंक तथा वित्तीय संस्थाहरुले कायम गनर्ु पनर्े कर्जा–निक्ष्ोप अनुपात (Credit-Deposit Ratio-CD Ratio) को\nअधिकतम सीमा ९० प्रतिशत तोकिएको छ ।\nप्रष्टीकरणः\n(क) यस प्रयोजनको लागि पुँजी कोष र पुँजी कोषको अËको रुपमा रहेका ऋणपत्र बाहेकका ऋणपत्र, १\nवर्ष वा सोभन्दा बढी अवधिको विदेशी मुद्रामा लिएको ऋण तथा यस बैंकबाट प्रदान गरिएको\nपुनरकर्जा रकमलाई निक्ष्ोपको रुपमा गणना गर्न सकिनेछ । ऋणपत्र पुँजीकोषको अंगको रुपमा\nरहने व"
+  },
+  {
+    "id": "Q5",
+    "category": "Capital Adequacy & Core Ratios",
+    "query": "What is the minimum Statutory Liquidity Ratio (SLR) and Cash Reserve Ratio (CRR) required for a 'C' class finance company?",
+    "is_pass": true,
+    "matched_targets": [
+      "१०",
+      "४",
+      "4",
+      "SLR",
+      "तरलता"
+    ],
+    "missing_targets": [
+      "10",
+      "CRR",
+      "अनिवार्य नगद"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 120)",
+      "Unified_directive_2081.pdf (Page 117)",
+      "Unified_directive_2081.pdf (Page 118)",
+      "Unified_directive_2082.pdf (Page 184)"
+    ],
+    "context_length": 9738,
+    "context_snippet": "\n[कागजात: Unified_directive_2082.pdf | पृष्ठ: 120]:\nज्ञज्ञट\n(७) अनिवार्य माैज्दात गणना गर्ने प्रयोजनार्थ नेपाल राष्ट्र बैंकको कार्यालय नभएका स्थानहरुमा रहेको\nनोटकोषमा जम्मा हुने मार्गस्थ नगद (ऋबकज ष्ल त्चबलकष्त) समेत समावेश गर्न सकिनेछ । यसरी मार्गस्थ\nरकम समावेश गर्दा नोटकोषमा जम्मा गरिएको र नोटकोषबाट भिफकिएको रकम सम्बन्धी प्रमाण समेत\nसंलग्न गरेर पठाउनु पनर्ेछ ।\n२. अनिवार्य माैज्दात सम्बन्धी अन्य व्यवस्था\nइजाजतपत्रप्राप्त संस्थाहरुको कार्यलाई विस्तारित, सहज र सुविधायुत्तफ बनाउन बजार निर्माताह्र बाहेकका यस\nबैंकबाट इजाजतपत्रप्राप्त संस्थाले पनि सरकारी सुरक्षणपत्रको साँवा तथा ब्याज भुक्तानी गरी स"
+  },
+  {
+    "id": "Q6",
+    "category": "Capital Adequacy & Core Ratios",
+    "query": "When calculating the Capital Adequacy Ratio (CAR), what is the risk weight assigned to loans secured by residential properties?",
+    "is_pass": true,
+    "matched_targets": [
+      "60",
+      "residential",
+      "Risk",
+      "Weight"
+    ],
+    "missing_targets": [
+      "६०",
+      "आवासीय"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 270)",
+      "Unified_directive_2081.pdf (Page 260)",
+      "Unified_directive_2082.pdf (Page 265)",
+      "Unified-Directives-2078.pdf (Page 245)"
+    ],
+    "context_length": 13016,
+    "context_snippet": "\n[कागजात: Unified_directive_2082.pdf | पृष्ठ: 270]:\nv08 ævÆ 69\n2. Exposures on Personal loan in excess of the threshold of regulatory retail portfolio and\nexposures on credit card shall warrant a risk weight of 150%.\n3. Investments in the equity and other capital instruments of institutions, which are not\nlisted in the stock exchange and have not been deducted from Tier 1 capital, shall be\nrisk weighed at 150% net of provisions and valuation adjustments which are, directly or\nthrough other comprehensive income, recognized on equity.\n4. Claims which are not  fully secured or are only backed up "
+  },
+  {
+    "id": "Q7",
+    "category": "Sectoral & Deprived Sector Lending",
+    "query": "What percentage of our total loan portfolio must be directed towards the Deprived Sector (विपन्न वर्ग कर्जा)?",
+    "is_pass": true,
+    "matched_targets": [
+      "विपन्न वर्ग",
+      "५"
+    ],
+    "missing_targets": [
+      "5"
+    ],
+    "retrieved_sources": [
+      "Unified-Directives-2077.pdf (Page 364)",
+      "Unified_directive_2082.pdf (Page 149)",
+      "Unified_directive_2082.pdf (Page 148)",
+      "Unified_directive_2082.pdf (Page 147)"
+    ],
+    "context_length": 12948,
+    "context_snippet": "\n[कागजात: Unified-Directives-2077.pdf | पृष्ठ: 364]:\nनेपाल राष्ट्र बैंकबाट æकÆ, æखÆ र æगÆ वर्गका इजाजतपत्रप्राप्त संस्थाहरुलाई जारी गरिएको एकीकृत निदर्ेशन – २०७७ घटद्ध\n(ण) बचत तथा ऋण सम्बन्धी कारोबार गर्ने सहकारी संस्थाहरु बाहेक अन्य सम्बन्धित विषयगत\nसहकारी संस्थाले समूह सदस्य मार्फत सामूहिक खेती तथा पशु/पंक्षीपाल न गर्ने प्रयोजनको लागि\nप्रति सदस्य रु. १ लाख पच्िचस हजार नना£ने गरी समूह सदस्य संख्याको आधारमा कर्जा सीमा\nकायम हुने गरी प्रवाह भएको अधिकतम रु. एक करोडसम्मको कर्जा ।\nयसरी प्रवाह भएको कर्जा दुरुपयोग भएको पाइएमा त्यस्तो कर्जालाई खराव कर्जामा वगर्ीकरण गरी\n१५० प्रतिशत जोखिम भार कायम गनर्ु"
+  },
+  {
+    "id": "Q8",
+    "category": "Sectoral & Deprived Sector Lending",
+    "query": "For a 'C' class finance company, what is the minimum lending requirement for the agriculture, micro, small, and medium enterprises (MSME) sectors by Ashad 2084?",
+    "is_pass": true,
+    "matched_targets": [
+      "१३",
+      "१५",
+      "15",
+      "२०८४",
+      "कृषि"
+    ],
+    "missing_targets": [
+      "13",
+      "2084",
+      "साना तथा मझौला"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 427)",
+      "Unified_directive_2082.pdf (Page 451)",
+      "Unified_directive_2081.pdf (Page 149)",
+      "Unified_directive_2082.pdf (Page 29)"
+    ],
+    "context_length": 8826,
+    "context_snippet": "\n[कागजात: Unified_directive_2082.pdf | पृष्ठ: 427]:\nखण्ड æखÆ द्दद्दट\nने.रा.बैंक निदर्ेशन फा.नं. १७.२\n.......................................... लिमिटेड\nप्राथमिकताप्राप्त (कृषि, उजा जलविधुत/उर्जा, पर्यटन र साना तथा मभफाैला उधोगतर्फ) क्ष्ोत्र कर्जा\nलगानी\nमिति ........ मा समाप्त त्रयमासको विवरण\n(रु. दश लाखमा)\nज्ञ।द्दड कृषि उपकरण\nज्ञ।द्दढ मलखाद तथा किटनाशक (कृषि सँग सम्बन्धित)\nज्ञ।घण् कृषि ऋणपत्रमा गरेको लगानी\nद्द जलविधुत/उर्जा\nद्द।ज्ञ जलविधुत\nद्द।द्द नवीकरणीय उर्जा\nद्द।घ उर्जा ऋणपत्रमा गरेको लगानी\nघ पर्यटन क्ष्ोत्र\nघ।ज्ञ\nटे्रकिË, ट्राभल एजेन्सी, पर्वतारोहण, रिसोर्ट, राफ्िटË,\nक्याम्िपË आदि\nघ।द्द ह"
+  },
+  {
+    "id": "Q9",
+    "category": "Sectoral & Deprived Sector Lending",
+    "query": "What is the maximum limit for a personal residential home loan (व्यक्तिगत आवासीय घर कर्जा)?",
+    "is_pass": true,
+    "matched_targets": [
+      "व्यक्तिगत आवासीय",
+      "३ करोड"
+    ],
+    "missing_targets": [
+      "3 करोड",
+      "3 Crore",
+      "३० मिलियन"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2081.pdf (Page 37)",
+      "Unified_directive_2082.pdf (Page 397)",
+      "Unified_directive_2081.pdf (Page 392)",
+      "Unified_directive_2082.pdf (Page 40)"
+    ],
+    "context_length": 13485,
+    "context_snippet": "\n[कागजात: Unified_directive_2081.pdf | पृष्ठ: 37]:\nघघ\n(क) तह १ ः प्राथमिक पुँजीको ५० - १०० प्रतिशतसम्म एउटै क्ष्ोत्रमा प्रवाहित कर्जा सापट र सुविधा ।\nयस्तो कर्जाको मापन र अनुगमनको कार्यविधि तथा सूचना प्रणालीको व्यवस्था इजाजतपत्रप्राप्त\nसंस्था आफैले गरी कम्तीमा त्रैमासिक रुपमा अनुगमन गनर्ु पनर्ेछ ।\n(ख) तह २ ः प्राथमिक पुँजीको शत प्रतिशतभन्दा बढी एउटै क्ष्ोत्रमा प्रवाहित कर्जा सापट र सुविधाका\nसम्बन्धमा यस्तो कर्जाको इजाजतपत्रप्राप्त संस्थाको सञ्चालक समितिबाट समेत अनुमोदन\nगराइएको हुनु पनर्ेछ । इजाजतपत्रप्राप्त संस्थाको सञ्चालक समितिले त्यस्ता कर्जाहरुको सीमा\nप्राथमिक पुँजीको शत प्रतिशत भन्दा बढी "
+  },
+  {
+    "id": "Q10",
+    "category": "Single Obligor Limits & Margin Lending",
+    "query": "What is the Single Obligor Limit (SOL) for fund-based loans for a finance company?",
+    "is_pass": true,
+    "matched_targets": [
+      "२५",
+      "प्राथमिक पुँजी",
+      "Single Obligor",
+      "एकल ग्राहक"
+    ],
+    "missing_targets": [
+      "25",
+      "Core Capital"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2081.pdf (Page 34)",
+      "Unified_directive_2081.pdf (Page 37)",
+      "Unified_directive_2081.pdf (Page 33)",
+      "Unified_directive_2081.pdf (Page 38)"
+    ],
+    "context_length": 11602,
+    "context_snippet": "\n[कागजात: Unified_directive_2081.pdf | पृष्ठ: 34]:\nघण्\n(ख)  यस्ता परियोजनाको भुक्तानी तालिका (Repayment Schedule) तयार गर्दा नगद प्रवाह तथा अन्य\nप्रमाणको आधारमा पुष्टी हुने गरी गनर्ु पनर्ेछ ।\n(ग)  परियोजना विश्लेषण गरी सम्बन्धित बैंक तथा वित्तीय संस्थाले तय गरेको Moratorium Period\nअथवा त्यस्तो परियोजनाबाट विधुत उत्पादन भई प्रसारण लाइनमा जोडिएको तीन महिना मध्ये जुन\nपछि हुन्छ सो मिति पश्चात किस्ता भुक्तानी सुरु गर्न सकिने छ ।\n(घ) इजाजतपत्रप्राप्त बैंक तथा वित्तीय संस्थाले विशुद्ध जलविधुत परियोजना, विधुत प्रशारण लाइन\n(Transmission Line), नवीकरणीय उर्जा परियोजना र केवलकार निर्माण सम्बन्धी परियोजना"
+  },
+  {
+    "id": "Q11",
+    "category": "Single Obligor Limits & Margin Lending",
+    "query": "What is the maximum Loan to Value (LTV) ratio allowed for margin lending (share loans)?",
+    "is_pass": true,
+    "matched_targets": [
+      "७०",
+      "सेयर",
+      "शेयर"
+    ],
+    "missing_targets": [
+      "70",
+      "१८०",
+      "180",
+      "मार्जिन"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2081.pdf (Page 25)",
+      "Unified_directive_2081.pdf (Page 37)",
+      "Unified-Directives-2077.pdf (Page 297)",
+      "Unified_directive_2082.pdf (Page 399)"
+    ],
+    "context_length": 9256,
+    "context_snippet": "\n[कागजात: Unified_directive_2081.pdf | पृष्ठ: 25]:\nद्दज्ञ\nLoan), सेयरको धितोमा प्रदान गरिएको कर्जा लगायत जुनसुकै शीर्षकका व्यक्तिगत प्रयोजनका\nकर्जाहरु प्रति ग्राहक रु. ५० लाखसम्म मात्र प्रवाह गर्न सक्नेछन् । घर/जग्गा धितो राखी यस्तो नयाँ\nकर्जा प्रवाह गर्दा, कर्जा थप वा कर्जा नवीकरण गर्दा कर्जा र सोको धितो सुरक्षणको Fair Market\nValue बीचको अनुपात (Loan to Value Ratio) बढीमा ५० प्रतिशतसम्म मात्र कायम गनर्ु पनर्ेछ ।\nतर, इजाजतपत्रप्राप्त संस्थाले आफ्नै मुद्दती निक्ष्ोप रसिद, सुन चाँदी एवं नेपाल सरकार वा नेपाल राष्ट्र\nबैंकको ऋणपत्रको धितोमा कर्जा प्रदान गर्न, र शत प्रतिशत नगद मार्जनिमा जमानत जारी ग"
+  },
+  {
+    "id": "Q12",
+    "category": "Corporate Governance & HR",
+    "query": "What is the age limit for appointing a Chief Executive Officer (CEO) in a finance company?",
+    "is_pass": true,
+    "matched_targets": [
+      "६५",
+      "६९",
+      "प्रमुख कार्यकारी",
+      "उमेर"
+    ],
+    "missing_targets": [
+      "65",
+      "69"
+    ],
+    "retrieved_sources": [
+      "Unified-Directives-2077.pdf (Page 239)",
+      "Unified_directive_2081.pdf (Page 60)",
+      "Unified_directive_2082.pdf (Page 63)",
+      "Unified_directive_2082.pdf (Page 77)"
+    ],
+    "context_length": 11891,
+    "context_snippet": "\n[कागजात: Unified-Directives-2077.pdf | पृष्ठ: 239]:\nनेपाल राष्ट्र बैंकबाट æकÆ, æखÆ र æगÆ वर्गका इजाजतपत्रप्राप्त संस्थाहरुलाई जारी गरिएको एकीकृत निदर्ेशन – २०७७ द्दघढ\nतथा पद्धति र यस बैंकबाट जारी गरिएका निदर्ेशन आदि बिषय हरु समेटी एक महिनाभित्र\nअभिमुखीकरण (इचष्भलतबतष्यल) गराउनु पनर्ेछ ।\n(२)  बैंक तथा वित्तीय संस्थाले समग्र बैंकिË प्रणालीको संस्थागत सुशासन एवम ् जोखिम व्यवस्थापनको\nगुणस्तर सुधार गर्नका लागि पारदर्शतिा ९त्चबलकउबचभलअथ०, खुलासा ९म्ष्कअयिकगचभ०, स्वार्थको द्वन्द्व\n९ऋयलाष्िअत या क्ष्लतभच भकत०, अनुपालना ९ऋयफउष्िबलअभ० र अन्य नियामक निकायसँगको सम्बन्ध एवम ्\nसमन्वय लगायतका विषयमा अन्तर्र"
+  },
+  {
+    "id": "Q13",
+    "category": "Corporate Governance & HR",
+    "query": "Within how many days must a vacant CEO or senior management position be filled?",
+    "is_pass": false,
+    "matched_targets": [],
+    "missing_targets": [
+      "३ महिना",
+      "तीन महिना",
+      "3 महिना",
+      "पदपूर्ति",
+      "रिक्त"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2080.pdf (Page 136)",
+      "Unified-Directives-2077.pdf (Page 226)",
+      "Unified-Directives-2077.pdf (Page 229)",
+      "Unified_directive_2081.pdf (Page 49)"
+    ],
+    "context_length": 12521,
+    "context_snippet": "\n[कागजात: Unified_directive_2080.pdf | पृष्ठ: 136]:\nज्ञघछ\n(ª) उचित म्ष्कबकतभच च्भअयखभचथ र धगकष्लभकक ऋयलतष्लगष्तथ एबिल तजर्ुमा गरी विभिन्न किसिमका\nप्रकोपहरुका बाबजुद व्यवसाय निरन्तरताको सुनिश्िचतता गर्नुपर्नेछ । यस्ता योजनाहरु वार्षकि रुपमा\nअभ्यास ९म्चष्०ि गरी अधावधिक गर्नुपर्ने छ ।\n(च) कुनै कर्मचारी प्रति अधिक निर्भरता, एउटै कर्मचारी लामो  समय एकै स्थानमा रहेर कार्य गर्ने तथा\nकर्मचारी बीच मिलोमोतोका कारण उत्पन्न हुन सक्ने कर्मचारी सम्बद्ध जोखिम न्यूनीकरणका लागि\nकर्मचारी पदस्थापन एवम् सरुवा लगायतका कार्य प्रभावकारी हुनुपनर्े छ ।\n६. तरलता जोखिम व्यस्थापन गर्ने सम्बन्धी व्यवस्था\n(१) पूर्वाधार विक"
+  },
+  {
+    "id": "Q14",
+    "category": "Corporate Governance & HR",
+    "query": "Can a member of the Board of Directors take a loan from our finance company?",
+    "is_pass": true,
+    "matched_targets": [
+      "सञ्चालक",
+      "कर्जा",
+      "मुद्दती",
+      "ऋणपत्र"
+    ],
+    "missing_targets": [
+      "स्वर्ण",
+      "लिन पाइने छैन"
+    ],
+    "retrieved_sources": [
+      "Unified-Directives-2078.pdf (Page 69)",
+      "Unified_directive_2082.pdf (Page 62)",
+      "Unified-Directives-2077.pdf (Page 313)",
+      "Unified_directive_2082.pdf (Page 59)"
+    ],
+    "context_length": 12825,
+    "context_snippet": "\n[कागजात: Unified-Directives-2078.pdf | पृष्ठ: 69]:\nनेपाल राष्ट्र बैंकबाट æकÆ, æखÆ र æगÆ वर्गका इजाजतपत्रप्राप्त संस्थाहरुलाई जारी गरिएको एकीकृत निदर्ेशन – २०७८   खण्ड æकÆ टढ\n(छ) गाभ्ने/गाभिने वा प्राप्ित कार्यमा संलग्न संस्थाको शेयर कारोवार सम्बन्धी व्यवस्थाः\nबैंक वा वित्तीय संस्थाको सञ्चालक, कार्यकारी प्रमुख, लेखापरीक्षक, कम्पनी सचिव वा बैंक वा वि त्तीय\nसंस्थाको व्यवस्थापन तथा लेखा सम्बन्धी कार्यमा प्रत्यक्ष रुपले संलग्न व्यक्ति पदमा बहाल रहँदाका\nबखत वा त्यस्तो पदबाट अवकाश प्राप्त गरेको मितिले एक वर्षसम्म सम्बन्धित बैंक वा वित्तीय संस्था\nवा त्यस्तो सहायक कम्पनीको धितोपत्र आफ्नो वा आफ्नो परिव"
+  },
+  {
+    "id": "Q15",
+    "category": "AML/CFT & Blacklisting",
+    "query": "What is the threshold amount for reporting a cash transaction (TTR) to the Financial Information Unit (FIU)?",
+    "is_pass": true,
+    "matched_targets": [
+      "१० लाख",
+      "TTR",
+      "सीमा कारोबार"
+    ],
+    "missing_targets": [
+      "10 लाख",
+      "त्त्च्"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 170)",
+      "Unified-Directives-2078.pdf (Page 158)",
+      "Unified_directive_2080.pdf (Page 235)",
+      "directive_2082.pdf (Page 54)"
+    ],
+    "context_length": 8763,
+    "context_snippet": "\n[कागजात: Unified_directive_2082.pdf | पृष्ठ: 170]:\nज्ञटट\n१२. वायर स्थानान्तरण सम्बन्धमा ः\n(१)  इजाजतपत्रप्राप्त बैंक तथा वित्तीय संस्थाहरुले एेनको दफा ७  ठ. बमोजिम वायर स्थानान्तरण सम्बन्धी\nकार्य गनर्ु पनर्ेछ । तर, आवश्यक विवरणहरु नखुलेको कुनै वायर स्थानान्तरण शंकास्पद लागेमा त्यस्तो\nवायर स्थानान्तरणलाई अस्वीकार वा स्थगित गरी तत्काल सम्बन्धित निकायमा जानकारी गराउनु पनर्ेछ ।\n(२) ग्राहकले अन्तर्राष्िट्रय वायर ट्रान्सफर वापत रकम प्राप्त गर्न उपलब्ध गराएको विवरण स्थानीय वायर\nस्थानान्तरणसँग सम्बन्धित देखिएमा सम्बन्धित बैंक वा वित्तीय संस्थाले स्थानीय वायर स्थानान्तरण\nमार्फत् रकम पठाउने व्यक्ति वा "
+  },
+  {
+    "id": "Q16",
+    "category": "AML/CFT & Blacklisting",
+    "query": "Within how many days must a Suspicious Transaction Report (STR) be submitted to the FIU after identifying a suspicious activity?",
+    "is_pass": true,
+    "matched_targets": [
+      "३ दिन",
+      "STR",
+      "goAML",
+      "शंकास्पद"
+    ],
+    "missing_targets": [
+      "तीन दिन",
+      "3 दिन",
+      "क्त्च्"
+    ],
+    "retrieved_sources": [
+      "directive_2078.pdf (Page 60)",
+      "Unified_directive_2081.pdf (Page 438)",
+      "directive_2082.pdf (Page 54)",
+      "directive_2080.pdf (Page 67)"
+    ],
+    "context_length": 6197,
+    "context_snippet": "\n[कागजात: directive_2078.pdf | पृष्ठ: 60]:\nछट\n(४) शंकास्पद कारोबार प्रतिवेदन ९क्गकउष्अष्यगक त्चबलकबअतष्यल च्भउयचत ( STR० तथा शंकास्पद\nगतिविधि सम्बन्धी प्रतिवेदन ९क्गकउष्अष्यगक ब्अतष्खष्तथ च्भउयचत(  SAR०\nसंस्थाले देहाय बमोजिमकोे अवस्थाहरु विद्यमान भएमा कारोबार वा गतिविधि भएको मितिले\n३ दिनभित्र यथाशक्य चाँडो शंकास्पद कारोबार प्रतिवेदन ९क्गकउष्अष्यगक त्चबलकबअतष्यल च्भउयचत (\nSTR० वा शंकास्पद गतिविधि सम्बन्धी प्रतिवेदन ९क्गकउष्अष्यगक ब्अतष्खष्तथ च्भउयचत ( SAR०\ngoAML Software मार्फत वित्तीय जानकारी इकाईमा उपलब्ध गराउनु पनर्ेछ ः\n(क) सम्पत्ति शुद्धीकरण तथा आतÍवादी कृयाकलापमा वित्तीय लगानी सम्बन्धी कसू"
+  },
+  {
+    "id": "Q17",
+    "category": "AML/CFT & Blacklisting",
+    "query": "What is the minimum loan default amount to recommend a borrower for blacklisting to the Credit Information Center?",
+    "is_pass": true,
+    "matched_targets": [
+      "१० लाख",
+      "कालोसूची",
+      "कर्जा सूचना"
+    ],
+    "missing_targets": [
+      "10 लाख"
+    ],
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 450)",
+      "Unified-Directives-2078.pdf (Page 98)",
+      "Unified_directive_2082.pdf (Page 104)",
+      "Unified-Directives-2078.pdf (Page 422)"
+    ],
+    "context_length": 11528,
+    "context_snippet": "\n[कागजात: Unified_directive_2082.pdf | पृष्ठ: 450]:\nv08 ævÆ 249\n4.12.5 Investment in shares and debentures exceeding the limits\n4.12.6 Investment in private equity and venture capital\n4.12.7 Review of the investment portfolio\n4.12.8 Adequacy of provisioning requirements\n4.12.9 Adequacy of investment adjustment fund requirements\n4.12.10 Compliance with directives of Investment in shares and other securities of subsidiary(ies).\n4.12.11 Compliance with directives on purchase/construction of fixed assets for self-utilization\n4.12.12 Adequacy of consolidation of transactions with the subsidiary(ies"
+  },
+  {
+    "id": "Q18",
+    "category": "Digital Banking & Payments",
+    "query": "What is the maximum daily limit for transferring money using a Mobile Banking App or QR code?",
+    "is_pass": false,
+    "matched_targets": [
+      "३ लाख"
+    ],
+    "missing_targets": [
+      "3 लाख",
+      "क्युआर",
+      "QR",
+      "मोबाइल बैंकिङ्ग"
+    ],
+    "retrieved_sources": [
+      "directive_2080.pdf (Page 19)",
+      "directive_2079.pdf (Page 18)",
+      "directive_2078.pdf (Page 16)",
+      "directive_2078.pdf (Page 17)"
+    ],
+    "context_length": 7516,
+    "context_snippet": "\n[कागजात: directive_2080.pdf | पृष्ठ: 19]:\nज्ञछ\n२. मोबाइल बैंकिË तथा ई–बैंकिË कारोबारसम्बन्धमा\nमोबाईल एप्िलकेशन ९ब्उउ० तथा इन्टरनेट बैंकिËद्वारा गरिने कारोबारको अधिकतम सीमा\nदेहायबमोजिम हुनेछ ः\nउपकरण प्रतिदिन (रु)\nमोबाइल एप्िलकेशन ९ब्उउ० (त्तच् ऋयमभ समेत) ३ लाख\nइन्टरनेट बैंकिË २० लाख\nतर, देहायको अवस्थामा उपर्युक्त अधिकतम सीमा सम्बन्धी व्यवस्थाले बाधा पुगेको मानिने\nछैन ः\n(१) कुनै व्यक्तिको नाममा बैं क तथा वित्तीय संस्थामा रहेको एउटा खाताबाट सोही व्यक्तिको\nनाममा सोही संस्थामा रहेको अर्को खातामा रकमान्तर गर्न,\n(२) नेपाल सरकारको सम्बन्धित कार्यालयमा भुक्तानी गर्नुपर्ने कर, राजस्व, जरिवाना, सवारी\nदस"
+  },
+  {
+    "id": "Q19",
+    "category": "Digital Banking & Payments",
+    "query": "What is the maximum amount a customer can transfer from a bank account to a digital wallet per day?",
+    "is_pass": true,
+    "matched_targets": [
+      "२ लाख",
+      "१० लाख",
+      "वालेट",
+      "बैंक खाता"
+    ],
+    "missing_targets": [
+      "2 लाख",
+      "10 लाख"
+    ],
+    "retrieved_sources": [
+      "directive_2079.pdf (Page 19)",
+      "directive_2078.pdf (Page 17)",
+      "directive_2080.pdf (Page 19)",
+      "directive_2080.pdf (Page 20)"
+    ],
+    "context_length": 8435,
+    "context_snippet": "\n[कागजात: directive_2079.pdf | पृष्ठ: 19]:\nज्ञछ\n(घ) व्ाालेटमा अधिकतम रु.५० हजारभन्दा बढी माैज्दात Overnight Balance  राख्न\nपाइनेेछैन । सो सीमा भन्दा बढी रहेको रकम अनिवार्य रुपमा ग्राहकको सम्बन्धित बैंक\nखातामा जम्मा हुने व्यवस्था मिलाउनु पनर्ेछ ।\n(४) भुक्तानी सेवा प्रदायक संस्थाले यस बैंकबाट इज ाजतपत्रप्राप्त विप्रेषण कम्पनीसँग\nसम्भफाैता गरी विदेशबाट आप्रवाह हुने रकम नेपालमा सञ्चालित विद्युतीय वालेटमा\nजम्मा हुने गरी रेमिटेन्स भित्र्याउन सक्नेछन् । यसरी रेमिटेन्स  प्राप्त गर्दा वालेटमा\nरकम जम्मा गर्न तोकिएको सीमाले बाधा पु¥याएको मानिने छैन् ।\n(छ) विदेशबाट वालेटमा प्राप्त रेमिटेन्स रकम  वालेटको O"
+  },
+  {
+    "id": "Q20",
+    "category": "Digital Banking & Payments",
+    "query": "How long should CCTV footage/Memory Backup of an ATM be preserved?",
+    "is_pass": true,
+    "matched_targets": [
+      "९०",
+      "नब्बे",
+      "दिन",
+      "CCTV"
+    ],
+    "missing_targets": [
+      "90",
+      "ऋऋत्ख्",
+      "फुटेज",
+      "ब्याकअप"
+    ],
+    "retrieved_sources": [
+      "directive_2080.pdf (Page 8)",
+      "directive_2082.pdf (Page 7)",
+      "directive_2081.pdf (Page 7)",
+      "directive_2079.pdf (Page 8)"
+    ],
+    "context_length": 7387,
+    "context_snippet": "\n[कागजात: directive_2080.pdf | पृष्ठ: 8]:\nद्ध\n(ख) CCTV Camera को Memory Backup कम्तीमा नब्बे (९०) दिनसम्म रहने व्यवस्था\nगर्नुपर्ने छ ।\n(ग) CCTV Camera जडान गर्दा कारोबार गर्ने व्यक्तिको मुखाकृति प्रष्ट ्रपमा देखिने\nतर ग्राहकले राखेको एक्ष्ल् अनुमान गर्न र रेकर्ड गर्न नसकिने गरी जडान गर्नुपनर्े\nछ ।\n(घ) ATM बुथह्रमा कुनै व्यक्ति वा समूहबाट शंकास्पद गतिविधि भएको शंका लागेमा\nयथाशीघ्र संस्थाले तोकेको पदाधिकारी/निकायमा तत्काल सूचित गर्ने व्यवस्था\nमिलाउनुपनर्े छ ।\n(४) ATM कारोबारसम्बन्धमा ग्राहकलाई तत्काल कुनै जानकारी /सहयोग आवश्यक भएमा\nसो प्रयोजनका लागि ATM रहेको स्थानमा सम्बन्धित कर्मचारीको े नाम र"
+  }
+]

@@ -1,0 +1,413 @@
+[
+  {
+    "id": "Q1",
+    "category": "Credit Classification & Provisioning",
+    "query": "What are the conditions for classifying a loan as a Watchlist (सूक्ष्म निगरानी) loan, and what is the required loan loss provision for it?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "provision": true,
+      "conditions": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 14)",
+      "Unified_directive_2082.pdf (Page 18)",
+      "Unified_directive_2082.pdf (Page 17)",
+      "Unified_directive_2082.pdf (Page 7)",
+      "Unified_directive_2082.pdf (Page 8)",
+      "Unified_directive_2081.pdf (Page 7)"
+    ],
+    "llm_answer": "Information not found in the documents."
+  },
+  {
+    "id": "Q2",
+    "category": "Credit Classification & Provisioning",
+    "query": "If a loan is fully secured by a personal guarantee (व्यक्तिगत जमानी) only, what is the additional loan loss provision required?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "additional_provision": true,
+      "subject": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 18)",
+      "Unified_directive_2082.pdf (Page 266)",
+      "Unified_directive_2082.pdf (Page 264)",
+      "Unified_directive_2082.pdf (Page 26)",
+      "Unified_directive_2082.pdf (Page 222)",
+      "Unified_directive_2081.pdf (Page 16)"
+    ],
+    "llm_answer": "Information not found in the documents."
+  },
+  {
+    "id": "Q3",
+    "category": "Credit Classification & Provisioning",
+    "query": "If a borrower is blacklisted by the Credit Information Bureau (CIC), how should we classify their loan and what provision is needed?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "classification": true,
+      "provision": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 8)",
+      "Unified_directive_2082.pdf (Page 113)",
+      "Unified_directive_2082.pdf (Page 450)",
+      "Unified_directive_2082.pdf (Page 107)",
+      "Unified_directive_2081.pdf (Page 17)",
+      "Unified-Directives-2078.pdf (Page 422)"
+    ],
+    "llm_answer": "According to the directive, if a borrower is blacklisted by the Credit Information Bureau, the loan must be classified as a Loss (खराब) loan regardless of whether it is overdue or not. This classification is mandatory under the additional provisions for bad loans, specifically when the borrower is declared bankrupt or otherwise meets the criteria for immediate loss categorization. (Unified_directive_2082.pdf, Page 8)"
+  },
+  {
+    "id": "Q4",
+    "category": "Capital Adequacy & Core Ratios",
+    "query": "What is the maximum allowed Credit-Deposit (CD) Ratio for our finance company, and what is the penalty for breaching it?",
+    "status": "✅ TRUE PASS",
+    "all_facts_retrieved": true,
+    "llm_correct": true,
+    "fact_checks": {
+      "cd_limit": true,
+      "penalty": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 53)",
+      "Unified_directive_2081.pdf (Page 50)",
+      "Unified_directive_2082.pdf (Page 40)",
+      "Unified_directive_2082.pdf (Page 33)",
+      "Unified_directive_2082.pdf (Page 185)",
+      "Unified_directive_2082.pdf (Page 181)"
+    ],
+    "llm_answer": "The maximum allowed Credit-Deposit (CD) Ratio is 90 percent (Unified_directive_2082.pdf, Page 53). If the monthly average ratio exceeds this limit, a penalty is imposed based on the prevailing bank rate, calculated as (Monthly Average Credit Balance - 90% of Monthly Average Deposit) x Bank Rate / (100 x 12) (Unified_directive_2082.pdf, Page 53)."
+  },
+  {
+    "id": "Q5",
+    "category": "Capital Adequacy & Core Ratios",
+    "query": "What is the minimum Statutory Liquidity Ratio (SLR) and Cash Reserve Ratio (CRR) required for a 'C' class finance company?",
+    "status": "❌ RETRIEVAL FAILED",
+    "all_facts_retrieved": false,
+    "llm_correct": false,
+    "fact_checks": {
+      "slr": true,
+      "crr": false
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 120)",
+      "Unified_directive_2082.pdf (Page 121)",
+      "Unified_directive_2082.pdf (Page 53)",
+      "Unified_directive_2081.pdf (Page 117)",
+      "Unified_directive_2081.pdf (Page 118)",
+      "Unified_directive_2082.pdf (Page 407)"
+    ],
+    "llm_answer": "According to the Unified Directive 2082, a 'C' class finance company is required to maintain a Statutory Liquidity Ratio (SLR) of 10 percent of its total domestic deposits. The provided documents do not contain information regarding the specific Cash Reserve Ratio (CRR) requirement for this class of institution.\n\nSource: Unified_directive_2082.pdf, Page 120"
+  },
+  {
+    "id": "Q6",
+    "category": "Capital Adequacy & Core Ratios",
+    "query": "When calculating the Capital Adequacy Ratio (CAR), what is the risk weight assigned to loans secured by residential properties?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "risk_weight": true,
+      "property": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 294)",
+      "Unified_directive_2082.pdf (Page 260)",
+      "Unified_directive_2082.pdf (Page 225)",
+      "Unified_directive_2082.pdf (Page 202)",
+      "Unified_directive_2082.pdf (Page 226)",
+      "Unified_directive_2081.pdf (Page 266)"
+    ],
+    "llm_answer": "Information not found in the documents."
+  },
+  {
+    "id": "Q7",
+    "category": "Sectoral & Deprived Sector Lending",
+    "query": "What percentage of our total loan portfolio must be directed towards the Deprived Sector (विपन्न वर्ग कर्जा)?",
+    "status": "✅ TRUE PASS",
+    "all_facts_retrieved": true,
+    "llm_correct": true,
+    "fact_checks": {
+      "percentage": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 149)",
+      "Unified_directive_2082.pdf (Page 147)",
+      "Unified_directive_2082.pdf (Page 451)",
+      "Unified_directive_2082.pdf (Page 40)",
+      "Unified-Directives-2077.pdf (Page 364)",
+      "Unified_directive_2082.pdf (Page 150)"
+    ],
+    "llm_answer": "Banks and financial institutions must direct 3% (Category A), 1.5% (Category B), and 1% (Category C) of their total loan portfolio towards the Deprived Sector. (Unified_directive_2082.pdf, Page 149)"
+  },
+  {
+    "id": "Q8",
+    "category": "Sectoral & Deprived Sector Lending",
+    "query": "For a 'C' class finance company, what is the minimum lending requirement for the agriculture, micro, small, and medium enterprises (MSME) sectors by Ashad 2084?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "target_2084": true,
+      "future_2085": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 152)",
+      "Unified_directive_2082.pdf (Page 427)",
+      "Unified_directive_2082.pdf (Page 151)",
+      "Unified_directive_2081.pdf (Page 149)",
+      "Unified_directive_2082.pdf (Page 451)",
+      "Unified_directive_2081.pdf (Page 148)"
+    ],
+    "llm_answer": ""
+  },
+  {
+    "id": "Q9",
+    "category": "Sectoral & Deprived Sector Lending",
+    "query": "What is the maximum limit for a personal residential home loan (व्यक्तिगत आवासीय घर कर्जा)?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "limit": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 397)",
+      "Unified_directive_2082.pdf (Page 396)",
+      "Unified_directive_2082.pdf (Page 40)",
+      "Unified_directive_2082.pdf (Page 407)",
+      "Unified_directive_2082.pdf (Page 41)",
+      "Unified_directive_2081.pdf (Page 392)"
+    ],
+    "llm_answer": "The maximum amount that may be classified as a व्यक्तिगत आवासीय घर कर्जा (personal residential home loan) is Rs 3 crore. This ceiling is stated in the Unified Directive 2082 (e.g., “रु ३ करोड सम्मका व्यक्तिगत आवासीय घर कर्जा” on page 397 and again on page 396)."
+  },
+  {
+    "id": "Q10",
+    "category": "Single Obligor Limits & Margin Lending",
+    "query": "What is the Single Obligor Limit (SOL) for fund-based loans for a finance company?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "sol_limit": true,
+      "base": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 36)",
+      "Unified_directive_2081.pdf (Page 34)",
+      "Unified_directive_2082.pdf (Page 37)",
+      "Unified_directive_2082.pdf (Page 448)",
+      "Unified_directive_2082.pdf (Page 40)",
+      "Unified_directive_2081.pdf (Page 33)"
+    ],
+    "llm_answer": ""
+  },
+  {
+    "id": "Q11",
+    "category": "Single Obligor Limits & Margin Lending",
+    "query": "What is the maximum Loan to Value (LTV) ratio allowed for margin lending (share loans)?",
+    "status": "❌ RETRIEVAL FAILED",
+    "all_facts_retrieved": false,
+    "llm_correct": false,
+    "fact_checks": {
+      "ltv_limit": true,
+      "valuation": false
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 40)",
+      "Unified_directive_2082.pdf (Page 26)",
+      "Unified_directive_2082.pdf (Page 33)",
+      "Unified_directive_2081.pdf (Page 37)",
+      "Unified_directive_2081.pdf (Page 25)",
+      "Unified_directive_2082.pdf (Page 53)"
+    ],
+    "llm_answer": "Information not found in the documents."
+  },
+  {
+    "id": "Q12",
+    "category": "Corporate Governance & HR",
+    "query": "What is the age limit for appointing a Chief Executive Officer (CEO) in a finance company?",
+    "status": "✅ TRUE PASS",
+    "all_facts_retrieved": true,
+    "llm_correct": true,
+    "fact_checks": {
+      "appointment_age": true,
+      "retirement_age": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 63)",
+      "Unified_directive_2082.pdf (Page 77)",
+      "Unified_directive_2082.pdf (Page 27)",
+      "Unified_directive_2081.pdf (Page 60)",
+      "directive_2082.pdf (Page 57)",
+      "Unified_directive_2082.pdf (Page 449)"
+    ],
+    "llm_answer": "The appointment of a Chief Executive Officer (CEO) in a finance company is limited to persons **not older than 65 years**; anyone who has passed 65 years cannot be appointed or re‑appointed to the CEO post. Moreover, a CEO who reaches **69 years of age must step down** and cannot remain in the position.  \n\n**Citation:** Unified_directive_2082.pdf, पृष्ठ 63."
+  },
+  {
+    "id": "Q13",
+    "category": "Corporate Governance & HR",
+    "query": "Within how many days must a vacant CEO or senior management position be filled?",
+    "status": "✅ TRUE PASS",
+    "all_facts_retrieved": true,
+    "llm_correct": true,
+    "fact_checks": {
+      "timeframe": true
+    },
+    "retrieved_sources": [
+      "directive_2082.pdf (Page 57)",
+      "Unified_directive_2082.pdf (Page 77)",
+      "Unified_directive_2082.pdf (Page 64)",
+      "Unified_directive_2082.pdf (Page 27)",
+      "Unified_directive_2082.pdf (Page 63)",
+      "directive_2081.pdf (Page 57)"
+    ],
+    "llm_answer": "A vacant Chief Executive Officer (or other senior‑management post) must be filled **within three months** of the vacancy.  \n\n- Directive 2082, p. 57: “कार्यकारी प्रमुख पद रित्तफ भएको **तीन महिना** भित्र पदपूर्त… गर्नुपर्ेछ।”  \n- Unified Directive 2082,"
+  },
+  {
+    "id": "Q14",
+    "category": "Corporate Governance & HR",
+    "query": "Can a member of the Board of Directors take a loan from our finance company?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "rule": true,
+      "exceptions": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 75)",
+      "Unified_directive_2082.pdf (Page 116)",
+      "Unified_directive_2082.pdf (Page 99)",
+      "Unified_directive_2082.pdf (Page 112)",
+      "Unified_directive_2081.pdf (Page 72)",
+      "Unified_directive_2082.pdf (Page 268)"
+    ],
+    "llm_answer": ""
+  },
+  {
+    "id": "Q15",
+    "category": "AML/CFT & Blacklisting",
+    "query": "What is the threshold amount for reporting a cash transaction (TTR) to the Financial Information Unit (FIU)?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "threshold": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 170)",
+      "directive_2082.pdf (Page 54)",
+      "directive_2082.pdf (Page 80)",
+      "directive_2081.pdf (Page 79)",
+      "directive_2081.pdf (Page 54)",
+      "Unified_directive_2082.pdf (Page 452)"
+    ],
+    "llm_answer": "The reporting threshold for cash transactions (Threshold Transaction Reporting – TTR) is Rs 10 lakh (i.e., Rs"
+  },
+  {
+    "id": "Q16",
+    "category": "AML/CFT & Blacklisting",
+    "query": "Within how many days must a Suspicious Transaction Report (STR) be submitted to the FIU after identifying a suspicious activity?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "timeframe": true
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 172)",
+      "directive_2078.pdf (Page 60)",
+      "directive_2080.pdf (Page 67)",
+      "Unified_directive_2081.pdf (Page 438)",
+      "Unified-Directives-2078.pdf (Page 159)",
+      "Unified-Directives-2077.pdf (Page 393)"
+    ],
+    "llm_answer": "A Suspicious Transaction Report (STR) must be filed with the Financial Information Unit (FIU) **within 3 days** of the date the suspicious activity or transaction is identified. This requirement is stated in both the Unified Directive 2082 (page 172) and Directive 2078"
+  },
+  {
+    "id": "Q17",
+    "category": "AML/CFT & Blacklisting",
+    "query": "What is the minimum loan default amount to recommend a borrower for blacklisting to the Credit Information Center?",
+    "status": "❌ RETRIEVAL FAILED",
+    "all_facts_retrieved": false,
+    "llm_correct": false,
+    "fact_checks": {
+      "threshold": false
+    },
+    "retrieved_sources": [
+      "Unified_directive_2082.pdf (Page 104)",
+      "Unified_directive_2082.pdf (Page 107)",
+      "Unified_directive_2082.pdf (Page 112)",
+      "Unified-Directives-2078.pdf (Page 97)",
+      "Unified_directive_2081.pdf (Page 101)",
+      "Unified_directive_2082.pdf (Page 450)"
+    ],
+    "llm_answer": "The directive requires that any borrower who has taken a loan or facility of **Rs 10 lakh or more** and meets any of the listed default conditions must be placed on the black‑list of the Credit Information Center. Thus, the minimum loan amount that triggers a recommendation for blacklisting is **Rs 10 lakh** (Document: Unified_directive_2082.pdf, Page 107)."
+  },
+  {
+    "id": "Q18",
+    "category": "Digital Banking & Payments",
+    "query": "What is the maximum daily limit for transferring money using a Mobile Banking App or QR code?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "daily_limit": true
+    },
+    "retrieved_sources": [
+      "directive_2082.pdf (Page 20)",
+      "Unified_directive_2082.pdf (Page 136)",
+      "directive_2080.pdf (Page 19)",
+      "directive_2082.pdf (Page 22)",
+      "directive_2078.pdf (Page 18)",
+      "directive_2078.pdf (Page 19)"
+    ],
+    "llm_answer": ""
+  },
+  {
+    "id": "Q19",
+    "category": "Digital Banking & Payments",
+    "query": "What is the maximum amount a customer can transfer from a bank account to a digital wallet per day?",
+    "status": "⚠️ RETRIEVED BUT LLM FAILED",
+    "all_facts_retrieved": true,
+    "llm_correct": false,
+    "fact_checks": {
+      "wallet_limit": true
+    },
+    "retrieved_sources": [
+      "directive_2082.pdf (Page 20)",
+      "directive_2082.pdf (Page 21)",
+      "directive_2080.pdf (Page 20)",
+      "directive_2080.pdf (Page 19)",
+      "Unified_directive_2082.pdf (Page 175)",
+      "directive_2082.pdf (Page 22)"
+    ],
+    "llm_answer": "A customer may transfer **up to NPR 200,000 per day** from a bank account into an electronic (e‑money) wallet (the monthly"
+  },
+  {
+    "id": "Q20",
+    "category": "Digital Banking & Payments",
+    "query": "How long should CCTV footage/Memory Backup of an ATM be preserved?",
+    "status": "✅ TRUE PASS",
+    "all_facts_retrieved": true,
+    "llm_correct": true,
+    "fact_checks": {
+      "duration": true
+    },
+    "retrieved_sources": [
+      "directive_2082.pdf (Page 7)",
+      "directive_2082.pdf (Page 20)",
+      "Unified_directive_2082.pdf (Page 189)",
+      "directive_2080.pdf (Page 8)",
+      "Unified_directive_2082.pdf (Page 425)",
+      "Unified_directive_2082.pdf (Page 124)"
+    ],
+    "llm_answer": "The CCTV camera installed at an ATM must have its memory backup retained for **a minimum of ninety (90) days**. This requirement is stipulated in the NRB directive on ATM operations.  \n\n*Citation: directive_2082.pdf, p. 7.*"
+  }
+]

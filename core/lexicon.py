@@ -153,13 +153,18 @@ def normalize_devanagari(text: str) -> str:
     return t
 
 def extract_meaningful_keywords(text: str) -> set:
-    """Extracts informative search tokens and expands banking synonyms."""
+    """Zero-hardcoding pure NLP keyword extraction with Devanagari Unicode normalization."""
+    if not text:
+        return set()
     text_norm = normalize_devanagari(text)
     raw_words = re.findall(r'[\u0900-\u097F\w+]+', text_norm)
     keywords = set()
     for w in raw_words:
         w_lower = w.lower()
-        if w_lower in STOP_WORDS or len(w) <= 1:
+        if w_lower in STOP_WORDS:
+            continue
+        # Preserve single digits (e.g. 4%, 5%, 3 crore) but filter punctuation/single chars
+        if len(w) <= 1 and w not in '०१२३४५६७८९0123456789':
             continue
         keywords.add(w)
         keywords.add(w_lower)
@@ -170,52 +175,20 @@ def extract_meaningful_keywords(text: str) -> set:
             if base_s not in STOP_WORDS:
                 keywords.add(base_s)
 
-        if w_lower in BANKING_DOMAIN_LEXICON:
-            for syn in BANKING_DOMAIN_LEXICON[w_lower]:
-                keywords.add(syn)
-
-        if w_lower in SPECIAL_PREETI:
-            for pt in SPECIAL_PREETI[w_lower]:
-                keywords.add(pt)
-
+        # Nepali grammatical suffix trimming
         for suffix in ['सम्बन्धी', 'सम्बन्धमा', 'मार्फत', 'अनुसार', 'सम्म', 'हरु', 'हरू', 'को', 'का', 'की', 'मा', 'ले', 'लाई', 'बाट']:
             if w.endswith(suffix) and len(w) > len(suffix) + 2:
                 base = w[:-len(suffix)]
-                if base.lower() not in STOP_WORDS and len(base) > 2:
+                if base.lower() not in STOP_WORDS and (len(base) > 2 or base in '०१२३४५६७८९0123456789'):
                     keywords.add(base)
+
         keywords.add(w.replace('ः', ''))
         keywords.add(w.replace(':', ''))
-
-    t_lower = text.lower()
-    if 'cctv' in t_lower or 'सीसीटीभी' in text:
-        keywords.update(['ऋऋत्ख्', 'नब्बे', '९०'])
-    if 'force settlement' in t_lower or 'force' in t_lower:
-        keywords.update(['ँयचअभ', 'क्भततभिफभलत', 'त्ंघ', 'त्ंज्ञ', 'ष्ककगभच', 'क्ष्ककगभच', 'ब्अत्रगष्चभच'])
-    if 'ibft' in t_lower or 'inter bank' in t_lower:
-        keywords.update(['क्ष्धँत्', 'रु.१०', '१०'])
-    if 'system audit' in t_lower:
-        keywords.update(['क्थकतभफ', 'ब्गमष्त', '१ वर्ष', '२ आर्थिक वर्ष'])
-    if 'simplified' in t_lower or 'सरलीकृत' in text:
-        keywords.update(['सरलीकृत', 'मचर्ेन्ट', '१,००,०००'])
-    if 'overnight' in t_lower or 'ओभरनाइट' in text:
-        keywords.update(['इखभचलष्नजत', 'धबबिलअभ', '५०', 'हजार', 'वालेट'])
-    if 'threshold transaction' in t_lower or 'ttr' in t_lower or 'सीमा कारोबार' in text:
-        keywords.update(['सीमा कारोबार', 'त्त्च्', '१० लाख', '१५ दिन', 'नयब्ःी', 'goAML'])
-    if any(c in t_lower for c in ['atm', 'debit', 'card', 'एटीएम', 'कार्ड']) and any(w in t_lower for w in ['withdraw', 'withdrawn', 'withdrawal', 'cash', 'झिक्ने', 'झिक्न', 'नगद', 'सीमा', 'limit', 'max', 'maximum', 'amount']):
-        keywords.update(['भुक्तानी कार्ड', 'कार्डबाट नगद', 'नगद झिक्ने', 'अधिकतम सीमा', 'डेबिट कार्ड', '५० हजार', '२० हजार', 'प्रतिकारोबार', 'प्रतिदिन'])
-    if 'c1' in t_lower or 'credit shock' in t_lower:
-        keywords.update(['C1', 'Credit Shock', 'Substandard', '10 DBs', 'DBs'])
-    if 'capital adequacy framework' in t_lower or 'framework' in t_lower:
-        keywords.update(['Capital Adequacy Framework', '2015', '2007', 'Basel', 'Para 2.4'])
-    if 'npl' in t_lower or 'non-performing' in t_lower:
-        keywords.update(['Table 1.2', '10.31', '3.97'])
-    if 'profit' in t_lower or 'loss' in t_lower:
-        keywords.update(['0.67', '1.27', 'consolidated'])
 
     clean_tokens = set()
     for k in keywords:
         for t in re.findall(r'[\u0900-\u097F\w+]+', k):
-            if len(t) > 1 and t.lower() not in STOP_WORDS:
+            if (len(t) > 1 or t in '०१२३४५६७८९0123456789') and t.lower() not in STOP_WORDS:
                 clean_tokens.add(t)
 
     return clean_tokens

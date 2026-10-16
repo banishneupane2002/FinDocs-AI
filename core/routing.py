@@ -178,9 +178,9 @@ def build_document_year_map(table) -> dict:
         return _DOC_YEAR_CACHE
     doc_map = {}
     try:
-        df = table.to_pandas()
+        df = table.search().where("page <= 3").select(["source", "page", "text"]).to_pandas()
         for s in df['source'].unique():
-            p1_records = df[(df['source'] == s) & (df['page'] <= 3)]
+            p1_records = df[df['source'] == s]
             sample_text = " ".join(p1_records['text'].tolist())
             doc_map[s] = detect_document_years(s, sample_text)
         _DOC_YEAR_CACHE = doc_map

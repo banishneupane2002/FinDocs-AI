@@ -61,12 +61,12 @@ python ask.py
 ### Background File Watcher
 To automatically ingest new or modified files dropped into `File_System/`:
 ```bash
-python watcher.py
+python tools/watcher.py
 ```
 
 ---
 
 ## 🛠️ Utility Scripts
 
-- **`python view_db.py`**: Quick diagnostic script to inspect table metadata and stored vectors in LanceDB.
-- **`python search.py`**: Fast offline semantic search probe for testing query vectors directly against `bank_documents`.
+- **`python tools/view_db.py`**: Quick diagnostic script to inspect table metadata and stored vectors in LanceDB.
+- **`python tools/inspect_context.py "<question>"`**: Offline hybrid retrieval inspector to view parent pages and RRF rank scores without calling the Groq API.

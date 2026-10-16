@@ -42,7 +42,8 @@ def call_groq_with_retry(groq_client, messages: list, temperature: float = 0.1, 
             return res, model_cand
         except Exception as model_err:
             last_err = model_err
-            if "429" in str(model_err) or "rate_limit" in str(model_err).lower():
+            err_str = str(model_err).lower()
+            if "429" in err_str or "rate_limit" in err_str or "413" in err_str or "too large" in err_str:
                 continue
             else:
                 raise model_err
