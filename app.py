@@ -25,17 +25,17 @@ from core import (
     build_rag_prompt,
     run_ingestion,
     delete_document,
-    extract_sample_text_from_file,
-    categorize_file,
     get_file_metadata,
+    categorize_file,
     MODELS_TO_TRY
 )
 
 # 2. Page Configuration
 st.set_page_config(
-    page_title="NRB Regulatory Intelligence (RAG)",
-    page_icon="🏦",
-    layout="wide"
+    page_title="Best Finance Regulatory Intelligence",
+    page_icon="https://bestfinance.com.np/image/catalog/logo/favicon.png",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 # Inject Institutional Theme Stylesheet
@@ -214,68 +214,108 @@ def get_cached_sources():
 
 sources_summary = get_cached_sources()
 doc_options = ["All Documents"] + list(sources_summary.keys())
-
 all_disk_files = [f for f in os.listdir("File_System") if f.lower().endswith((".pdf", ".docx", ".txt"))] if os.path.exists("File_System") else []
 
-# 6. Clean Executive Sidebar
-with st.sidebar:
-    st.markdown("### 🏦Institutional Regulatory Intelligence Engine")
-    st.divider()
-
-    # Document Scope Filter
-    st.subheader(" Filter Search")
-    selected_doc = st.selectbox(
-        "Search Scope:",
-        options=doc_options,
-        index=0,
-        help="Leave on 'All Documents' so AI auto-selects the right directive and fiscal year based on your question."
-    )
-    st.caption("💡 *'All Documents' automatically selects the right directive and year based on your question.*")
-    st.divider()
-
-    # Chat Actions
-    st.subheader("🧹 Actions")
-    if st.button("🗑️ Clear Chat History", use_container_width=True):
-        st.session_state.messages = [
-            {
-                "role": "assistant",
-                "content": "नमस्ते! म यस संस्था सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
-                "sources": [],
-                "latency": None
-            }
-        ]
-        st.rerun()
-
-# 7. Top-Level Workspace Navigation (ChatGPT & Gemini Style View Switcher - Sticky Navbar)
-active_tab = st.segmented_control(
-    "Workspace View",
-    options=["💬 Regulatory Assistant", "📁 Document Management & Admin"],
-    default="💬 Regulatory Assistant",
-    key="main_workspace_view",
-    label_visibility="collapsed"
-)
-if not active_tab:
-    active_tab = "💬 Regulatory Assistant"
 
 # ==========================================
-# VIEW 1: CLEAN REGULATORY CHATBOT
+# PAGE 1: REGULATORY ASSISTANT (/)
 # ==========================================
-if active_tab == "💬 Regulatory Assistant":
-    # Clean Header
-    st.markdown("""
-    <div style="margin-bottom: 1.1rem; padding-bottom: 0.5rem;">
-        <h2 style="margin: 0; font-size: 1.45rem; font-weight: 700; color: #0A2540; letter-spacing: -0.01em;">
-            💬 Document Assistant
-        </h2>
-    </div>
-    """, unsafe_allow_html=True)
+def render_assistant_page():
+    # Sidebar Filters & Chat Controls
+    with st.sidebar:
+        st.subheader("🔍 Scope & Filter Search")
+
+        CATEGORY_OPTIONS = {
+            "all": "🌐 All Categories (Auto-Detect)",
+            "unified": "🏦 Unified Directives (एकीकृत निर्देशन)",
+            "payment": "💳 Payment Directives (भुक्तानी निर्देशन)",
+            "report": "📊 Supervision Reports (सुपरीवेक्षण प्रतिवेदन)",
+            "other": "📑 Circulars & Other (अन्य परिपत्र)"
+        }
+
+        selected_cat = st.selectbox(
+            "Category Scope:",
+            options=list(CATEGORY_OPTIONS.keys()),
+            format_func=lambda k: CATEGORY_OPTIONS[k],
+            index=0,
+            help="Filter search scope by regulatory category or keep on 'All Categories' for global AI routing."
+        )
+
+        all_available_docs = list(sources_summary.keys())
+        if selected_cat == "all":
+            category_docs = all_available_docs
+            doc_dropdown_options = ["All Documents (Global AI Routing)"] + all_available_docs
+        else:
+            category_docs = [f for f in all_available_docs if categorize_file(f) == selected_cat]
+            if category_docs:
+                doc_dropdown_options = [f"All Documents in this Category ({len(category_docs)})"] + category_docs
+            else:
+                doc_dropdown_options = ["No documents found in this category"]
+
+        selected_doc_choice = st.selectbox(
+            "Document / File Selection:",
+            options=doc_dropdown_options,
+            index=0,
+            help="Select a specific file or search across all documents in the chosen category."
+        )
+
+        if selected_cat == "all" and selected_doc_choice.startswith("All Documents"):
+            selected_doc = "All Documents"
+            st.caption("💡 *Global AI auto-detects the right directive and fiscal year based on your question.*")
+        elif selected_doc_choice.startswith("All Documents in this Category"):
+            selected_doc = category_docs
+            st.caption(f"🎯 *Searching across all **{len(category_docs)}** files in **{CATEGORY_OPTIONS[selected_cat]}**.*")
+        elif selected_doc_choice.startswith("No documents"):
+            selected_doc = "All Documents"
+            st.caption("⚠️ *No documents in this category. Defaulting to all documents.*")
+        else:
+            selected_doc = selected_doc_choice
+            st.caption(f"🎯 *Search locked to: `{selected_doc}`*")
+
+        st.divider()
+
+        # Chat Actions
+        st.subheader("🧹 Actions")
+        if st.button("🗑️ Clear Chat History", use_container_width=True):
+            st.session_state.messages = [
+                {
+                    "role": "assistant",
+                    "content": "नमस्ते! म बेष्ट फाइनान्स कम्पनी लि. (Best Finance Company Ltd.) को आधिकारिक नियामक सहायक हुँ। तपाईं नेपाल राष्ट्र बैंकका परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
+                    "sources": [],
+                    "latency": None
+                }
+            ]
+            st.rerun()
+
+    # Top Executive Header with Best Finance Branding
+    col_head, col_nav = st.columns([3.8, 1.2])
+    with col_head:
+        st.markdown("""
+        <div class="finance-header">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <img src="https://bestfinance.com.np/image/catalog/Logo%20(SVG).png" 
+                     style="max-height: 44px; width: auto; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.22));">
+                <div style="height: 38px; width: 1.5px; background: rgba(255, 255, 255, 0.25); border-radius: 1px;"></div>
+                <div class="finance-header-text">
+                    <h1><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"   style="width: 26px; height: 26px; vertical-align: -4px; margin-right: 8px; display: inline-block;">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+</svg>
+Regulatory & Directive Assistant</h1>
+                    <p>Official Institutional AI for NRB Directives, Payment Guidelines & Circulars</p>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_nav:
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+        # st.page_link(admin_page, label="📁 Admin Portal", use_container_width=True)
 
     # Chat History in Session State
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {
                 "role": "assistant",
-                "content": "नमस्ते! म यस संस्था सम्बन्धी कागजातहरूको आधिकारिक सहायक हुँ। तपाईं परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
+                "content": "नमस्ते! म बेष्ट फाइनान्स कम्पनी लि. (Best Finance Company Ltd.) को आधिकारिक नियामक सहायक हुँ। तपाईं नेपाल राष्ट्र बैंकका परिपत्र, निर्देशन, कारोबार सीमा वा शुल्कबारे कुनै पनि प्रश्न सोध्न सक्नुहुन्छ।",
                 "sources": [],
                 "other_sources": [],
                 "target_years": [],
@@ -329,6 +369,14 @@ if active_tab == "💬 Regulatory Assistant":
                 elif len(matched_years) > 1:
                     yrs_str = ", ".join(str(y) for y in sorted(matched_years))
                     routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
+            elif isinstance(effective_doc, (list, set, tuple)):
+                if len(matched_years) == 1:
+                    target_yr = list(matched_years)[0]
+                    matching_in_scope = [d for d in effective_doc if target_yr in doc_year_map.get(d, set())]
+                    if matching_in_scope:
+                        effective_doc = matching_in_scope if len(matching_in_scope) > 1 else matching_in_scope[0]
+                        doc_names_str = ", ".join(f"`{d}`" for d in (matching_in_scope if isinstance(matching_in_scope, list) else [matching_in_scope]))
+                        routed_badge = f"🎯 Auto-routed within category to {target_yr} ({doc_names_str})"
 
             search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
             if not search_query.strip():
@@ -466,22 +514,11 @@ if active_tab == "💬 Regulatory Assistant":
     # Bottom spacer so the final message and citations are never obscured by the docked input bar
     st.markdown("<div style='height: 110px;'></div>", unsafe_allow_html=True)
 
-# ==========================================
-# VIEW 2: ORGANIZED DOCUMENT MANAGEMENT & ADMIN
-# ==========================================
-else:
-    st.markdown("""
-    <div style="margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid #E2E8F0;">
-        <h2 style="margin: 0; font-size: 1.6rem; font-weight: 700; color: #0A2540; letter-spacing: -0.01em;">
-            📁 Document Management & Admin Panel
-        </h2>
-        <p style="margin: 4px 0 0 0; font-size: 0.92rem; color: #64748B;">
-            Organize, upload, inspect, and synchronize regulatory documents with the LanceDB vector store.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
 
-    # 1. Lazy Dataframe Loading (Only in Admin view)
+# ==========================================
+# PAGE 2: DOCUMENT MANAGEMENT & ADMIN (/admin)
+# ==========================================
+def render_admin_page():
     @st.cache_data(ttl=60, show_spinner=False)
     def load_admin_data():
         try:
@@ -491,10 +528,48 @@ else:
             return None
 
     df = load_admin_data()
-
     total_docs = len(all_disk_files)
     total_chunks = len(df) if df is not None else 0
 
+    # Sidebar Tools
+    with st.sidebar:
+        st.subheader("⚙️ Quick Tools")
+        if st.button("🔄 Sync Database", use_container_width=True, key="admin_sync_btn"):
+            with st.spinner("Re-syncing files with database..."):
+                res = run_ingestion()
+                if res.returncode == 0:
+                    st.success("✅ Database synchronized!")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error(f"Sync failed: {res.stderr[:200]}")
+
+    # Top Executive Header with Best Finance Branding
+    col_head, col_nav = st.columns([3.8, 1.2])
+    with col_head:
+        st.markdown("""
+        <div class="finance-header">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <img src="https://bestfinance.com.np/image/catalog/Logo%20(SVG).png" 
+                     style="max-height: 44px; width: auto; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.22));">
+                <div style="height: 38px; width: 1.5px; background: rgba(255, 255, 255, 0.25); border-radius: 1px;"></div>
+                <div class="finance-header-text">
+                <h1><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 26px; height: 26px; vertical-align: -4px; margin-right: 8px; display: inline-block;">
+  <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+</svg>
+ Document Management & Admin Panel</h1>
+                    <p>Upload, organize, inspect, and synchronize institutional regulatory documents</p>
+                </div>
+            </div>
+            </div>
+        """, unsafe_allow_html=True)
+    with col_nav:
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+        st.page_link(assistant_page, label="💬 Regulatory Assistant", use_container_width=True)
+
+    st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
+
+    # 1. Summary Metrics
     col_m1, col_m2 = st.columns(2)
     with col_m1:
         st.metric("📚 Total Documents", f"{total_docs} Files")
@@ -549,48 +624,11 @@ else:
     st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
 
     # 3. Interactive Chunk Inspector
-    with st.expander("🔍 Interactive Chunk Inspector (Browse Extracted Database Chunks)", expanded=False):
-        st.markdown("<p style='font-size: 0.9rem; color: #475569; margin-bottom: 8px;'>Directly view, search, and verify raw chunks stored in the LanceDB vector store for any document.</p>", unsafe_allow_html=True)
-        if df is not None and not df.empty:
-            doc_list = sorted(list(df["source"].unique()))
-            col_sel1, col_sel2 = st.columns([2, 1])
-            with col_sel1:
-                sel_doc = st.selectbox("Select Document", doc_list, key="chunk_insp_doc")
-            
-            doc_df = df[df["source"] == sel_doc]
-            all_pages = sorted(list(doc_df["page"].unique()))
-            page_options = ["All Pages"] + [f"Page {p}" for p in all_pages]
-            
-            with col_sel2:
-                sel_page_str = st.selectbox("Select Page", page_options, key="chunk_insp_page")
-            
-            chunk_search = st.text_input("Filter chunks by keyword (optional):", key="chunk_insp_search", placeholder="Type keyword to filter chunks...").strip()
-            
-            filtered_chunks = doc_df
-            if sel_page_str != "All Pages":
-                page_num = int(sel_page_str.replace("Page ", ""))
-                filtered_chunks = filtered_chunks[filtered_chunks["page"] == page_num]
-            
-            if chunk_search:
-                filtered_chunks = filtered_chunks[filtered_chunks["text"].str.contains(chunk_search, case=False, na=False)]
-            
-            st.caption(f"Found **{len(filtered_chunks)}** chunk(s) for **{sel_doc}** ({sel_page_str}):")
-            
-            for idx, (_, ch_row) in enumerate(filtered_chunks.head(15).iterrows(), 1):
-                clean_t = decode_preeti_text(ch_row['text'])
-                with st.expander(f"🧩 Chunk #{idx} — Page {ch_row['page']} ({len(clean_t)} characters)", expanded=(idx == 1)):
-                    st.text_area(f"Chunk Content (Page {ch_row['page']})", clean_t, height=130, key=f"chunk_txt_{sel_doc}_{ch_row['page']}_{idx}", disabled=True)
-            
-            if len(filtered_chunks) > 15:
-                st.info(f"Showing first 15 of {len(filtered_chunks)} matching chunks. Select a specific page or filter by keyword above to see others.")
-        else:
-            st.info("No documents indexed in database yet.")
-
-    st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
+    
 
     # 4. Organized Document Catalog
     st.subheader("📑 Document Catalog (Organized by Category)")
-    
+
     admin_filter = st.text_input(
         "🔍 Filter documents:",
         placeholder="Filter by filename, year (e.g. 2082), or keyword...",
@@ -600,7 +638,7 @@ else:
     # Build metadata for all files in File_System
     all_metadata = [get_file_metadata(f, sources_summary, df=df) for f in all_disk_files]
 
-    # Category definitions with human-friendly Nepali & English titles
+    # Category definitions with human-friendly titles
     CATEGORY_SECTIONS = [
         {
             "id": "unified",
@@ -627,12 +665,10 @@ else:
     live_table_for_delete = get_live_table()
 
     for cat in CATEGORY_SECTIONS:
-        # Filter docs belonging to this category
         cat_docs = [m for m in all_metadata if m["category"] == cat["id"]]
         if admin_filter:
             cat_docs = [m for m in cat_docs if admin_filter in m["filename"].lower() or admin_filter in m["years_str"].lower()]
 
-        # Sort docs by detected year descending, then by filename
         cat_docs.sort(key=lambda m: (m["years_str"], m["filename"]), reverse=True)
 
         exp_label = f"{cat['title']} — {len(cat_docs)} Document(s)"
@@ -674,3 +710,25 @@ else:
                             st.toast(f"Removed '{fname}' from system and database!")
                             time.sleep(0.6)
                             st.rerun()
+
+
+# ==========================================
+# 6. STREAMLIT MULTI-PAGE NAVIGATION ROUTER
+# ==========================================
+assistant_page = st.Page(
+    render_assistant_page,
+    title="Regulatory Assistant",
+    icon="",
+    default=True
+)
+
+admin_page = st.Page(
+    render_admin_page,
+    title="Document Management & Admin",
+    icon="",
+    url_path="admin"
+)
+
+pg = st.navigation([assistant_page, admin_page])
+pg.run()
+

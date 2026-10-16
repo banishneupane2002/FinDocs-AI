@@ -1,34 +1,39 @@
 """
-Institutional UI Stylesheet for Streamlit Web Application
-Clean White & Slate Navy Theme with Sticky Navbar and ChatGPT/Gemini Bottom Dock
+Best Finance Company Ltd. Institutional UI Stylesheet
+Brand Palette:
+- Primary Brand Green: #00A94F
+- Forest / Emerald Green: #047857 / #005528 / #013A1B
+- Soft Emerald & Mint Accents: #ECFDF5 / #E6F7EE / #D1FAE5 / #A7F3D0
+- Canvas Background: #FFFFFF / #F4FBF7
+- Body & Heading Typography: Poppins, Mukta, sans-serif
 """
 
 CUSTOM_CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Poppins', 'Mukta', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Global White App Canvas */
+    /* Global Clean White Canvas */
     .stApp {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
     }
     
-    /* Institutional Executive Header */
+    /* Best Finance Executive Header */
     .finance-header {
-        background: linear-gradient(135deg, #0A2540 0%, #003366 60%, #08213B 100%);
+        background: linear-gradient(135deg, #013A1B 0%, #047857 55%, #00A94F 100%);
         color: #FFFFFF;
         padding: 22px 28px;
         border-radius: 12px;
         margin-bottom: 22px;
-        box-shadow: 0 4px 14px rgba(10, 37, 64, 0.10);
+        box-shadow: 0 4px 16px rgba(0, 169, 79, 0.16);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(167, 243, 208, 0.3);
     }
     .finance-header-text h1 {
         margin: 0;
@@ -40,40 +45,86 @@ CUSTOM_CSS = """
     .finance-header-text p {
         margin: 4px 0 0 0;
         font-size: 0.92rem;
-        color: #CBD5E1 !important;
+        color: #D1FAE5 !important;
     }
     .finance-badge {
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(167, 243, 208, 0.45);
         padding: 6px 14px;
         border-radius: 20px;
         font-size: 0.78rem;
         font-weight: 600;
         letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: #F8FAFC;
+        color: #FFFFFF;
         white-space: nowrap;
     }
     
-    /* Sidebar: Crisp Executive Slate */
+    /* Sidebar: Clean Soft Mint Slate */
     section[data-testid="stSidebar"] {
-        background-color: #F8FAFC !important;
-        border-right: 1px solid #E2E8F0;
+        background-color: #F4FBF7 !important;
+        border-right: 1px solid #D1FAE5;
     }
     section[data-testid="stSidebar"] h1, 
     section[data-testid="stSidebar"] h2, 
     section[data-testid="stSidebar"] h3 {
-        color: #0F2C59 !important;
+        color: #02402F !important;
         font-weight: 600 !important;
     }
     
     /* Expander / Card Containers */
     div[data-testid="stExpander"] {
         background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
+        border: 1.5px solid #D1FAE5 !important;
         border-radius: 8px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0 1px 3px rgba(0, 169, 79, 0.04) !important;
         margin-bottom: 10px !important;
+        overflow: hidden !important;
+    }
+
+    /* Expander Header Title: Dark Forest Green */
+    div[data-testid="stExpander"] summary,
+    div[data-testid="stExpander"] details summary,
+    div[data-testid="stExpander"] summary p,
+    div[data-testid="stExpander"] details summary p,
+    div[data-testid="stExpander"] summary span,
+    div[data-testid="stExpander"] details summary span {
+        color: #02402F !important;
+        font-weight: 600 !important;
+        font-size: 0.93rem !important;
+        letter-spacing: -0.01em !important;
+    }
+
+    div[data-testid="stExpander"] summary:hover,
+    div[data-testid="stExpander"] details summary:hover {
+        background-color: #ECFDF5 !important;
+    }
+    div[data-testid="stExpander"] summary:hover p,
+    div[data-testid="stExpander"] details summary:hover p,
+    div[data-testid="stExpander"] summary:hover span,
+    div[data-testid="stExpander"] details summary:hover span {
+        color: #008C42 !important;
+    }
+
+    div[data-testid="stExpander"] summary svg,
+    div[data-testid="stExpander"] details summary svg {
+        color: #00A94F !important;
+        fill: #00A94F !important;
+    }
+
+    /* Extracted Text Content in Expander: High-Legibility Dark Slate */
+    div[data-testid="stExpander"] div[data-testid="stTextArea"] textarea,
+    div[data-testid="stExpander"] textarea:disabled,
+    div[data-testid="stExpander"] textarea[disabled] {
+        color: #0F172A !important;
+        -webkit-text-fill-color: #0F172A !important;
+        background-color: #F4FBF7 !important;
+        border: 1px solid #D1FAE5 !important;
+        border-radius: 6px !important;
+        font-size: 0.90rem !important;
+        line-height: 1.6 !important;
+        font-weight: 500 !important;
+        opacity: 1 !important;
     }
     
     /* Chat Message Bubbles */
@@ -92,16 +143,16 @@ CUSTOM_CSS = """
         border-left: 4px solid #64748B !important;
     }
     
-    /* Assistant Message Container Accent (Institutional Navy) */
+    /* Assistant Message Container Accent: Best Finance Brand Green */
     div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-assistant"]) {
         background-color: #FFFFFF !important;
-        border-left: 4px solid #003366 !important;
+        border-left: 4px solid #00A94F !important;
     }
     
     /* Quick Showcase Buttons */
     div[data-testid="stHorizontalBlock"] button {
         background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
+        border: 1px solid #D1FAE5 !important;
         border-radius: 8px !important;
         padding: 10px 14px !important;
         font-size: 0.88rem !important;
@@ -112,17 +163,17 @@ CUSTOM_CSS = """
         transition: all 0.15s ease-in-out !important;
     }
     div[data-testid="stHorizontalBlock"] button:hover {
-        border-color: #003366 !important;
-        color: #003366 !important;
-        background-color: #F8FAFC !important;
+        border-color: #00A94F !important;
+        color: #007035 !important;
+        background-color: #ECFDF5 !important;
         transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(0, 51, 102, 0.08) !important;
+        box-shadow: 0 4px 10px rgba(0, 169, 79, 0.12) !important;
     }
 
     /* Verification Citation Badge */
     .citation-container {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
+        background-color: #F4FBF7;
+        border: 1px solid #D1FAE5;
         border-radius: 8px;
         padding: 12px 16px;
         margin-top: 14px;
@@ -132,29 +183,67 @@ CUSTOM_CSS = """
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background-color: #EFF6FF;
-        color: #1E40AF;
+        background-color: #ECFDF5;
+        color: #047857;
         padding: 4px 10px;
         border-radius: 6px;
         font-weight: 600;
         font-size: 0.82rem;
         margin-right: 8px;
-        border: 1px solid #BFDBFE;
+        border: 1px solid #A7F3D0;
     }
 
-    /* Primary Interactive Buttons */
+    /* Buttons: Best Finance Green Theme */
     .stButton>button {
-        border-radius: 6px !important;
+        border-radius: 8px !important;
         font-weight: 600 !important;
         font-size: 0.90rem !important;
         transition: all 0.15s ease-in-out !important;
+        border: 1px solid #D1FAE5 !important;
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+    }
+    .stButton>button:hover {
+        border-color: #00A94F !important;
+        color: #007035 !important;
+        background-color: #ECFDF5 !important;
+        box-shadow: 0 4px 12px rgba(0, 169, 79, 0.12) !important;
+    }
+    
+    .stButton>button[kind="primary"],
+    button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #00A94F 0%, #047857 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        box-shadow: 0 2px 8px rgba(0, 169, 79, 0.25) !important;
+    }
+    .stButton>button[kind="primary"]:hover,
+    button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #008C42 0%, #03543F 100%) !important;
+        box-shadow: 0 4px 14px rgba(0, 169, 79, 0.35) !important;
+    }
+    
+    /* Link Buttons */
+    a[data-testid="baseButton-secondary"] {
+        border-color: #D1FAE5 !important;
+        color: #007035 !important;
+        background-color: #FFFFFF !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+    a[data-testid="baseButton-secondary"]:hover {
+        border-color: #00A94F !important;
+        background-color: #ECFDF5 !important;
+        color: #008C42 !important;
+        box-shadow: 0 2px 8px rgba(0, 169, 79, 0.15) !important;
     }
     
     /* Stat Cards */
     div[data-testid="stMetricValue"] {
         font-size: 1.8rem !important;
         font-weight: 700 !important;
-        color: #003366 !important;
+        color: #008C42 !important;
     }
     
     /* Code and Pre Blocks */
@@ -165,7 +254,7 @@ CUSTOM_CSS = """
     
     /* Form Submissions */
     div[data-testid="stForm"] {
-        border: 1px solid #E2E8F0 !important;
+        border: 1px solid #D1FAE5 !important;
         border-radius: 10px !important;
         padding: 20px !important;
         background-color: #FFFFFF !important;
@@ -179,7 +268,7 @@ CUSTOM_CSS = """
     /* Document Table Row */
     .doc-row {
         background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        border: 1px solid #D1FAE5;
         border-radius: 8px;
         padding: 12px 18px;
         margin-bottom: 8px;
@@ -188,12 +277,12 @@ CUSTOM_CSS = """
         align-items: center;
     }
     
-    /* ChatGPT & Gemini Style Docked Chat Input Bar */
+    /* Bottom Docked Chat Input Bar */
     div[data-testid="stBottom"] {
-        background-color: rgba(255, 255, 255, 0.92) !important;
+        background-color: rgba(255, 255, 255, 0.94) !important;
         backdrop-filter: blur(12px) !important;
         -webkit-backdrop-filter: blur(12px) !important;
-        border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
+        border-top: 1px solid rgba(209, 250, 229, 0.8) !important;
         padding-top: 12px !important;
         padding-bottom: 20px !important;
         z-index: 999 !important;
@@ -205,14 +294,14 @@ CUSTOM_CSS = """
         max-width: 840px !important;
         margin: 0 auto !important;
         background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
+        border: 1.5px solid #A7F3D0 !important;
         border-radius: 16px !important;
-        box-shadow: 0 4px 20px rgba(10, 37, 64, 0.08) !important;
+        box-shadow: 0 4px 20px rgba(0, 169, 79, 0.08) !important;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     div[data-testid="stChatInput"]:focus-within {
-        border-color: #003366 !important;
-        box-shadow: 0 4px 24px rgba(0, 51, 102, 0.16) !important;
+        border-color: #00A94F !important;
+        box-shadow: 0 4px 24px rgba(0, 169, 79, 0.20) !important;
     }
     div[data-testid="stChatInput"] textarea {
         font-size: 0.96rem !important;
@@ -228,62 +317,51 @@ CUSTOM_CSS = """
     }
 
     .block-container {
-        padding-top: 3.2rem !important;
+        padding-top: 2.5rem !important;
         padding-bottom: 7rem !important;
     }
 
-    /* Sticky Navbar Container for Assistant & Admin Selector */
-    .stElementContainer.st-key-main_workspace_view,
-    div.st-key-main_workspace_view,
-    div[data-testid="stVerticalBlock"] > div:has(.stButtonGroup),
-    .stElementContainer:has(div[data-testid="stButtonGroup"]) {
-        position: sticky !important;
-        top: 2.875rem !important;
-        z-index: 995 !important;
-        background-color: rgba(255, 255, 255, 0.96) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        padding: 8px 0 !important;
-        margin-top: -6px !important;
-        margin-bottom: 1.2rem !important;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
-        box-shadow: 0 4px 12px rgba(10, 37, 64, 0.04) !important;
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
+    /* Complete removal of Streamlit Deploy button */
+    .stDeployButton,
+    [data-testid="stDeployButton"],
+    .stAppDeployButton,
+    header[data-testid="stHeader"] .stDeployButton,
+    header[data-testid="stHeader"] [data-testid="stDeployButton"],
+    header[data-testid="stHeader"] button[kind="header"]:has(span:contains("Deploy")),
+    #MainMenu + div:has(button) {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
 
-    /* Clean Segmented Navigation Switch */
-    div.st-key-main_workspace_view div[data-testid="stButtonGroup"],
-    div[data-testid="stButtonGroup"]:has(button[data-variant="segmented_control"]),
-    div[data-testid="stSegmentedControl"] {
-        background-color: #F1F5F9 !important;
-        padding: 4px !important;
-        border-radius: 12px !important;
-        margin-bottom: 0 !important;
-        display: inline-flex !important;
-        border: 1px solid #E2E8F0 !important;
-        white-space: nowrap !important;
-    }
-    div.st-key-main_workspace_view button[data-variant="segmented_control"],
-    div[data-testid="stButtonGroup"] button[data-variant="segmented_control"],
-    div[data-testid="stSegmentedControl"] button {
+    /* Page Navigation Links: Best Finance Mint & Emerald Theme */
+    a[data-testid="stPageLink-NavLink"] {
         border-radius: 8px !important;
-        font-weight: 600 !important;
-        font-size: 0.92rem !important;
-        padding: 6px 18px !important;
-        border: none !important;
-        color: #475569 !important;
-        transition: all 0.2s ease !important;
+        padding: 8px 14px !important;
+        font-weight: 500 !important;
+        color: #1E293B !important;
+        transition: all 0.15s ease-in-out !important;
+        border: 1px solid #D1FAE5 !important;
+        background-color: #FFFFFF !important;
+        text-decoration: none !important;
     }
-    div.st-key-main_workspace_view button[data-variant="segmented_control"][aria-checked="true"],
-    div[data-testid="stButtonGroup"] button[data-variant="segmented_control"][aria-checked="true"],
-    div[data-testid="stSegmentedControl"] button[aria-checked="true"] {
-        background-color: #003366 !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 2px 8px rgba(0, 51, 102, 0.2) !important;
+    a[data-testid="stPageLink-NavLink"]:hover {
+        background-color: #ECFDF5 !important;
+        border-color: #00A94F !important;
+        color: #007035 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 169, 79, 0.12) !important;
+    }
+    a[data-testid="stPageLink-NavLink"][aria-current="page"] {
+        background-color: #E6F7EE !important;
+        border-color: #00A94F !important;
+        color: #007035 !important;
+        font-weight: 600 !important;
+    }
+    section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"] {
+        background-color: #FFFFFF !important;
+        margin-bottom: 6px !important;
     }
 </style>
 """
-
