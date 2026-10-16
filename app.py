@@ -12,7 +12,7 @@ from sentence_transformers import SentenceTransformer
 from groq import Groq
 
 # 1. Modular Imports from styles and core package
-from styles import CUSTOM_CSS
+from styles import CUSTOM_CSS, inject_sidebar_auto_close
 from core import (
     decode_preeti_text,
     extract_query_years,
@@ -38,8 +38,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Inject Institutional Theme Stylesheet
+# Inject Institutional Theme Stylesheet & Sidebar Auto-Close Listener
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+inject_sidebar_auto_close()
 
 # 3. Read Groq API Key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -565,16 +566,40 @@ def render_admin_page():
         """, unsafe_allow_html=True)
     with col_nav:
         st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
-        st.page_link(assistant_page, label="💬 Regulatory Assistant", use_container_width=True)
+        # st.page_link(assistant_page, label="💬 Regulatory Assistant", use_container_width=True)
 
     st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
     # 1. Summary Metrics
     col_m1, col_m2 = st.columns(2)
     with col_m1:
-        st.metric("📚 Total Documents", f"{total_docs} Files")
+        st.markdown(f"""
+        <div style="background: #FFFFFF; border: 1.5px solid #D1FAE5; border-radius: 10px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(0, 169, 79, 0.04);">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; color: #475569; margin-bottom: 4px;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px; color: #00A94F; display: inline-block; vertical-align: -3px;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+        </svg>
+        <span>Total Documents</span>
+            </div>
+            <div style="font-size: 1.8rem; font-weight: 700; color: #008C42;">
+                {total_docs} Files
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     with col_m2:
-        st.metric("🧩 Indexed Chunks", f"{total_chunks:,}")
+        st.markdown(f"""
+        <div style="background: #FFFFFF; border: 1.5px solid #D1FAE5; border-radius: 10px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(0, 169, 79, 0.04);">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; color: #475569; margin-bottom: 4px;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width: 20px; height: 20px; color: #00A94F; display: inline-block; vertical-align: -3px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+                </svg>
+                <span>Indexed Chunks</span>
+            </div>
+            <div style="font-size: 1.8rem; font-weight: 700; color: #008C42;">
+                {total_chunks:,}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
 

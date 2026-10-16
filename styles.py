@@ -363,5 +363,118 @@ CUSTOM_CSS = """
         background-color: #FFFFFF !important;
         margin-bottom: 6px !important;
     }
+
+    /* Invisible utility iframe styling */
+    iframe[title="st.iframe"] {
+        position: absolute !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        border: none !important;
+    }
 </style>
 """
+
+SIDEBAR_AUTO_CLOSE_SCRIPT = """
+<script>
+(function() {
+    try {
+        const parentDoc = window.parent.document;
+        const parentWin = window.parent;
+        if (!parentDoc || !parentWin) return;
+
+        // Hide iframe element cleanly so it takes 0 visual space
+        if (window.frameElement) {
+            window.frameElement.style.cssText = 'position:absolute!important;width:0!important;height:0!important;opacity:0!important;pointer-events:none!important;border:none!important;';
+            if (window.frameElement.parentElement) {
+                window.frameElement.parentElement.style.cssText = 'height:0!important;min-height:0!important;margin:0!important;padding:0!important;display:none!important;';
+            }
+        }
+
+        // Replace any prior injected script to ensure latest handler logic
+        const existing = parentDoc.getElementById('st-sidebar-autoclose-script');
+        if (existing) {
+            existing.remove();
+        }
+
+        // Inject script into top-level parent head so it lives permanently across Streamlit reruns
+        const scriptEl = parentDoc.createElement('script');
+        scriptEl.id = 'st-sidebar-autoclose-script';
+        scriptEl.textContent = `
+            (function() {
+                if (window._sidebarAutoCloseHandler) {
+                    document.removeEventListener('click', window._sidebarAutoCloseHandler, true);
+                }
+
+                window._sidebarClosing = false;
+
+                window._sidebarAutoCloseHandler = function(event) {
+                    try {
+                        const sidebar = document.querySelector('[data-testid="stSidebar"]');
+                        if (!sidebar) return;
+
+                        // Check if sidebar is currently expanded
+                        const isExpanded = sidebar.getAttribute('aria-expanded') === 'true' ||
+                                           (sidebar.getBoundingClientRect().width > 50 && sidebar.style.display !== 'none');
+                        if (!isExpanded) return;
+
+                        // Prevent rapid double-clicks while animation runs
+                        if (window._sidebarClosing) return;
+
+                        const target = event.target;
+                        if (!target) return;
+
+                        // 1. Keep open if click is inside the sidebar
+                        if (sidebar.contains(target)) return;
+
+                        // 2. Ignore clicks on expand or collapse controls
+                        if (target.closest('[data-testid="stExpandSidebarButton"]') ||
+                            target.closest('[data-testid="stSidebarCollapseButton"]') ||
+                            target.closest('[data-testid="stSidebarHeader"]')) {
+                            return;
+                        }
+
+                        // 3. Ignore clicks inside popovers, select menus, dropdowns, modals
+                        if (target.closest('[data-baseweb="popover"]') ||
+                            target.closest('[data-baseweb="menu"]') ||
+                            target.closest('[role="listbox"]') ||
+                            target.closest('[data-testid="stPopoverBody"]') ||
+                            target.closest('[data-testid="stModal"]')) {
+                            return;
+                        }
+
+                        // 4. Click was outside: find collapse button and trigger click
+                        const collapseBtn = document.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
+                                            document.querySelector('[data-testid="stSidebarCollapseButton"]') ||
+                                            document.querySelector('button[aria-label="Close sidebar"]');
+
+                        if (collapseBtn) {
+                            window._sidebarClosing = true;
+                            collapseBtn.click();
+                            setTimeout(function() {
+                                window._sidebarClosing = false;
+                            }, 350);
+                        }
+                    } catch (err) {
+                        // Ignore any DOM mutation errors during route transitions
+                    }
+                };
+
+                document.addEventListener('click', window._sidebarAutoCloseHandler, true);
+            })();
+        `;
+        parentDoc.head.appendChild(scriptEl);
+    } catch (e) {
+        // Silently catch if in restricted iframe context
+    }
+})();
+</script>
+"""
+
+def inject_sidebar_auto_close():
+    """Injects lightweight client-side listener to auto-collapse sidebar when clicking outside."""
+    import streamlit.components.v1 as components
+    components.html(SIDEBAR_AUTO_CLOSE_SCRIPT, height=0, width=0)
+
+
