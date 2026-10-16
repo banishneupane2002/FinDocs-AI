@@ -604,7 +604,7 @@ def render_admin_page():
     st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
 
     # 2. Upload and Ingestion Container
-    with st.expander("📤 Add New Documents (Upload & Index)", expanded=True):
+    with st.expander("🗎 Add New Documents (Upload & Index)", expanded=True):
         st.markdown("<p style='font-size: 0.9rem; color: #475569; margin-bottom: 8px;'>Drag and drop institutional PDF, DOCX, or TXT documents. Once uploaded, click <b>Index Documents Now</b> to process Preeti text, chunk, and generate embeddings.</p>", unsafe_allow_html=True)
         uploaded_files = st.file_uploader(
             "Select files",
