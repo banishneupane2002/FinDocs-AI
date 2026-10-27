@@ -245,7 +245,8 @@ RAW_CSS = """
     }
 
     section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"][aria-current="page"] {
-        background-color: rgba(255, 255, 255, 0.08) !important;
+        background-color: rgba(16, 185, 129, 0.16) !important;
+        border: 1px solid rgba(16, 185, 129, 0.35) !important;
         color: #FFFFFF !important;
         font-weight: 600 !important;
     }
@@ -610,6 +611,316 @@ RAW_CSS = """
         max-height: 240px !important;
         overflow-y: auto !important;
         user-select: text !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 4.5 ADMIN & DOCUMENT MANAGEMENT PANEL STYLING        */
+    /* ---------------------------------------------------- */
+
+    /* 1. Metric Stat Cards */
+    .admin-stat-card {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 14px !important;
+        padding: 18px 22px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-sizing: border-box !important;
+    }
+
+    .admin-stat-card:hover {
+        border-color: #CBD5E1 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .admin-stat-header {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .admin-stat-icon {
+        width: 17px !important;
+        height: 17px !important;
+        color: #059669 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .admin-stat-label {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        color: #64748B !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+    }
+
+    .admin-stat-value {
+        font-size: 1.65rem !important;
+        font-weight: 700 !important;
+        color: #059669 !important;
+        line-height: 1.15 !important;
+    }
+
+    /* 2. Add New Documents Card Container */
+    .admin-upload-card {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 16px !important;
+        padding: 24px 28px !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+        margin-top: 18px !important;
+        margin-bottom: 24px !important;
+    }
+
+    .admin-upload-title {
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+        margin: 0 0 4px 0 !important;
+    }
+
+    .admin-upload-subtitle {
+        font-size: 0.85rem !important;
+        color: #64748B !important;
+        margin: 0 0 16px 0 !important;
+    }
+
+    /* 3. Drag & Drop File Uploader Zone */
+    div[data-testid="stFileUploader"] {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] {
+        background-color: #F8FAFC !important;
+        border: 1.5px dashed #CBD5E1 !important;
+        border-radius: 12px !important;
+        padding: 26px 20px !important;
+        text-align: center !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"]:hover {
+        border-color: #10B981 !important;
+        background-color: #F0FDF4 !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] svg {
+        color: #059669 !important;
+        fill: none !important;
+        stroke: #059669 !important;
+        width: 32px !important;
+        height: 32px !important;
+        background-color: #DCFCE7 !important;
+        border-radius: 50% !important;
+        padding: 6px !important;
+        margin-bottom: 4px !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] span,
+    section[data-testid="stFileUploaderDropzone"] div {
+        color: #475569 !important;
+        font-size: 0.90rem !important;
+        font-weight: 500 !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] small {
+        color: #94A3B8 !important;
+        font-size: 0.78rem !important;
+        font-weight: 400 !important;
+    }
+
+    /* Dropzone Browse Button */
+    section[data-testid="stFileUploaderDropzone"] button {
+        background-color: #FFFFFF !important;
+        border: 1px solid #D1FAE5 !important;
+        color: #059669 !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        border-radius: 8px !important;
+        padding: 6px 18px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    section[data-testid="stFileUploaderDropzone"] button:hover {
+        background-color: #ECFDF5 !important;
+        border-color: #10B981 !important;
+        color: #047857 !important;
+    }
+
+    /* 4. Full-Width Emerald Primary Ingest Button */
+    button[data-testid="baseButton-primary"],
+    button[kind="primary"] {
+        background-color: #059669 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        padding: 12px 24px !important;
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        margin-top: 12px !important;
+    }
+
+    button[data-testid="baseButton-primary"]:hover,
+    button[kind="primary"]:hover {
+        background-color: #047857 !important;
+        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* 5. Catalogue Pill Search Input */
+    div[data-testid="stTextInput"]:has(input[aria-label="Filter documents"]) input,
+    div:has(> input[placeholder*="Filter by name"]) input {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #E2E8F0 !important;
+        border-radius: 50px !important;
+        padding: 9px 18px 9px 38px !important;
+        font-size: 0.88rem !important;
+        color: #1E293B !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%2394A3B8" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>') !important;
+        background-repeat: no-repeat !important;
+        background-position: 13px center !important;
+        background-size: 16px 16px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    div[data-testid="stTextInput"]:has(input[aria-label="Filter documents"]) input:focus,
+    div:has(> input[placeholder*="Filter by name"]) input:focus {
+        border-color: #10B981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+    }
+
+    /* 6. Admin Category Cards (Expanders) */
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]),
+    details[data-testid="stExpander"]:has(.stExpanderIcon) {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 14px !important;
+        margin-bottom: 12px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+        overflow: hidden !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]):hover,
+    details[data-testid="stExpander"]:has(.stExpanderIcon):hover {
+        border-color: #A7F3D0 !important;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.08) !important;
+    }
+
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"])[open],
+    details[data-testid="stExpander"]:has(.stExpanderIcon)[open] {
+        border-color: #10B981 !important;
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.10) !important;
+    }
+
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]) summary,
+    details[data-testid="stExpander"]:has(.stExpanderIcon) summary {
+        display: flex !important;
+        align-items: center !important;
+        padding: 16px 20px !important;
+        background-color: #FFFFFF !important;
+        cursor: pointer !important;
+        border-radius: 14px !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]) summary:hover,
+    details[data-testid="stExpander"]:has(.stExpanderIcon) summary:hover {
+        background-color: #F8FAFC !important;
+    }
+
+    /* Category Card Icon inside green square */
+    details[data-testid="stExpander"] summary [data-testid="stIconMaterial"],
+    details[data-testid="stExpander"] summary .stExpanderIcon,
+    details[data-testid="stExpander"] summary span.material-symbols-rounded {
+        background-color: #ECFDF5 !important;
+        color: #059669 !important;
+        border-radius: 8px !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 20px !important;
+        margin-right: 14px !important;
+    }
+
+    /* Category Card Chevron */
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]) summary svg,
+    details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]) summary [data-testid="stExpanderToggleIcon"] {
+        margin-left: auto !important;
+        order: 10 !important;
+        color: #94A3B8 !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    /* 7. Document Table Styling inside Open Category */
+    .admin-doc-table-header {
+        background-color: #F8FAFC !important;
+        border: 1px solid #F1F5F9 !important;
+        border-radius: 8px !important;
+        padding: 8px 14px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .admin-badge-size {
+        display: inline-block !important;
+        background-color: #F1F5F9 !important;
+        color: #475569 !important;
+        font-size: 0.80rem !important;
+        font-weight: 500 !important;
+        padding: 3px 8px !important;
+        border-radius: 6px !important;
+    }
+
+    .admin-badge-chunks {
+        display: inline-block !important;
+        background-color: #ECFDF5 !important;
+        color: #059669 !important;
+        font-size: 0.80rem !important;
+        font-weight: 600 !important;
+        padding: 3px 8px !important;
+        border-radius: 6px !important;
+    }
+
+    /* Delete Button Styling */
+    div:has(> button[help*="Delete"]) button {
+        border-color: #FEE2E2 !important;
+        color: #DC2626 !important;
+        background-color: #FEF2F2 !important;
+        border-radius: 8px !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+        padding: 5px 10px !important;
+        transition: all 0.15s ease !important;
+    }
+
+    div:has(> button[help*="Delete"]) button:hover {
+        background-color: #FEE2E2 !important;
+        border-color: #FCA5A5 !important;
+        color: #B91C1C !important;
+    }
+
+    /* Hide empty bottom container on admin page */
+    div[data-testid="stBottom"]:not(:has(div[data-testid="stChatInput"])) {
+        display: none !important;
     }
 
     /* ---------------------------------------------------- */

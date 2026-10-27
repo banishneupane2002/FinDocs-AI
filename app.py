@@ -655,7 +655,7 @@ def render_admin_page():
                 </div>
                 <div class="navbar-title-content">
                     <h1 class="navbar-title-heading">Document Management & Admin</h1>
-                    <p class="navbar-title-sub">Upload, organize, inspect, and synchronize institutional regulatory documents</p>
+                    <p class="navbar-title-sub">Upload, organize, inspect and synchronize regulatory documents</p>
                 </div>
             </div>
         </div>
@@ -676,48 +676,93 @@ def render_admin_page():
         st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
         st.markdown("<div style='font-size: 0.88rem; font-weight: 700; color: #FFFFFF; margin-top: 10px;'>Database Synchronization</div>", unsafe_allow_html=True)
         st.markdown("<div style='color: #6EE7B7; font-size: 0.80rem; font-weight: 600; margin-top: 4px;'>● Auto-Sync Active</div>", unsafe_allow_html=True)
-        st.caption("The database automatically stays synchronized whenever documents are added, modified, or deleted in `File_System/`.")
+        st.caption("The database automatically stays synchronized whenever documents are added, modified, or deleted .")
+
+    # Category definitions with human-friendly bilingual titles & material icons
+    CATEGORY_SECTIONS = [
+        {
+            "id": "unified",
+            "title_en": "Unified Directives",
+            "title_np": "बैंक तथा वित्तीय संस्था सम्बन्धी एकीकृत निर्देशन",
+            "icon": "account_balance",
+            "description": "Comprehensive prudential regulations, capital adequacy, credit classification, and governance directives."
+        },
+        {
+            "id": "payment",
+            "title_en": "Payment System Directives",
+            "title_np": "भुक्तानी प्रणाली सम्बन्धी एकीकृत निर्देशन",
+            "icon": "credit_card",
+            "description": "Digital payments, wallet limits, interchange fees, settlement, and PSP/PSO regulations."
+        },
+        {
+            "id": "report",
+            "title_en": "Annual Supervision Reports",
+            "title_np": "वार्षिक सुपरिवेक्षण तथा निरीक्षण प्रतिवेदन",
+            "icon": "bar_chart",
+            "description": "Official annual banking supervision reports, balance sheets, and sector reviews."
+        },
+        {
+            "id": "other",
+            "title_en": "Circulars & Other Documents",
+            "title_np": "अन्य परिपत्र तथा सूचनाहरू",
+            "icon": "description",
+            "description": "General circulars, press releases, AML/CFT guidelines, and custom uploaded manuals."
+        }
+    ]
 
     st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
-    # 1. Summary Metrics
-    col_m1, col_m2 = st.columns(2)
+    # 1. Summary Metrics (3-column layout matching design)
+    col_m1, col_m2, col_m3 = st.columns(3)
     with col_m1:
         st.markdown(f"""
-        <div style="background: #FFFFFF; border: 1.5px solid #D1FAE5; border-radius: 10px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(0, 169, 79, 0.04);">
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; color: #475569; margin-bottom: 4px;">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px; color: #00A94F; display: inline-block; vertical-align: -3px;">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
-        </svg>
-        <span>Total Documents</span>
+        <div class="admin-stat-card">
+            <div class="admin-stat-header">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#059669" class="admin-stat-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                <span class="admin-stat-label">TOTAL DOCUMENTS</span>
             </div>
-            <div style="font-size: 1.8rem; font-weight: 700; color: #008C42;">
-                {total_docs} Files
-            </div>
+            <div class="admin-stat-value">{total_docs} files</div>
         </div>
         """, unsafe_allow_html=True)
     with col_m2:
         st.markdown(f"""
-        <div style="background: #FFFFFF; border: 1.5px solid #D1FAE5; border-radius: 10px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(0, 169, 79, 0.04);">
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; color: #475569; margin-bottom: 4px;">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width: 20px; height: 20px; color: #00A94F; display: inline-block; vertical-align: -3px;">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+        <div class="admin-stat-card">
+            <div class="admin-stat-header">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#059669" class="admin-stat-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
                 </svg>
-                <span>Indexed Chunks</span>
+                <span class="admin-stat-label">INDEXED CHUNKS</span>
             </div>
-            <div style="font-size: 1.8rem; font-weight: 700; color: #008C42;">
-                {total_chunks:,}
+            <div class="admin-stat-value">{total_chunks:,}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_m3:
+        st.markdown(f"""
+        <div class="admin-stat-card">
+            <div class="admin-stat-header">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#059669" class="admin-stat-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                </svg>
+                <span class="admin-stat-label">CATEGORIES</span>
             </div>
+            <div class="admin-stat-value">{len(CATEGORY_SECTIONS)}</div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
+    # 2. Add New Documents Card (Upload & Indexing)
+    st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("""
+        <div style="margin-bottom: 14px;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #111827; margin: 0 0 4px 0;">Add new documents</h3>
+            <p style="font-size: 0.85rem; color: #64748B; margin: 0;">PDF, DOCX or TXT, up to 200 MB each. New files are indexed automatically.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # 2. Upload and Ingestion Container
-    with st.expander("🗎 Add New Documents (Upload & Index)", expanded=True):
-        st.markdown("<p style='font-size: 0.9rem; color: #475569; margin-bottom: 8px;'>Drag and drop institutional PDF, DOCX, or TXT documents. New documents are automatically ingested and indexed into the database upon upload.</p>", unsafe_allow_html=True)
         uploaded_files = st.file_uploader(
-            "Select files",
+            "Drop files here or browse",
             type=["pdf", "docx", "txt"],
             accept_multiple_files=True,
             key="admin_doc_uploader",
@@ -741,7 +786,7 @@ def render_admin_page():
                     else:
                         st.error(f"Error during ingestion: {res.stderr[:300]}")
 
-        if st.button("⚡ Ingest & Index Documents Now", use_container_width=True, type="primary"):
+        if st.button("✨ Ingest & index documents", use_container_width=True, type="primary", key="admin_ingest_btn"):
             with st.spinner("Extracting text, resolving Preeti fonts, generating embeddings, and updating LanceDB..."):
                 res = run_ingestion()
                 if res.returncode == 0:
@@ -751,49 +796,28 @@ def render_admin_page():
                 else:
                     st.error(f"Error during ingestion: {res.stderr[:300]}")
 
-    st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
-
-    # 3. Interactive Chunk Inspector
-    
-
-    # 4. Organized Document Catalog
-    st.subheader("📑 Document Catalog (Organized by Category)")
-
-    admin_filter = st.text_input(
-        "🔍 Filter documents:",
-        placeholder="Filter by filename, year (e.g. 2082), or keyword...",
-        key="admin_search_input"
-    ).strip().lower()
+    # 3. Organized Document Catalog
+    st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
+    col_cat_header, col_cat_search = st.columns([1.3, 1.0], vertical_alignment="bottom")
+    with col_cat_header:
+        st.markdown("""
+        <div style="margin-bottom: 6px;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: #64748B; letter-spacing: 0.08em; text-transform: uppercase;">Catalogue</div>
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 2px 0 0 0;">Documents by category</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_cat_search:
+        admin_filter = st.text_input(
+            "Filter documents",
+            placeholder="Filter by name or year (e.g. 2082)",
+            key="admin_search_input",
+            label_visibility="collapsed"
+        ).strip().lower()
 
     filter_words = admin_filter.split() if admin_filter else []
 
     # Build metadata for all files in File_System
     all_metadata = [get_file_metadata(f, sources_summary, df=df) for f in all_disk_files]
-
-    # Category definitions with human-friendly titles
-    CATEGORY_SECTIONS = [
-        {
-            "id": "unified",
-            "title": "🏦 Unified Directives (बैंक तथा वित्तीय संस्था सम्बन्धी एकीकृत निर्देशन)",
-            "description": "Comprehensive prudential regulations, capital adequacy, credit classification, and governance directives."
-        },
-        {
-            "id": "payment",
-            "title": "💳 Payment System Directives (भुक्तानी प्रणाली सम्बन्धी एकीकृत निर्देशन)",
-            "description": "Digital payments, wallet limits, interchange fees, settlement, and PSP/PSO regulations."
-        },
-        {
-            "id": "report",
-            "title": "📊 Annual Supervision Reports (वार्षिक सुपरीवेक्षण तथा निरीक्षण प्रतिवेदन)",
-            "description": "Official annual banking supervision reports, balance sheets, and sector reviews."
-        },
-        {
-            "id": "other",
-            "title": "📑 Circulars & Other Documents (अन्य परिपत्र तथा सूचनाहरू)",
-            "description": "General circulars, press releases, AML/CFT guidelines, and custom uploaded manuals."
-        }
-    ]
-
     live_table_for_delete = get_live_table()
 
     def doc_matches_filter(doc, words, cat_title=""):
@@ -806,7 +830,7 @@ def render_admin_page():
     total_matched_docs = 0
     if filter_words:
         for m in all_metadata:
-            c_title = next((c["title"] for c in CATEGORY_SECTIONS if c["id"] == m["category"]), "")
+            c_title = next((f"{c['title_en']} {c['title_np']}" for c in CATEGORY_SECTIONS if c["id"] == m["category"]), "")
             if doc_matches_filter(m, filter_words, c_title):
                 total_matched_docs += 1
         if total_matched_docs == 0:
@@ -814,48 +838,61 @@ def render_admin_page():
         else:
             st.caption(f"Found **{total_matched_docs}** matching document(s) for '**{admin_filter}**':")
 
+    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+
     for cat in CATEGORY_SECTIONS:
         cat_docs = [m for m in all_metadata if m["category"] == cat["id"]]
         if filter_words:
-            cat_docs = [m for m in cat_docs if doc_matches_filter(m, filter_words, cat["title"])]
+            cat_title_full = f"{cat['title_en']} {cat['title_np']}"
+            cat_docs = [m for m in cat_docs if doc_matches_filter(m, filter_words, cat_title_full)]
 
         cat_docs.sort(key=lambda m: (m["years_str"], m["filename"]), reverse=True)
 
         is_expanded = bool(filter_words and len(cat_docs) > 0)
-        exp_label = f"{cat['title']} — {len(cat_docs)} Document(s)"
-        with st.expander(exp_label, expanded=is_expanded):
-            st.caption(cat["description"])
+        exp_label = f"**{cat['title_en']}**  \n{cat['title_np']}  •  {len(cat_docs)} docs"
+        
+        with st.expander(exp_label, icon=f":material/{cat['icon']}:", expanded=is_expanded):
+            st.markdown(f"<div style='color: #64748B; font-size: 0.84rem; margin-bottom: 12px;'>{cat['description']}</div>", unsafe_allow_html=True)
             
             if not cat_docs:
                 st.info("No documents currently in this category.")
                 continue
 
             # Table Header
-            col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([3.6, 1.2, 1.3, 1.5, 1.0])
-            with col_h1: st.caption("**Document Name**")
-            with col_h2: st.caption("**File Size**")
-            with col_h3: st.caption("**Chunks**")
-            with col_h4: st.caption("**View PDF**")
-            with col_h5: st.caption("**Action**")
+            col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([3.8, 1.2, 1.3, 1.4, 1.1], vertical_alignment="center")
+            with col_h1: st.caption("**DOCUMENT NAME**")
+            with col_h2: st.caption("**FILE SIZE**")
+            with col_h3: st.caption("**CHUNKS**")
+            with col_h4: st.caption("**VIEW PDF**")
+            with col_h5: st.caption("**ACTION**")
+
+            st.markdown("<div style='border-bottom: 1px solid #F1F5F9; margin-bottom: 6px;'></div>", unsafe_allow_html=True)
 
             for doc in cat_docs:
                 fname = doc["filename"]
                 safe_name = urllib.parse.quote(fname)
-                c1, c2, c3, c4, c5 = st.columns([3.6, 1.2, 1.3, 1.5, 1.0])
+                c1, c2, c3, c4, c5 = st.columns([3.8, 1.2, 1.3, 1.4, 1.1], vertical_alignment="center")
                 
                 with c1:
-                    st.markdown(f"**{fname}**")
+                    st.markdown(f"""
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#059669" style="width: 17px; height: 17px; flex-shrink: 0;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
+                        <span style="font-weight: 600; color: #1E293B; font-size: 0.88rem; word-break: break-word;">{fname}</span>
+                    </div>
+                    """, unsafe_allow_html=True)
                 with c2:
-                    st.markdown(f"{doc['size_mb']:.2f} MB")
+                    st.markdown(f"<span class='admin-badge-size'>{doc['size_mb']:.2f} MB</span>", unsafe_allow_html=True)
                 with c3:
                     if doc['chunk_count'] > 0:
-                        st.markdown(f"{doc['chunk_count']:,} chunks")
+                        st.markdown(f"<span class='admin-badge-chunks'>{doc['chunk_count']:,} chunks</span>", unsafe_allow_html=True)
                     else:
-                        st.markdown("*Not indexed*")
+                        st.markdown("<span style='color: #94A3B8; font-size: 0.80rem; font-style: italic;'>Not indexed</span>", unsafe_allow_html=True)
                 with c4:
                     st.link_button("View PDF ↗", f"/app/static/{safe_name}", use_container_width=True)
                 with c5:
-                    if st.button("Delete", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary"):
+                    if st.button("Delete", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary", use_container_width=True):
                         success = delete_document(fname, live_table=live_table_for_delete)
                         if success:
                             st.toast(f"Removed '{fname}' from system and database!")
