@@ -27,7 +27,7 @@ RULES:
 Context from files:
 {context_text}"""
 
-def call_groq_with_retry(groq_client, messages: list, temperature: float = 0.1, max_tokens: int = 1100, stream: bool = True):
+def call_groq_with_retry(groq_client, messages: list, temperature: float = 0.1, max_tokens: int = 2500, stream: bool = True):
     """
     Executes completion call with automatic failover across candidate models on rate limits.
     Returns (stream/response, model_used).

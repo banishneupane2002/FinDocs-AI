@@ -24,6 +24,7 @@ from core import (
     extract_cited_sources,
     build_rag_prompt,
     run_ingestion,
+    check_filesystem_out_of_sync,
     delete_document,
     get_file_metadata,
     categorize_file,
@@ -448,15 +449,24 @@ Regulatory & Directive Assistant</h1>
                         {"role": "user", "content": active_query}
                     ],
                     temperature=0.1,
-                    max_tokens=1100,
+                    max_tokens=2500,
                     stream=True
                 )
 
                 for chunk in stream:
-                    token = chunk.choices[0].delta.content or ""
-                    full_response += token
-                    response_placeholder.markdown(full_response + "▌")
-                response_placeholder.markdown(full_response)
+                    choice = chunk.choices[0]
+                    token = choice.delta.content or ""
+                    if token:
+                        full_response += token
+                        response_placeholder.markdown(full_response + "▌")
+                    elif not full_response:
+                        response_placeholder.markdown("🧠 *Analyzing regulatory directives...* ▌")
+
+                if full_response.strip():
+                    response_placeholder.markdown(full_response)
+                else:
+                    full_response = "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents."
+                    response_placeholder.markdown(full_response)
 
                 # Track tokens used in session
                 approx_tokens = (len(system_prompt) + len(active_query) + len(full_response)) // 4
@@ -520,6 +530,15 @@ Regulatory & Directive Assistant</h1>
 # PAGE 2: DOCUMENT MANAGEMENT & ADMIN (/admin)
 # ==========================================
 def render_admin_page():
+    # 0. Automatic Full Database Synchronization on Any File System Changes
+    if check_filesystem_out_of_sync():
+        with st.spinner("🔄 File system changes detected. Automatically synchronizing database..."):
+            res = run_ingestion()
+            if res.returncode == 0:
+                st.toast("✅ Database automatically synchronized with files on disk!")
+                time.sleep(0.6)
+                st.rerun()
+
     @st.cache_data(ttl=60, show_spinner=False)
     def load_admin_data():
         try:
@@ -532,18 +551,11 @@ def render_admin_page():
     total_docs = len(all_disk_files)
     total_chunks = len(df) if df is not None else 0
 
-    # Sidebar Tools
+    # Sidebar Status (Automatic Synchronization)
     with st.sidebar:
-        st.subheader("⚙️ Quick Tools")
-        if st.button("🔄 Sync Database", use_container_width=True, key="admin_sync_btn"):
-            with st.spinner("Re-syncing files with database..."):
-                res = run_ingestion()
-                if res.returncode == 0:
-                    st.success("✅ Database synchronized!")
-                    time.sleep(1)
-                    st.rerun()
-                else:
-                    st.error(f"Sync failed: {res.stderr[:200]}")
+        st.subheader("⚙️ Database Synchronization")
+        st.caption("🟢 **Auto-Sync Active**")
+        st.caption("The database automatically stays synchronized whenever documents are added, modified, or deleted in `File_System/`.")
 
     # Top Executive Header with Best Finance Branding
     col_head, col_nav = st.columns([3.8, 1.2])
@@ -605,7 +617,7 @@ def render_admin_page():
 
     # 2. Upload and Ingestion Container
     with st.expander("🗎 Add New Documents (Upload & Index)", expanded=True):
-        st.markdown("<p style='font-size: 0.9rem; color: #475569; margin-bottom: 8px;'>Drag and drop institutional PDF, DOCX, or TXT documents. Once uploaded, click <b>Index Documents Now</b> to process Preeti text, chunk, and generate embeddings.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 0.9rem; color: #475569; margin-bottom: 8px;'>Drag and drop institutional PDF, DOCX, or TXT documents. New documents are automatically ingested and indexed into the database upon upload.</p>", unsafe_allow_html=True)
         uploaded_files = st.file_uploader(
             "Select files",
             type=["pdf", "docx", "txt"],
@@ -622,29 +634,24 @@ def render_admin_page():
                         f.write(up_file.getbuffer())
                     new_saved.append(up_file.name)
             if new_saved:
-                st.success(f"✅ Successfully saved {len(new_saved)} new file(s) to File_System: {', '.join(new_saved)}")
-
-        col_act1, col_act2 = st.columns([1, 1])
-        with col_act1:
-            if st.button("⚡ Ingest & Index Documents Now", use_container_width=True, type="primary"):
-                with st.spinner("Extracting text, resolving Preeti fonts, generating embeddings, and updating LanceDB..."):
+                with st.spinner(f"⚡ Ingesting and indexing {len(new_saved)} new document(s) into database..."):
                     res = run_ingestion()
                     if res.returncode == 0:
-                        st.success("✅ Successfully indexed all documents into database!")
-                        time.sleep(1)
+                        st.toast(f"✅ Successfully saved and indexed {len(new_saved)} document(s)!")
+                        time.sleep(0.6)
                         st.rerun()
                     else:
                         st.error(f"Error during ingestion: {res.stderr[:300]}")
-        with col_act2:
-            if st.button("🔄 Full Database Re-Sync", use_container_width=True):
-                with st.spinner("Re-syncing files with vector store..."):
-                    res = run_ingestion()
-                    if res.returncode == 0:
-                        st.success("✅ Database synchronized with filesystem!")
-                        time.sleep(1)
-                        st.rerun()
-                    else:
-                        st.error(f"Error: {res.stderr[:300]}")
+
+        if st.button("⚡ Ingest & Index Documents Now", use_container_width=True, type="primary"):
+            with st.spinner("Extracting text, resolving Preeti fonts, generating embeddings, and updating LanceDB..."):
+                res = run_ingestion()
+                if res.returncode == 0:
+                    st.success("✅ Successfully indexed all documents into database!")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error(f"Error during ingestion: {res.stderr[:300]}")
 
     st.markdown("<div style='margin-bottom: 1.2rem;'></div>", unsafe_allow_html=True)
 
@@ -659,6 +666,8 @@ def render_admin_page():
         placeholder="Filter by filename, year (e.g. 2082), or keyword...",
         key="admin_search_input"
     ).strip().lower()
+
+    filter_words = admin_filter.split() if admin_filter else []
 
     # Build metadata for all files in File_System
     all_metadata = [get_file_metadata(f, sources_summary, df=df) for f in all_disk_files]
@@ -689,15 +698,34 @@ def render_admin_page():
 
     live_table_for_delete = get_live_table()
 
+    def doc_matches_filter(doc, words, cat_title=""):
+        if not words:
+            return True
+        name_clean = doc["filename"].replace("_", " ").replace("-", " ")
+        searchable = f"{doc['filename']} {name_clean} {doc['years_str']} {doc['category']} {cat_title}".lower()
+        return all(w in searchable for w in words)
+
+    total_matched_docs = 0
+    if filter_words:
+        for m in all_metadata:
+            c_title = next((c["title"] for c in CATEGORY_SECTIONS if c["id"] == m["category"]), "")
+            if doc_matches_filter(m, filter_words, c_title):
+                total_matched_docs += 1
+        if total_matched_docs == 0:
+            st.info(f"🔍 No documents found matching '{admin_filter}'. Try searching by year (e.g. 2082), category, or keyword.")
+        else:
+            st.caption(f"Found **{total_matched_docs}** matching document(s) for '**{admin_filter}**':")
+
     for cat in CATEGORY_SECTIONS:
         cat_docs = [m for m in all_metadata if m["category"] == cat["id"]]
-        if admin_filter:
-            cat_docs = [m for m in cat_docs if admin_filter in m["filename"].lower() or admin_filter in m["years_str"].lower()]
+        if filter_words:
+            cat_docs = [m for m in cat_docs if doc_matches_filter(m, filter_words, cat["title"])]
 
         cat_docs.sort(key=lambda m: (m["years_str"], m["filename"]), reverse=True)
 
+        is_expanded = bool(filter_words and len(cat_docs) > 0)
         exp_label = f"{cat['title']} — {len(cat_docs)} Document(s)"
-        with st.expander(exp_label, expanded=False):
+        with st.expander(exp_label, expanded=is_expanded):
             st.caption(cat["description"])
             
             if not cat_docs:

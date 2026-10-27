@@ -30,6 +30,7 @@ from core.search import (
 )
 from core.ingestion import (
     run_ingestion,
+    check_filesystem_out_of_sync,
     delete_document,
     extract_sample_text_from_file,
     categorize_file,

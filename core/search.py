@@ -4,7 +4,7 @@ Dual-pass cross-lingual hybrid retrieval (Dense Vector + BM25 Full-Text + RRF ra
 
 import os
 import re
-from core.lexicon import extract_meaningful_keywords
+from core.lexicon import extract_meaningful_keywords, BANKING_DOMAIN_LEXICON, normalize_devanagari
 from core.preeti import decode_preeti_text
 from core.llm import MODELS_TO_TRY
 
@@ -163,10 +163,16 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
             if k not in d_trans:
                 d_trans[k] = (rank, row)
 
-    # 3. Primary Sparse Inverted Index Search (Exact Native Term Matching)
+    # 3. Primary Sparse Inverted Index Search (Exact Native Term Matching with Domain Lexicon Expansion)
     s_pri = {}
     kw_pri = extract_meaningful_keywords(user_query)
-    clean_pri_fts = " ".join([w for w in kw_pri if len(w) > 1 or w in '०१२३४५६७८९0123456789'])
+    q_lower = user_query.lower()
+    for lex_k, synonyms in BANKING_DOMAIN_LEXICON.items():
+        if lex_k in q_lower or lex_k in kw_pri:
+            for syn in synonyms:
+                kw_pri.update(extract_meaningful_keywords(syn))
+
+    clean_pri_fts = " ".join([normalize_devanagari(w) for w in kw_pri if len(w) > 1 or w in '०१२३४५६७८९0123456789'])
     if clean_pri_fts.strip():
         try:
             search_fts1 = table.search(clean_pri_fts)

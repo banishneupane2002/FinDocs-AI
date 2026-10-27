@@ -12,6 +12,38 @@ def run_ingestion():
     """Runs INGEST.PY to synchronize all files in File_System/ with LanceDB."""
     return subprocess.run([sys.executable, "INGEST.PY"], capture_output=True, text=True)
 
+def check_filesystem_out_of_sync(watch_folder: str = "File_System", tracker_file: str = "indexed_files.json") -> bool:
+    """Checks in < 1ms whether files in File_System/ were added, modified, or deleted compared to tracker."""
+    if not os.path.exists(watch_folder):
+        return False
+    indexed_files = {}
+    if os.path.exists(tracker_file):
+        try:
+            with open(tracker_file, "r", encoding="utf-8") as f:
+                indexed_files = json.load(f)
+        except Exception:
+            indexed_files = {}
+
+    supported_exts = (".pdf", ".docx", ".txt")
+    all_files = [f for f in os.listdir(watch_folder) if f.lower().endswith(supported_exts)]
+
+    # Check for new or updated files on disk
+    for fname in all_files:
+        fpath = os.path.join(watch_folder, fname)
+        try:
+            mtime = os.path.getmtime(fpath)
+            if fname not in indexed_files or indexed_files[fname] < mtime:
+                return True
+        except Exception:
+            pass
+
+    # Check for files removed from disk
+    for fname in list(indexed_files.keys()):
+        if fname not in all_files:
+            return True
+
+    return False
+
 def delete_document(filename: str, live_table=None) -> bool:
     """Safely removes a file from File_System, cleans up LanceDB records, and updates tracker."""
     file_path = os.path.join("File_System", filename)
