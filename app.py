@@ -4,6 +4,8 @@ import json
 import re
 import math
 import time
+import html
+import base64
 import subprocess
 import urllib.parse
 import lancedb
@@ -12,7 +14,7 @@ from sentence_transformers import SentenceTransformer
 from groq import Groq
 
 # 1. Modular Imports from styles and core package
-from styles import CUSTOM_CSS, inject_sidebar_auto_close
+from styles import CUSTOM_CSS, inject_sidebar_backdrop
 from core import (
     decode_preeti_text,
     extract_query_years,
@@ -39,9 +41,19 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Inject Institutional Theme Stylesheet & Sidebar Auto-Close Listener
+# Inject Institutional Theme Stylesheet & Sidebar Backdrop Controller
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
-inject_sidebar_auto_close()
+inject_sidebar_backdrop()
+
+@st.cache_data
+def get_brand_logo_b64():
+    p = os.path.join(os.path.dirname(__file__), "best_finance_logo.png")
+    if os.path.exists(p):
+        with open(p, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+    return ""
+
+brand_logo_b64 = get_brand_logo_b64()
 
 # 3. Read Groq API Key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -117,12 +129,11 @@ def open_pdf_at_page(pdf_name: str, page: int):
         st.error(f"Error opening document: {e}")
 
 def render_verified_sources(cited_sources, other_sources=None, key_prefix="src", target_years=None, target_doc=None):
-    """Renders the verified ground truth sources with 1-click PDF page launcher and text viewer."""
+    """Renders the verified ground truth sources with 1-click PDF page launcher and high-contrast text viewer."""
     if not cited_sources and not other_sources:
         return
 
     if cited_sources:
-        st.markdown("##### 🔍 Verified Source Document(s):")
         for idx, c in enumerate(cited_sources):
             if isinstance(c, dict):
                 src_name = c['source']
@@ -133,25 +144,41 @@ def render_verified_sources(cited_sources, other_sources=None, key_prefix="src",
                 pg_num = 1
                 snippet_text = ""
 
-            col_info, col_btn = st.columns([3, 1])
+            safe_filename = urllib.parse.quote(src_name)
+            
+            # Lovable-style clean source card with minimal monochrome outline icon
+            col_info, col_btn = st.columns([3.6, 1.2])
             with col_info:
-                st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
+                st.markdown(f"""
+                <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                    <div style="background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <line x1="10" y1="9" x2="8" y2="9"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: #0F172A; font-size: 0.90rem;">{src_name} · Page {pg_num}</div>
+                        <div style="color: #64748B; font-size: 0.78rem;">Verified official regulatory source document</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
             with col_btn:
-                safe_filename = urllib.parse.quote(src_name)
                 st.link_button(
-                    f"📖 Open Page {pg_num}", 
-                    f"/app/static/{safe_filename}#page={pg_num}"
+                    f"Open page {pg_num} ↗", 
+                    f"/app/static/{safe_filename}#page={pg_num}",
+                    use_container_width=True
                 )
 
             if snippet_text:
-                with st.expander(f"👁️ View Extracted Text from {src_name} (Page {pg_num})"):
-                    st.text_area(
-                        "Extracted Context",
-                        value=snippet_text,
-                        height=160,
-                        disabled=True,
-                        key=f"{key_prefix}_txt_{idx}_{src_name}_{pg_num}",
-                        label_visibility="collapsed"
+                with st.expander("View extracted text"):
+                    escaped_text = html.escape(snippet_text)
+                    st.markdown(
+                        f'<div class="extracted-text-box">{escaped_text}</div>',
+                        unsafe_allow_html=True
                     )
 
     # Render all other retrieved candidate reference pages
@@ -177,31 +204,40 @@ def render_verified_sources(cited_sources, other_sources=None, key_prefix="src",
 
             remaining.sort(key=other_sort_key)
 
-            with st.expander(f"📚 Other Retrieved Reference Pages ({len(remaining)})"):
+            with st.expander(f"Other reference pages ({len(remaining)})"):
                 for idx, c in enumerate(remaining):
                     src_name = c['source']
                     pg_num = c['page']
                     snippet_text = c.get('text', '').strip()
+                    safe_filename = urllib.parse.quote(src_name)
 
-                    col_info, col_btn = st.columns([3, 1])
+                    col_info, col_btn = st.columns([3.6, 1.2])
                     with col_info:
-                        st.markdown(f"📄 **{src_name}** — **Page {pg_num}**")
+                        st.markdown(f"""
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; flex-shrink: 0;">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <span style="font-weight: 600; color: #0F172A; font-size: 0.88rem;">{src_name}</span>
+                            <span style="color: #64748B; font-size: 0.82rem;">· Page {pg_num}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col_btn:
-                        safe_filename = urllib.parse.quote(src_name)
                         st.link_button(
-                            f"📖 Open Page {pg_num}", 
-                            f"/app/static/{safe_filename}#page={pg_num}"
+                            f"Open page {pg_num} ↗", 
+                            f"/app/static/{safe_filename}#page={pg_num}",
+                            use_container_width=True
                         )
 
                     if snippet_text:
-                        with st.expander(f"👁️ View Text from {src_name} (Page {pg_num})"):
-                            st.text_area(
-                                "Reference Context",
-                                value=snippet_text,
-                                height=130,
-                                disabled=True,
-                                key=f"{key_prefix}_oth_txt_{idx}_{src_name}_{pg_num}",
-                                label_visibility="collapsed"
+                        with st.expander("View extracted text"):
+                            escaped_text = html.escape(snippet_text)
+                            st.markdown(
+                                f'<div class="extracted-text-box">{escaped_text}</div>',
+                                unsafe_allow_html=True
                             )
 
 # 5. Live Repository State (Fast cached source metadata without heavy vector loading)
@@ -223,30 +259,73 @@ all_disk_files = [f for f in os.listdir("File_System") if f.lower().endswith((".
 # PAGE 1: REGULATORY ASSISTANT (/)
 # ==========================================
 def render_assistant_page():
-    # Sidebar Filters & Chat Controls
+    # Top Unified Institutional Navbar (Logo Left, Title Centered, Badge Right)
+    st.markdown(f"""
+    <div class="institutional-navbar">
+        <div class="navbar-left">
+            <a href="https://bestfinance.com.np" target="_blank" class="navbar-brand-link">
+                <img src="data:image/png;base64,{brand_logo_b64}" 
+                     alt="Best Finance Company Ltd." 
+                     class="navbar-brand-logo">
+            </a>
+        </div>
+        <div class="navbar-center">
+            <div class="navbar-title-container">
+                <div class="navbar-title-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 20px; height: 20px;">
+                        <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="navbar-title-content">
+                    <h1 class="navbar-title-heading">Regulatory & Directive Assistant</h1>
+                    </div>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-status-badge">
+                <span class="status-pulse-dot"></span>
+                <span class="status-badge-text">Verified sources only</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Sidebar Filters & Chat Controls (Positioned Below Best Finance Logo)
     with st.sidebar:
-        st.subheader("🔍 Scope & Filter Search")
+        # Page Navigation Links (Directly Below Logo!)
+        st.page_link(assistant_page, label="Regulatory Assistant", icon=":material/chat:")
+        st.page_link(admin_page, label="Document Management", icon=":material/folder:")
+
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+        st.markdown("""
+        <div style="font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; color: #6EE7B7; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 7px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#6EE7B7" style="width: 14px; height: 14px;">
+                <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" />
+            </svg>
+            Scope & Filter
+        </div>
+        """, unsafe_allow_html=True)
 
         CATEGORY_OPTIONS = {
-            "all": "🌐 All Categories (Auto-Detect)",
-            "unified": "🏦 Unified Directives (एकीकृत निर्देशन)",
-            "payment": "💳 Payment Directives (भुक्तानी निर्देशन)",
-            "report": "📊 Supervision Reports (सुपरीवेक्षण प्रतिवेदन)",
-            "other": "📑 Circulars & Other (अन्य परिपत्र)"
+            "all": "All categories (Auto)",
+            "unified": "Unified Directives (एकीकृत निर्देशन)",
+            "payment": "Payment Directives (भुक्तानी निर्देशन)",
+            "report": "Supervision Reports (सुपरीवेक्षण प्रतिवेदन)",
+            "other": "Circulars & Other (अन्य परिपत्र)"
         }
 
         selected_cat = st.selectbox(
-            "Category Scope:",
+            "Category scope",
             options=list(CATEGORY_OPTIONS.keys()),
             format_func=lambda k: CATEGORY_OPTIONS[k],
             index=0,
-            help="Filter search scope by regulatory category or keep on 'All Categories' for global AI routing."
+            label_visibility="visible"
         )
 
         all_available_docs = list(sources_summary.keys())
         if selected_cat == "all":
             category_docs = all_available_docs
-            doc_dropdown_options = ["All Documents (Global AI Routing)"] + all_available_docs
+            doc_dropdown_options = ["All documents (Global)"] + all_available_docs
         else:
             category_docs = [f for f in all_available_docs if categorize_file(f) == selected_cat]
             if category_docs:
@@ -255,30 +334,27 @@ def render_assistant_page():
                 doc_dropdown_options = ["No documents found in this category"]
 
         selected_doc_choice = st.selectbox(
-            "Document / File Selection:",
+            "Document",
             options=doc_dropdown_options,
             index=0,
-            help="Select a specific file or search across all documents in the chosen category."
+            label_visibility="visible"
         )
 
-        if selected_cat == "all" and selected_doc_choice.startswith("All Documents"):
+        st.caption("AI auto-detects the right directive and fiscal year from your question.")
+
+        if selected_cat == "all" and selected_doc_choice.startswith("All documents"):
             selected_doc = "All Documents"
-            st.caption("💡 *Global AI auto-detects the right directive and fiscal year based on your question.*")
         elif selected_doc_choice.startswith("All Documents in this Category"):
             selected_doc = category_docs
-            st.caption(f"🎯 *Searching across all **{len(category_docs)}** files in **{CATEGORY_OPTIONS[selected_cat]}**.*")
         elif selected_doc_choice.startswith("No documents"):
             selected_doc = "All Documents"
-            st.caption("⚠️ *No documents in this category. Defaulting to all documents.*")
         else:
             selected_doc = selected_doc_choice
-            st.caption(f"🎯 *Search locked to: `{selected_doc}`*")
 
         st.divider()
 
         # Chat Actions
-        st.subheader("🧹 Actions")
-        if st.button("🗑️ Clear Chat History", use_container_width=True):
+        if st.button("Clear Chat History", use_container_width=True):
             st.session_state.messages = [
                 {
                     "role": "assistant",
@@ -288,29 +364,6 @@ def render_assistant_page():
                 }
             ]
             st.rerun()
-
-    # Top Executive Header with Best Finance Branding
-    col_head, col_nav = st.columns([3.8, 1.2])
-    with col_head:
-        st.markdown("""
-        <div class="finance-header">
-            <div style="display: flex; align-items: center; gap: 18px;">
-                <img src="https://bestfinance.com.np/image/catalog/Logo%20(SVG).png" 
-                     style="max-height: 44px; width: auto; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.22));">
-                <div style="height: 38px; width: 1.5px; background: rgba(255, 255, 255, 0.25); border-radius: 1px;"></div>
-                <div class="finance-header-text">
-                    <h1><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"   style="width: 26px; height: 26px; vertical-align: -4px; margin-right: 8px; display: inline-block;">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-</svg>
-Regulatory & Directive Assistant</h1>
-                    <p>Official Institutional AI for NRB Directives, Payment Guidelines & Circulars</p>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_nav:
-        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
-        # st.page_link(admin_page, label="📁 Admin Portal", use_container_width=True)
 
     # Chat History in Session State
     if "messages" not in st.session_state:
@@ -326,20 +379,38 @@ Regulatory & Directive Assistant</h1>
             }
         ]
 
-    # Display Previous Messages
+    # Display Previous Messages (Lovable Layout: Clean Pill on Right, Shield Avatar on Left)
     for i, msg in enumerate(st.session_state.messages):
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-            if msg.get("latency"):
-                st.caption(f"⚡ {msg['latency']}")
-            if msg.get("sources") or msg.get("other_sources"):
-                render_verified_sources(
-                    msg.get("sources", []), 
-                    other_sources=msg.get("other_sources", []), 
-                    key_prefix=f"hist_{i}",
-                    target_years=set(msg.get("target_years", [])) if msg.get("target_years") else None,
-                    target_doc=msg.get("target_doc")
-                )
+        if msg["role"] == "user":
+            st.markdown(f"""
+            <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
+                <div style="background-color: #083820; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(8, 56, 32, 0.16);">
+                    {msg["content"]}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            col_av, col_body = st.columns([0.045, 0.955])
+            with col_av:
+                st.markdown("""
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: #064E3B; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25); margin-top: 4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 18px; height: 18px;">
+                        <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_body:
+                st.markdown(msg["content"])
+                if msg.get("latency"):
+                    st.caption(f"⚡ {msg['latency']}")
+                if msg.get("sources") or msg.get("other_sources"):
+                    render_verified_sources(
+                        msg.get("sources", []), 
+                        other_sources=msg.get("other_sources", []), 
+                        key_prefix=f"hist_{i}",
+                        target_years=set(msg.get("target_years", [])) if msg.get("target_years") else None,
+                        target_doc=msg.get("target_doc")
+                    )
 
     # Input Box ALWAYS AT BOTTOM OF SCREEN
     active_query = st.chat_input("Ask a question about NRB directives, rules, or limits (उदा: स्वःघोषणासम्बन्धी व्यवस्था)...")
@@ -347,8 +418,13 @@ Regulatory & Directive Assistant</h1>
     if active_query:
         start_time = time.time()
         st.session_state.messages.append({"role": "user", "content": active_query})
-        with st.chat_message("user"):
-            st.markdown(active_query)
+        st.markdown(f"""
+        <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
+            <div style="background-color: #083820; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(8, 56, 32, 0.16);">
+                {active_query}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
         # Automatic Query Year Routing & Document Selection
         live_table = table if table is not None else get_live_table()
@@ -435,8 +511,17 @@ Regulatory & Directive Assistant</h1>
             context_text = "\n".join(full_page_context)
             system_prompt = build_rag_prompt(context_text)
 
-        # Stream Groq Response to UI
-        with st.chat_message("assistant"):
+        # Stream Groq Response to UI (Lovable Shield Avatar Layout)
+        col_av, col_body = st.columns([0.045, 0.955])
+        with col_av:
+            st.markdown("""
+            <div style="width: 34px; height: 34px; border-radius: 50%; background: #064E3B; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25); margin-top: 4px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 18px; height: 18px;">
+                    <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            """, unsafe_allow_html=True)
+        with col_body:
             response_placeholder = st.empty()
             full_response = ""
             active_model_used = None
@@ -551,34 +636,47 @@ def render_admin_page():
     total_docs = len(all_disk_files)
     total_chunks = len(df) if df is not None else 0
 
-    # Sidebar Status (Automatic Synchronization)
-    with st.sidebar:
-        st.subheader("⚙️ Database Synchronization")
-        st.caption("🟢 **Auto-Sync Active**")
-        st.caption("The database automatically stays synchronized whenever documents are added, modified, or deleted in `File_System/`.")
-
-    # Top Executive Header with Best Finance Branding
-    col_head, col_nav = st.columns([3.8, 1.2])
-    with col_head:
-        st.markdown("""
-        <div class="finance-header">
-            <div style="display: flex; align-items: center; gap: 18px;">
-                <img src="https://bestfinance.com.np/image/catalog/Logo%20(SVG).png" 
-                     style="max-height: 44px; width: auto; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.22));">
-                <div style="height: 38px; width: 1.5px; background: rgba(255, 255, 255, 0.25); border-radius: 1px;"></div>
-                <div class="finance-header-text">
-                <h1><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 26px; height: 26px; vertical-align: -4px; margin-right: 8px; display: inline-block;">
-  <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
-</svg>
- Document Management & Admin Panel</h1>
-                    <p>Upload, organize, inspect, and synchronize institutional regulatory documents</p>
+    # Top Unified Institutional Navbar (Responsive: Logo Left, Admin Header Centered, Status Right)
+    st.markdown(f"""
+    <div class="institutional-navbar">
+        <div class="navbar-left">
+            <a href="https://bestfinance.com.np" target="_blank" class="navbar-brand-link">
+                <img src="data:image/png;base64,{brand_logo_b64}" 
+                     alt="Best Finance Company Ltd." 
+                     class="navbar-brand-logo">
+            </a>
+        </div>
+        <div class="navbar-center">
+            <div class="navbar-title-container">
+                <div class="navbar-title-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 20px; height: 20px;">
+                        <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+                    </svg>
+                </div>
+                <div class="navbar-title-content">
+                    <h1 class="navbar-title-heading">Document Management & Admin</h1>
+                    <p class="navbar-title-sub">Upload, organize, inspect, and synchronize institutional regulatory documents</p>
                 </div>
             </div>
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-status-badge">
+                <span class="status-pulse-dot"></span>
+                <span class="status-badge-text">Auto-Sync Active</span>
             </div>
-        """, unsafe_allow_html=True)
-    with col_nav:
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Sidebar Status (Positioned Below Best Finance Logo)
+    with st.sidebar:
+        st.page_link(assistant_page, label="Regulatory Assistant", icon=":material/chat:")
+        st.page_link(admin_page, label="Document Management", icon=":material/folder:")
+
         st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
-        # st.page_link(assistant_page, label="💬 Regulatory Assistant", use_container_width=True)
+        st.markdown("<div style='font-size: 0.88rem; font-weight: 700; color: #FFFFFF; margin-top: 10px;'>Database Synchronization</div>", unsafe_allow_html=True)
+        st.markdown("<div style='color: #6EE7B7; font-size: 0.80rem; font-weight: 600; margin-top: 4px;'>● Auto-Sync Active</div>", unsafe_allow_html=True)
+        st.caption("The database automatically stays synchronized whenever documents are added, modified, or deleted in `File_System/`.")
 
     st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
@@ -734,11 +832,11 @@ def render_admin_page():
 
             # Table Header
             col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([3.6, 1.2, 1.3, 1.5, 1.0])
-            with col_h1: st.caption("📄 **Document Name**")
-            with col_h2: st.caption("💾 **File Size**")
-            with col_h3: st.caption("🧩 **Chunks**")
-            with col_h4: st.caption("📖 **View PDF**")
-            with col_h5: st.caption("⚙️ **Action**")
+            with col_h1: st.caption("**Document Name**")
+            with col_h2: st.caption("**File Size**")
+            with col_h3: st.caption("**Chunks**")
+            with col_h4: st.caption("**View PDF**")
+            with col_h5: st.caption("**Action**")
 
             for doc in cat_docs:
                 fname = doc["filename"]
@@ -751,13 +849,13 @@ def render_admin_page():
                     st.markdown(f"{doc['size_mb']:.2f} MB")
                 with c3:
                     if doc['chunk_count'] > 0:
-                        st.markdown(f"✅ {doc['chunk_count']:,}")
+                        st.markdown(f"{doc['chunk_count']:,} chunks")
                     else:
-                        st.markdown("⚠️ *Not indexed*")
+                        st.markdown("*Not indexed*")
                 with c4:
-                    st.link_button("📖 View PDF", f"/app/static/{safe_name}", use_container_width=True)
+                    st.link_button("View PDF ↗", f"/app/static/{safe_name}", use_container_width=True)
                 with c5:
-                    if st.button("🗑️", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary"):
+                    if st.button("Delete", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary"):
                         success = delete_document(fname, live_table=live_table_for_delete)
                         if success:
                             st.toast(f"Removed '{fname}' from system and database!")
@@ -771,17 +869,17 @@ def render_admin_page():
 assistant_page = st.Page(
     render_assistant_page,
     title="Regulatory Assistant",
-    icon="",
+    icon=":material/chat:",
     default=True
 )
 
 admin_page = st.Page(
     render_admin_page,
-    title="Document Management & Admin",
-    icon="",
+    title="Document Management",
+    icon=":material/folder:",
     url_path="admin"
 )
 
-pg = st.navigation([assistant_page, admin_page])
+pg = st.navigation([assistant_page, admin_page], position="hidden")
 pg.run()
 

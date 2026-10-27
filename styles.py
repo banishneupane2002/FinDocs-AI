@@ -1,14 +1,28 @@
 """
-Best Finance Company Ltd. Institutional UI Stylesheet
-Brand Palette:
-- Primary Brand Green: #00A94F
-- Forest / Emerald Green: #047857 / #005528 / #013A1B
-- Soft Emerald & Mint Accents: #ECFDF5 / #E6F7EE / #D1FAE5 / #A7F3D0
-- Canvas Background: #FFFFFF / #F4FBF7
-- Body & Heading Typography: Poppins, Mukta, sans-serif
+Best Finance Company Ltd. Institutional UI Stylesheet (Lovable Exact Replica)
+Theme Palette:
+- Sidebar Background: #062517 (Deep Forest Green)
+- Sidebar Accents: #10B981, #6EE7B7, #A7F3D0
+- Canvas Background: #FFFFFF (Clean Pure White)
+- Primary Brand Accent: #00A94F / #047857 / #10B981
+- User Chat Bubble: #083820 (Dark Forest Pill)
+- Card Borders: #E5E7EB / #D1FAE5
+- Typography: Poppins, Mukta, Inter, sans-serif
 """
 
-CUSTOM_CSS = """
+import os
+import base64
+
+def _get_toggle_icon_b64():
+    p = os.path.join(os.path.dirname(__file__), "sidebar_toggle_icon.png")
+    if os.path.exists(p):
+        with open(p, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+    return ""
+
+TOGGLE_ICON_B64 = _get_toggle_icon_b64()
+
+RAW_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
@@ -19,349 +33,808 @@ CUSTOM_CSS = """
     /* Global Clean White Canvas */
     .stApp {
         background-color: #FFFFFF !important;
-        color: #0F172A !important;
+        color: #111827 !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 0. TOP INSTITUTIONAL NAVBAR (RESPONSIVE: LOGO, TITLE, BADGE) */
+    /* ---------------------------------------------------- */
+    .institutional-navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100vw !important;
+        height: 88px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 28px !important;
+        z-index: 998 !important;
+        background: #FFFFFF !important;
+        border-bottom: 1.5px solid #E5E7EB !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+        box-sizing: border-box !important;
+        transition: height 0.2s ease, padding 0.2s ease !important;
+    }
+
+    .navbar-left {
+        display: flex !important;
+        align-items: center !important;
+        flex: 1 1 0% !important;
+        justify-content: flex-start !important;
+        padding-left: 0 !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .navbar-brand-link {
+        text-decoration: none !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .navbar-brand-logo {
+        max-height: 50px !important;
+        width: auto !important;
+        max-width: 250px !important;
+        object-fit: contain !important;
+        display: block !important;
+        transition: max-height 0.2s ease, max-width 0.2s ease !important;
+    }
+
+    .navbar-center {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 2 1 0% !important;
+        text-align: center !important;
+        min-width: 0 !important;
+        padding: 0 12px !important;
+    }
+
+    .navbar-title-container {
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+        max-width: 100% !important;
+    }
+
+    .navbar-title-icon {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        background: #064E3B !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+        box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25) !important;
+        transition: width 0.2s ease, height 0.2s ease !important;
+    }
+
+    .navbar-title-content {
+        text-align: left !important;
+        min-width: 0 !important;
+    }
+
+    .navbar-title-heading {
+        margin: 0 !important;
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+        letter-spacing: -0.01em !important;
+        line-height: 1.25 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        transition: font-size 0.2s ease !important;
+    }
+
+    .navbar-title-sub {
+        margin: 4px 0 0 0 !important;
+        font-size: 0.82rem !important;
+        color: #64748B !important;
+        line-height: 1.25 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        transition: font-size 0.2s ease !important;
+    }
+
+    .navbar-right {
+        display: flex !important;
+        align-items: center !important;
+        flex: 1 1 0% !important;
+        justify-content: flex-end !important;
+        padding-right: 0 !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .navbar-status-badge {
+        background: #ECFDF5 !important;
+        border: 1px solid #A7F3D0 !important;
+        color: #047857 !important;
+        padding: 6px 14px !important;
+        border-radius: 9999px !important;
+        font-size: 0.80rem !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .status-pulse-dot {
+        width: 7px !important;
+        height: 7px !important;
+        border-radius: 50% !important;
+        background: #10B981 !important;
+        display: inline-block !important;
+        flex-shrink: 0 !important;
+    }
+
+    .status-badge-text {
+        display: inline !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 1. SIDEBAR: FULL-HEIGHT OVERLAY DRAWER               */
+    /* ---------------------------------------------------- */
+    section[data-testid="stSidebar"] {
+        background-color: #062517 !important;
+        border-right: 1px solid #133D27 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        width: 21rem !important;
+        min-width: 21rem !important;
+        max-width: 21rem !important;
+        position: fixed !important;
+        z-index: 1002 !important;
+        box-shadow: 8px 0 32px rgba(0, 0, 0, 0.5) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s ease !important;
+    }
+
+    section[data-testid="stSidebar"][aria-expanded="false"] {
+        transform: translateX(-110%) !important;
+        margin-left: -22rem !important;
+        box-shadow: none !important;
+        pointer-events: none !important;
+    }
+
+    section[data-testid="stSidebar"][aria-expanded="true"] {
+        transform: translateX(0) !important;
+        margin-left: 0 !important;
+        box-shadow: 6px 0 24px rgba(0, 0, 0, 0.45) !important;
+        pointer-events: auto !important;
     }
     
-    /* Best Finance Executive Header */
-    .finance-header {
-        background: linear-gradient(135deg, #013A1B 0%, #047857 55%, #00A94F 100%);
-        color: #FFFFFF;
-        padding: 22px 28px;
-        border-radius: 12px;
-        margin-bottom: 22px;
-        box-shadow: 0 4px 16px rgba(0, 169, 79, 0.16);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid rgba(167, 243, 208, 0.3);
+    section[data-testid="stSidebar"] * {
+        color: #F1F5F9 !important;
     }
-    .finance-header-text h1 {
-        margin: 0;
-        font-size: 1.7rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
+
+    section[data-testid="stSidebar"] hr {
+        border-color: #133D27 !important;
+        margin: 16px 0 !important;
+    }
+
+    /* Custom Page Links inside Sidebar (matching Lovable nav items) */
+    section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"] {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 9px 12px !important;
+        color: #94A3B8 !important;
+        font-weight: 500 !important;
+        font-size: 0.90rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin-bottom: 4px !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+    }
+
+    section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"]:hover {
+        background-color: rgba(255, 255, 255, 0.06) !important;
         color: #FFFFFF !important;
     }
-    .finance-header-text p {
-        margin: 4px 0 0 0;
-        font-size: 0.92rem;
-        color: #D1FAE5 !important;
-    }
-    .finance-badge {
-        background: rgba(255, 255, 255, 0.18);
-        border: 1px solid rgba(167, 243, 208, 0.45);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: #FFFFFF;
-        white-space: nowrap;
-    }
-    
-    /* Sidebar: Clean Soft Mint Slate */
-    section[data-testid="stSidebar"] {
-        background-color: #F4FBF7 !important;
-        border-right: 1px solid #D1FAE5;
-    }
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3 {
-        color: #02402F !important;
+
+    section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"][aria-current="page"] {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        color: #FFFFFF !important;
         font-weight: 600 !important;
     }
-    
-    /* Expander / Card Containers */
-    div[data-testid="stExpander"] {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #D1FAE5 !important;
+
+    section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"] span {
+        color: inherit !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 1.1 SIDEBAR SELECTBOX: REACT ARIA & STREAMLIT 1.65+ */
+    /* ---------------------------------------------------- */
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+        background: transparent !important;
+    }
+
+    /* Entire selectbox container and wrapper */
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] > div,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] > div > div,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div:has(> input),
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+        background-color: #0B331E !important;
+        background: #0B331E !important;
+        border: 1px solid #1A4D31 !important;
         border-radius: 8px !important;
-        box-shadow: 0 1px 3px rgba(0, 169, 79, 0.04) !important;
-        margin-bottom: 10px !important;
+        box-shadow: none !important;
+    }
+
+    /* CRITICAL FIX: Eliminate white input box in Streamlit 1.65+ */
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] input,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] input[type="text"],
+    section[data-testid="stSidebar"] input.react-aria-Input,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] [data-baseweb="select"] input {
+        background-color: #0B331E !important;
+        background: #0B331E !important;
+        color: #ABDECA !important;
+        -webkit-text-fill-color: #ABDECA !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        cursor: pointer !important;
+    }
+
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] input::placeholder,
+    section[data-testid="stSidebar"] input.react-aria-Input::placeholder {
+        color: #A7F3D0 !important;
+        -webkit-text-fill-color: #A7F3D0 !important;
+        opacity: 0.9 !important;
+    }
+
+    /* Dropdown Open Chevron Button in Sidebar */
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] button,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] button[aria-label="Open"],
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] [aria-label="Open"] {
+        background-color: #0B331E !important;
+        background: #0B331E !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #6EE7B7 !important;
+    }
+
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] svg,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] button svg {
+        fill: #6EE7B7 !important;
+        color: #6EE7B7 !important;
+        stroke: #6EE7B7 !important;
+    }
+
+    /* Fallback for BaseWeb select value spans */
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] [class*="ValueContainer"],
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] [class*="SingleValue"],
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] [class*="Placeholder"],
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] span {
+        color: #6EE7B7 !important;
+        -webkit-text-fill-color: #6EE7B7 !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        background-color: transparent !important;
+    }
+
+    /* High-contrast crisp sidebar typography */
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] [data-testid="stWidgetLabel"],
+    section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
+    section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label p {
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        opacity: 1 !important;
+        letter-spacing: -0.01em !important;
+        margin-bottom: 5px !important;
+    }
+
+    section[data-testid="stSidebar"] .stCaption, 
+    section[data-testid="stSidebar"] .stCaption p,
+    section[data-testid="stSidebar"] p {
+        color: #94A3B8 !important;
+        font-size: 0.80rem !important;
+        line-height: 1.45 !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 1.2 DROPDOWN MENU (STREAMLIT 1.65+ VIRTUAL DROPDOWN) */
+    /* ---------------------------------------------------- */
+    div[data-testid="stSelectboxVirtualDropdown"],
+    div[data-testid="stSelectboxVirtualDropdown"] > div,
+    div[data-testid="stSelectboxVirtualDropdown"] div[role="listbox"],
+    div[data-testid="stSelectboxVirtualDropdown"] ul[role="listbox"],
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    div[data-baseweb="popover"] [data-baseweb="menu"],
+    div[data-baseweb="popover"] ul,
+    div[data-baseweb="popover"] ul[role="listbox"],
+    ul[role="listbox"] {
+        background-color: #062517 !important;
+        background: #062517 !important;
+        border: 1px solid #1A4D31 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
+        padding: 4px 0 !important;
         overflow: hidden !important;
     }
 
-    /* Expander Header Title: Dark Forest Green */
-    div[data-testid="stExpander"] summary,
-    div[data-testid="stExpander"] details summary,
-    div[data-testid="stExpander"] summary p,
-    div[data-testid="stExpander"] details summary p,
-    div[data-testid="stExpander"] summary span,
-    div[data-testid="stExpander"] details summary span {
-        color: #02402F !important;
-        font-weight: 600 !important;
-        font-size: 0.93rem !important;
-        letter-spacing: -0.01em !important;
-    }
-
-    div[data-testid="stExpander"] summary:hover,
-    div[data-testid="stExpander"] details summary:hover {
-        background-color: #ECFDF5 !important;
-    }
-    div[data-testid="stExpander"] summary:hover p,
-    div[data-testid="stExpander"] details summary:hover p,
-    div[data-testid="stExpander"] summary:hover span,
-    div[data-testid="stExpander"] details summary:hover span {
-        color: #008C42 !important;
-    }
-
-    div[data-testid="stExpander"] summary svg,
-    div[data-testid="stExpander"] details summary svg {
-        color: #00A94F !important;
-        fill: #00A94F !important;
-    }
-
-    /* Extracted Text Content in Expander: High-Legibility Dark Slate */
-    div[data-testid="stExpander"] div[data-testid="stTextArea"] textarea,
-    div[data-testid="stExpander"] textarea:disabled,
-    div[data-testid="stExpander"] textarea[disabled] {
-        color: #0F172A !important;
-        -webkit-text-fill-color: #0F172A !important;
-        background-color: #F4FBF7 !important;
-        border: 1px solid #D1FAE5 !important;
-        border-radius: 6px !important;
-        font-size: 0.90rem !important;
-        line-height: 1.6 !important;
-        font-weight: 500 !important;
-        opacity: 1 !important;
-    }
-    
-    /* Chat Message Bubbles */
-    div[data-testid="stChatMessage"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 10px !important;
-        padding: 16px 20px !important;
-        margin-bottom: 14px !important;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
-    }
-    
-    /* User Message Container Accent */
-    div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]) {
-        background-color: #F8FAFC !important;
-        border-left: 4px solid #64748B !important;
-    }
-    
-    /* Assistant Message Container Accent: Best Finance Brand Green */
-    div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-assistant"]) {
-        background-color: #FFFFFF !important;
-        border-left: 4px solid #00A94F !important;
-    }
-    
-    /* Quick Showcase Buttons */
-    div[data-testid="stHorizontalBlock"] button {
-        background-color: #FFFFFF !important;
-        border: 1px solid #D1FAE5 !important;
-        border-radius: 8px !important;
+    div[data-testid="stSelectboxVirtualDropdown"] div[role="option"],
+    div[data-testid="stSelectboxVirtualDropdown"] li[role="option"],
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"],
+    div[data-baseweb="popover"] li,
+    div[data-baseweb="popover"] li[role="option"],
+    div[data-baseweb="popover"] [role="option"],
+    ul[role="listbox"] li,
+    ul[role="listbox"] li[role="option"] {
+        background-color: #062517 !important;
+        background: #062517 !important;
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
         padding: 10px 14px !important;
         font-size: 0.88rem !important;
         font-weight: 500 !important;
-        color: #1E293B !important;
-        text-align: left !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
-        transition: all 0.15s ease-in-out !important;
-    }
-    div[data-testid="stHorizontalBlock"] button:hover {
-        border-color: #00A94F !important;
-        color: #007035 !important;
-        background-color: #ECFDF5 !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(0, 169, 79, 0.12) !important;
-    }
-
-    /* Verification Citation Badge */
-    .citation-container {
-        background-color: #F4FBF7;
-        border: 1px solid #D1FAE5;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-top: 14px;
-        font-size: 0.88rem;
-    }
-    .citation-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background-color: #ECFDF5;
-        color: #047857;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.82rem;
-        margin-right: 8px;
-        border: 1px solid #A7F3D0;
-    }
-
-    /* Buttons: Best Finance Green Theme */
-    .stButton>button {
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        font-size: 0.90rem !important;
-        transition: all 0.15s ease-in-out !important;
-        border: 1px solid #D1FAE5 !important;
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
-    }
-    .stButton>button:hover {
-        border-color: #00A94F !important;
-        color: #007035 !important;
-        background-color: #ECFDF5 !important;
-        box-shadow: 0 4px 12px rgba(0, 169, 79, 0.12) !important;
-    }
-    
-    .stButton>button[kind="primary"],
-    button[data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, #00A94F 0%, #047857 100%) !important;
-        color: #FFFFFF !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
         border: none !important;
-        box-shadow: 0 2px 8px rgba(0, 169, 79, 0.25) !important;
     }
-    .stButton>button[kind="primary"]:hover,
-    button[data-testid="baseButton-primary"]:hover {
-        background: linear-gradient(135deg, #008C42 0%, #03543F 100%) !important;
-        box-shadow: 0 4px 14px rgba(0, 169, 79, 0.35) !important;
+
+    /* Force all nested text inside dropdown options to be pure crisp white */
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"] *,
+    div[data-baseweb="popover"] li *,
+    div[data-baseweb="popover"] [role="option"] *,
+    ul[role="listbox"] li * {
+        background-color: transparent !important;
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+        font-size: 0.88rem !important;
+        font-weight: 500 !important;
     }
-    
-    /* Link Buttons */
-    a[data-testid="baseButton-secondary"] {
-        border-color: #D1FAE5 !important;
-        color: #007035 !important;
-        background-color: #FFFFFF !important;
-        border-radius: 8px !important;
+
+    /* Hover & Selected states: Rich emerald background with mint text */
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"]:hover,
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"][aria-selected="true"],
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"][data-focused="true"],
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"][data-selected="true"],
+    div[data-baseweb="popover"] li:hover,
+    div[data-baseweb="popover"] li[role="option"]:hover,
+    div[data-baseweb="popover"] [role="option"]:hover,
+    ul[role="listbox"] li:hover,
+    ul[role="listbox"] li[role="option"]:hover,
+    div[data-baseweb="popover"] li[aria-selected="true"],
+    div[data-baseweb="popover"] li[role="option"][aria-selected="true"],
+    ul[role="listbox"] li[aria-selected="true"],
+    ul[role="listbox"] li[role="option"][aria-selected="true"] {
+        background-color: #124B2C !important;
+        background: #124B2C !important;
+        color: #6EE7B7 !important;
+        -webkit-text-fill-color: #6EE7B7 !important;
+    }
+
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"]:hover *,
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"][aria-selected="true"] *,
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"][data-focused="true"] *,
+    div[data-testid="stSelectboxVirtualDropdown"] [role="option"][data-selected="true"] *,
+    div[data-baseweb="popover"] li:hover *,
+    div[data-baseweb="popover"] li[role="option"]:hover *,
+    div[data-baseweb="popover"] [role="option"]:hover *,
+    ul[role="listbox"] li:hover *,
+    ul[role="listbox"] li[role="option"]:hover *,
+    div[data-baseweb="popover"] li[aria-selected="true"] *,
+    div[data-baseweb="popover"] li[role="option"][aria-selected="true"] *,
+    ul[role="listbox"] li[aria-selected="true"] *,
+    ul[role="listbox"] li[role="option"][aria-selected="true"] * {
+        background-color: transparent !important;
+        color: #6EE7B7 !important;
+        -webkit-text-fill-color: #6EE7B7 !important;
         font-weight: 600 !important;
-        transition: all 0.15s ease-in-out !important;
     }
-    a[data-testid="baseButton-secondary"]:hover {
-        border-color: #00A94F !important;
-        background-color: #ECFDF5 !important;
-        color: #008C42 !important;
-        box-shadow: 0 2px 8px rgba(0, 169, 79, 0.15) !important;
-    }
-    
-    /* Stat Cards */
-    div[data-testid="stMetricValue"] {
-        font-size: 1.8rem !important;
-        font-weight: 700 !important;
-        color: #008C42 !important;
-    }
-    
-    /* Code and Pre Blocks */
-    pre, code {
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
-        border-radius: 6px !important;
-    }
-    
-    /* Form Submissions */
-    div[data-testid="stForm"] {
-        border: 1px solid #D1FAE5 !important;
-        border-radius: 10px !important;
-        padding: 20px !important;
-        background-color: #FFFFFF !important;
-    }
-    
-    /* Status Messages */
-    div[data-testid="stAlert"] {
+
+    /* Sidebar Buttons */
+    section[data-testid="stSidebar"] button {
+        background: #0B331E !important;
+        border: 1px solid #1A4D31 !important;
+        color: #E2E8F0 !important;
         border-radius: 8px !important;
+        font-size: 0.84rem !important;
+        font-weight: 500 !important;
+        padding: 8px 14px !important;
+        transition: all 0.2s ease !important;
     }
-    
-    /* Document Table Row */
-    .doc-row {
-        background-color: #FFFFFF;
-        border: 1px solid #D1FAE5;
-        border-radius: 8px;
-        padding: 12px 18px;
-        margin-bottom: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    section[data-testid="stSidebar"] button:hover {
+        background: #124B2C !important;
+        border-color: #10B981 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2) !important;
     }
-    
-    /* Bottom Docked Chat Input Bar */
-    div[data-testid="stBottom"] {
-        background-color: rgba(255, 255, 255, 0.94) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border-top: 1px solid rgba(209, 250, 229, 0.8) !important;
-        padding-top: 12px !important;
-        padding-bottom: 20px !important;
-        z-index: 999 !important;
+
+    /* ---------------------------------------------------- */
+    /* 2. CHAT STREAM & BUBBLES                             */
+    /* ---------------------------------------------------- */
+    /* Remove generic container boxes around chat messages */
+    div[data-testid="stChatMessage"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 6px 0 !important;
+        margin-bottom: 12px !important;
     }
-    div[data-testid="stBottom"] > div {
+
+    /* Markdown Blockquotes as Exact Clause Callouts */
+    blockquote {
+        border-left: 3px solid #10B981 !important;
+        padding-left: 14px !important;
+        margin: 12px 0 !important;
+        color: #374151 !important;
+        font-style: normal !important;
         background: transparent !important;
     }
-    div[data-testid="stChatInput"] {
-        max-width: 840px !important;
-        margin: 0 auto !important;
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #A7F3D0 !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 20px rgba(0, 169, 79, 0.08) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+    /* Clean Enterprise Table Styling matching Lovable */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 8px !important;
+        margin: 14px 0 !important;
+        overflow: hidden !important;
+        font-size: 0.88rem !important;
     }
-    div[data-testid="stChatInput"]:focus-within {
-        border-color: #00A94F !important;
-        box-shadow: 0 4px 24px rgba(0, 169, 79, 0.20) !important;
+    th {
+        background-color: #F9FAFB !important;
+        color: #111827 !important;
+        font-weight: 600 !important;
+        text-align: left !important;
+        padding: 10px 14px !important;
+        border-bottom: 1.5px solid #E5E7EB !important;
     }
-    div[data-testid="stChatInput"] textarea {
-        font-size: 0.96rem !important;
-        line-height: 1.5 !important;
+    td {
+        padding: 10px 14px !important;
+        border-bottom: 1px solid #F3F4F6 !important;
+        color: #374151 !important;
+    }
+    tr:hover td {
+        background-color: #F8FAFC !important;
     }
 
-    /* Header & Main Container Spacing */
-    header[data-testid="stHeader"] {
+    /* ---------------------------------------------------- */
+    /* 3. METRIC CARDS & CITATIONS                          */
+    /* ---------------------------------------------------- */
+    .metric-highlight-card {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 16px 22px;
+        margin: 14px 0;
+        max-width: 480px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .metric-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #059669;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    .metric-value {
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: #047857;
+        line-height: 1.2;
+    }
+    .metric-sub {
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: #374151;
+        margin-left: 4px;
+    }
+
+    /* Expander inside citation cards */
+    div[data-testid="stExpander"] {
+        background-color: #FAFAFA !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        margin-top: 8px !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="stExpander"] summary {
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        color: #4B5563 !important;
+        padding: 8px 12px !important;
+    }
+
+    div[data-testid="stExpander"] summary:hover {
+        color: #111827 !important;
+    }
+
+    /* Minimal Institutional Link Button */
+    div[data-testid="stLinkButton"] a {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        color: #334155 !important;
+        border-radius: 8px !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+        padding: 5px 12px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    div[data-testid="stLinkButton"] a:hover {
+        background-color: #F8FAFC !important;
+        border-color: #CBD5E1 !important;
+        color: #0F172A !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    div[data-testid="stLinkButton"] a p {
+        color: inherit !important;
+        font-weight: inherit !important;
+        font-size: inherit !important;
+        margin: 0 !important;
+    }
+
+    /* High-Contrast Extracted Text Box */
+    .extracted-text-box {
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 6px !important;
+        padding: 12px 14px !important;
+        font-family: 'Mukta', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 0.92rem !important;
+        line-height: 1.65 !important;
+        color: #0F172A !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+        max-height: 240px !important;
+        overflow-y: auto !important;
+        user-select: text !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 4. FLOATING PILL CHAT INPUT BAR                      */
+    /* ---------------------------------------------------- */
+    div[data-testid="stBottom"] {
         background-color: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(12px) !important;
         -webkit-backdrop-filter: blur(12px) !important;
-        z-index: 996 !important;
+        border-top: 1px solid #F3F4F6 !important;
+        padding-top: 12px !important;
+        padding-bottom: 16px !important;
+        z-index: 999 !important;
     }
 
-    .block-container {
-        padding-top: 2.5rem !important;
-        padding-bottom: 7rem !important;
+    div[data-testid="stBottom"]::after {
+        content: "Responses cite official documents. Always confirm with Compliance before acting.";
+        display: block;
+        text-align: center;
+        color: #9CA3AF;
+        font-size: 0.74rem;
+        margin-top: -20px;
     }
 
-    /* Complete removal of Streamlit Deploy button */
+    div[data-testid="stBottom"] > div {
+        background: transparent !important;
+    }
+
+    /* Outer wrapper: completely transparent, no border, no shadow */
+    div[data-testid="stChatInput"] {
+        max-width: 760px !important;
+        margin: 0 auto !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* THE ONE SINGLE CHAT INPUT PILL BOX (No rectangle inside) */
+    div[data-testid="stChatInput"] > div {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #E5E7EB !important;
+        border-radius: 50px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+        padding: 4px 10px 4px 18px !important;
+        display: flex !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    div[data-testid="stChatInput"] > div:focus-within {
+        border-color: #10B981 !important;
+        box-shadow: 0 6px 24px rgba(16, 185, 129, 0.16) !important;
+    }
+
+    /* Remove any inner borders from nested elements and textareas */
+    div[data-testid="stChatInput"] textarea,
+    div[data-testid="stChatInput"] div:has(> textarea),
+    div[data-testid="stChatInput"] [data-baseweb="textarea"] {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+        font-size: 0.92rem !important;
+        color: #111827 !important;
+        padding: 8px 10px !important;
+    }
+
+    /* Circular Green Send Button */
+    div[data-testid="stChatInput"] button {
+        background-color: #10B981 !important;
+        color: #FFFFFF !important;
+        border-radius: 50% !important;
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: none !important;
+        flex-shrink: 0 !important;
+        transition: background-color 0.2s ease, transform 0.15s ease !important;
+    }
+
+    div[data-testid="stChatInput"] button:hover {
+        background-color: #059669 !important;
+        transform: scale(1.05) !important;
+    }
+
+    div[data-testid="stChatInput"] button svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 5. GENERAL CLEANUPS & REMOVAL OF UNWANTED ELEMENTS   */
+    /* ---------------------------------------------------- */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        pointer-events: none !important;
+        height: 88px !important;
+        z-index: 999 !important;
+    }
+
+    header[data-testid="stHeader"] button,
+    header[data-testid="stHeader"] [data-testid="stSidebarCollapseButton"],
+    header[data-testid="stHeader"] [data-testid="stExpandSidebarButton"],
+    [data-testid="stExpandSidebarButton"] {
+        pointer-events: auto !important;
+    }
+
+    /* Floating Sidebar Expand Button (Clean icon only, no background box, no arrow) */
+    [data-testid="stExpandSidebarButton"] {
+        position: fixed !important;
+        top: 104px !important;
+        left: 24px !important;
+        z-index: 997 !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        padding: 0 !important;
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        min-height: 30px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: transform 0.15s ease, opacity 0.15s ease !important;
+    }
+
+    [data-testid="stExpandSidebarButton"]:hover {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        transform: scale(1.12) !important;
+        opacity: 0.75 !important;
+    }
+
+    /* Completely hide all default Streamlit arrow SVGs, Material icons, spans, text */
+    [data-testid="stExpandSidebarButton"] *,
+    [data-testid="stExpandSidebarButton"] svg,
+    [data-testid="stExpandSidebarButton"] span {
+        display: none !important;
+        visibility: hidden !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
+    }
+
+    /* Show ONLY the clean sidebar toggle icon image as an icon */
+    [data-testid="stExpandSidebarButton"]::after {
+        content: "" !important;
+        display: block !important;
+        width: 20px !important;
+        height: 20px !important;
+        background-image: url("data:image/png;base64,__TOGGLE_ICON_B64__") !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: contain !important;
+        pointer-events: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Collapse button inside sidebar header */
+    section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] button {
+        background: transparent !important;
+        border: none !important;
+        color: #A7F3D0 !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg {
+        fill: #A7F3D0 !important;
+        color: #A7F3D0 !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]:hover svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
+    /* CRITICAL FIX: Keep main canvas full-width & never shifted by the sidebar */
+    div[data-testid="stAppViewContainer"] {
+        overflow-x: hidden !important;
+    }
+
+    div[data-testid="stAppViewContainer"] > div:nth-child(2),
+    div[data-testid="stAppViewContainer"] > div:has(section[data-testid="stMain"]),
+    section[data-testid="stMain"],
+    div[data-testid="stMain"],
+    .stMain,
+    .main {
+        margin-left: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Chat Section / Hero Section permanently centered in the middle of the viewport */
+    .block-container,
+    div[data-testid="stMainBlockContainer"] {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        max-width: 820px !important;
+        width: 100% !important;
+        padding-top: 114px !important;
+        padding-bottom: 7.5rem !important;
+    }
+
+    /* Hide Streamlit Deploy button & chrome */
     .stDeployButton,
     [data-testid="stDeployButton"],
     .stAppDeployButton,
     header[data-testid="stHeader"] .stDeployButton,
     header[data-testid="stHeader"] [data-testid="stDeployButton"],
-    header[data-testid="stHeader"] button[kind="header"]:has(span:contains("Deploy")),
     #MainMenu + div:has(button) {
         display: none !important;
         visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    /* Page Navigation Links: Best Finance Mint & Emerald Theme */
-    a[data-testid="stPageLink-NavLink"] {
-        border-radius: 8px !important;
-        padding: 8px 14px !important;
-        font-weight: 500 !important;
-        color: #1E293B !important;
-        transition: all 0.15s ease-in-out !important;
-        border: 1px solid #D1FAE5 !important;
-        background-color: #FFFFFF !important;
-        text-decoration: none !important;
-    }
-    a[data-testid="stPageLink-NavLink"]:hover {
-        background-color: #ECFDF5 !important;
-        border-color: #00A94F !important;
-        color: #007035 !important;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 169, 79, 0.12) !important;
-    }
-    a[data-testid="stPageLink-NavLink"][aria-current="page"] {
-        background-color: #E6F7EE !important;
-        border-color: #00A94F !important;
-        color: #007035 !important;
-        font-weight: 600 !important;
-    }
-    section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"] {
-        background-color: #FFFFFF !important;
-        margin-bottom: 6px !important;
     }
 
     /* Invisible utility iframe styling */
@@ -373,10 +846,178 @@ CUSTOM_CSS = """
         pointer-events: none !important;
         border: none !important;
     }
+
+    /* ---------------------------------------------------- */
+    /* 6. RESPONSIVE BREAKPOINTS (DESKTOP, TABLET, MOBILE)  */
+    /* ---------------------------------------------------- */
+
+    /* 1. Large Tablet / Laptop (< 1120px) */
+    @media (max-width: 1120px) {
+        .institutional-navbar {
+            padding: 0 20px !important;
+            height: 84px !important;
+        }
+        header[data-testid="stHeader"] {
+            height: 84px !important;
+        }
+        section[data-testid="stSidebar"] {
+            top: 0 !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            z-index: 1002 !important;
+        }
+        .navbar-brand-logo {
+            max-height: 44px !important;
+            max-width: 210px !important;
+        }
+        .navbar-title-heading {
+            font-size: 1.12rem !important;
+        }
+        .navbar-title-sub {
+            font-size: 0.78rem !important;
+        }
+        .navbar-title-icon {
+            width: 36px !important;
+            height: 36px !important;
+        }
+        .navbar-status-badge {
+            padding: 5px 12px !important;
+            font-size: 0.76rem !important;
+        }
+        [data-testid="stExpandSidebarButton"] {
+            top: 98px !important;
+            left: 20px !important;
+        }
+    }
+
+    /* 2. Tablet / Narrow Viewport (< 880px) */
+    @media (max-width: 880px) {
+        .institutional-navbar {
+            padding: 0 16px !important;
+            height: 76px !important;
+        }
+        header[data-testid="stHeader"] {
+            height: 76px !important;
+        }
+        section[data-testid="stSidebar"] {
+            top: 0 !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            width: 19.5rem !important;
+            min-width: 19.5rem !important;
+            z-index: 1002 !important;
+        }
+        .block-container,
+        div[data-testid="stMainBlockContainer"] {
+            padding-top: 98px !important;
+        }
+        .navbar-brand-logo {
+            max-height: 38px !important;
+            max-width: 165px !important;
+        }
+        .navbar-title-heading {
+            font-size: 1.00rem !important;
+        }
+        .navbar-title-sub {
+            display: none !important;
+        }
+        .navbar-title-icon {
+            width: 32px !important;
+            height: 32px !important;
+        }
+        .navbar-title-container {
+            gap: 10px !important;
+        }
+        .navbar-status-badge {
+            padding: 4px 10px !important;
+            font-size: 0.74rem !important;
+        }
+        [data-testid="stExpandSidebarButton"] {
+            top: 88px !important;
+            left: 16px !important;
+            width: 28px !important;
+            height: 28px !important;
+        }
+        [data-testid="stExpandSidebarButton"]::after {
+            width: 24px !important;
+            height: 24px !important;
+        }
+    }
+
+    /* 3. Small Mobile (< 580px) */
+    @media (max-width: 580px) {
+        .institutional-navbar {
+            padding: 0 12px !important;
+            height: 66px !important;
+        }
+        header[data-testid="stHeader"] {
+            height: 66px !important;
+        }
+        section[data-testid="stSidebar"] {
+            top: 0 !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            width: 86vw !important;
+            min-width: 86vw !important;
+            max-width: 20rem !important;
+            z-index: 1002 !important;
+        }
+        .block-container,
+        div[data-testid="stMainBlockContainer"] {
+            padding-top: 84px !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+        .navbar-left {
+            flex: 0 0 auto !important;
+        }
+        .navbar-brand-logo {
+            max-height: 30px !important;
+            max-width: 110px !important;
+        }
+        .navbar-center {
+            flex: 1 1 auto !important;
+            padding: 0 6px !important;
+            justify-content: center !important;
+        }
+        .navbar-title-icon {
+            display: none !important;
+        }
+        .navbar-title-heading {
+            font-size: 0.88rem !important;
+            text-align: center !important;
+        }
+        .navbar-right {
+            flex: 0 0 auto !important;
+        }
+        .status-badge-text {
+            display: none !important;
+        }
+        .navbar-status-badge {
+            padding: 6px !important;
+            border-radius: 50% !important;
+            min-width: 20px !important;
+            min-height: 20px !important;
+            justify-content: center !important;
+        }
+        [data-testid="stExpandSidebarButton"] {
+            top: 76px !important;
+            left: 10px !important;
+            width: 26px !important;
+            height: 26px !important;
+        }
+        [data-testid="stExpandSidebarButton"]::after {
+            width: 22px !important;
+            height: 22px !important;
+        }
+    }
 </style>
 """
 
-SIDEBAR_AUTO_CLOSE_SCRIPT = """
+# Inject toggle icon base64 into stylesheet
+CUSTOM_CSS = RAW_CSS.replace("__TOGGLE_ICON_B64__", TOGGLE_ICON_B64)
+
+SIDEBAR_BACKDROP_SCRIPT = """
 <script>
 (function() {
     try {
@@ -392,89 +1033,77 @@ SIDEBAR_AUTO_CLOSE_SCRIPT = """
             }
         }
 
-        // Replace any prior injected script to ensure latest handler logic
-        const existing = parentDoc.getElementById('st-sidebar-autoclose-script');
-        if (existing) {
-            existing.remove();
+        // Clean up any old listeners or scripts
+        if (parentWin._sidebarAutoCloseHandler) {
+            parentDoc.removeEventListener('click', parentWin._sidebarAutoCloseHandler, true);
+            delete parentWin._sidebarAutoCloseHandler;
+        }
+        const oldScript = parentDoc.getElementById('st-sidebar-autoclose-script');
+        if (oldScript) oldScript.remove();
+
+        // 1. Ensure backdrop element exists in parent body
+        let backdrop = parentDoc.getElementById('st-sidebar-backdrop');
+        if (!backdrop) {
+            backdrop = parentDoc.createElement('div');
+            backdrop.id = 'st-sidebar-backdrop';
+            parentDoc.body.appendChild(backdrop);
         }
 
-        // Inject script into top-level parent head so it lives permanently across Streamlit reruns
-        const scriptEl = parentDoc.createElement('script');
-        scriptEl.id = 'st-sidebar-autoclose-script';
-        scriptEl.textContent = `
-            (function() {
-                if (window._sidebarAutoCloseHandler) {
-                    document.removeEventListener('click', window._sidebarAutoCloseHandler, true);
-                }
+        // 2. Click on backdrop -> Collapse the sidebar
+        backdrop.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const collapseBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
+                                parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]') ||
+                                parentDoc.querySelector('button[aria-label="Close sidebar"]');
+            if (collapseBtn) {
+                collapseBtn.click();
+            }
+            backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
+        };
 
-                window._sidebarClosing = false;
+        // 3. Helper to update backdrop display based on sidebar aria-expanded state
+        function syncBackdrop() {
+            const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
+            if (!sidebar) {
+                backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
+                return;
+            }
 
-                window._sidebarAutoCloseHandler = function(event) {
-                    try {
-                        const sidebar = document.querySelector('[data-testid="stSidebar"]');
-                        if (!sidebar) return;
+            const isExpanded = sidebar.getAttribute('aria-expanded') === 'true';
+            if (isExpanded) {
+                backdrop.style.cssText = 'position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.32)!important;backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important;z-index:1001!important;cursor:pointer!important;display:block!important;opacity:1!important;transition:opacity 0.2s ease!important;';
+            } else {
+                backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
+            }
+        }
 
-                        // Check if sidebar is currently expanded
-                        const isExpanded = sidebar.getAttribute('aria-expanded') === 'true' ||
-                                           (sidebar.getBoundingClientRect().width > 50 && sidebar.style.display !== 'none');
-                        if (!isExpanded) return;
+        // 4. Attach MutationObserver to sidebar so backdrop always stays synchronized
+        if (parentWin._sidebarObserver) {
+            parentWin._sidebarObserver.disconnect();
+        }
 
-                        // Prevent rapid double-clicks while animation runs
-                        if (window._sidebarClosing) return;
+        const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
+        if (sidebar) {
+            const observer = new MutationObserver(function() {
+                syncBackdrop();
+            });
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['aria-expanded', 'style', 'class'] });
+            parentWin._sidebarObserver = observer;
+        }
 
-                        const target = event.target;
-                        if (!target) return;
+        // Run sync immediately on load / rerun
+        syncBackdrop();
 
-                        // 1. Keep open if click is inside the sidebar
-                        if (sidebar.contains(target)) return;
-
-                        // 2. Ignore clicks on expand or collapse controls
-                        if (target.closest('[data-testid="stExpandSidebarButton"]') ||
-                            target.closest('[data-testid="stSidebarCollapseButton"]') ||
-                            target.closest('[data-testid="stSidebarHeader"]')) {
-                            return;
-                        }
-
-                        // 3. Ignore clicks inside popovers, select menus, dropdowns, modals
-                        if (target.closest('[data-baseweb="popover"]') ||
-                            target.closest('[data-baseweb="menu"]') ||
-                            target.closest('[role="listbox"]') ||
-                            target.closest('[data-testid="stPopoverBody"]') ||
-                            target.closest('[data-testid="stModal"]')) {
-                            return;
-                        }
-
-                        // 4. Click was outside: find collapse button and trigger click
-                        const collapseBtn = document.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
-                                            document.querySelector('[data-testid="stSidebarCollapseButton"]') ||
-                                            document.querySelector('button[aria-label="Close sidebar"]');
-
-                        if (collapseBtn) {
-                            window._sidebarClosing = true;
-                            collapseBtn.click();
-                            setTimeout(function() {
-                                window._sidebarClosing = false;
-                            }, 350);
-                        }
-                    } catch (err) {
-                        // Ignore any DOM mutation errors during route transitions
-                    }
-                };
-
-                document.addEventListener('click', window._sidebarAutoCloseHandler, true);
-            })();
-        `;
-        parentDoc.head.appendChild(scriptEl);
-    } catch (e) {
-        // Silently catch if in restricted iframe context
-    }
+    } catch (e) {}
 })();
 </script>
 """
 
-def inject_sidebar_auto_close():
-    """Injects lightweight client-side listener to auto-collapse sidebar when clicking outside."""
+def inject_sidebar_backdrop():
+    """Injects high-reliability backdrop listener: clicking outside expanded sidebar collapses it."""
     import streamlit.components.v1 as components
-    components.html(SIDEBAR_AUTO_CLOSE_SCRIPT, height=0, width=0)
+    components.html(SIDEBAR_BACKDROP_SCRIPT, height=0, width=0)
 
-
+# Backward-compatibility alias
+ensure_sidebar_cleanup = inject_sidebar_backdrop
