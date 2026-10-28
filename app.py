@@ -128,117 +128,212 @@ def open_pdf_at_page(pdf_name: str, page: int):
     except Exception as e:
         st.error(f"Error opening document: {e}")
 
-def render_verified_sources(cited_sources, other_sources=None, key_prefix="src", target_years=None, target_doc=None):
-    """Renders the verified ground truth sources with 1-click PDF page launcher and high-contrast text viewer."""
-    if not cited_sources and not other_sources:
-        return
+def render_right_sources_panel(active_msg=None, key_prefix="rs"):
+    """Renders the Right Slide-Over Panel and shifts all Chatbot contents to the left."""
+    cited_sources = active_msg.get("sources", []) if active_msg else []
+    other_sources = active_msg.get("other_sources", []) if active_msg else []
+    target_years = set(active_msg.get("target_years", [])) if (active_msg and active_msg.get("target_years")) else None
+    target_doc = active_msg.get("target_doc") if active_msg else None
 
-    if cited_sources:
-        for idx, c in enumerate(cited_sources):
-            if isinstance(c, dict):
-                src_name = c['source']
-                pg_num = c['page']
-                snippet_text = c.get('text', '').strip()
-            else:
-                src_name = str(c).replace("**", "")
-                pg_num = 1
-                snippet_text = ""
+    num_cited = len(cited_sources)
+    badge_html = f'<span class="right-sidebar-badge">● {num_cited} Cited</span>' if num_cited > 0 else '<span class="right-sidebar-badge" style="background: #F1F5F9; color: #64748B; border-color: #E2E8F0;">Standby</span>'
 
-            safe_filename = urllib.parse.quote(src_name)
-            
-            # Lovable-style clean source card with minimal monochrome outline icon
-            col_info, col_btn = st.columns([3.6, 1.2])
-            with col_info:
-                st.markdown(f"""
-                <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
-                    <div style="background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <line x1="10" y1="9" x2="8" y2="9"></line>
-                        </svg>
-                    </div>
-                    <div>
-                        <div style="font-weight: 600; color: #0F172A; font-size: 0.90rem;">{src_name} · Page {pg_num}</div>
-                        <div style="color: #64748B; font-size: 0.78rem;">Verified official regulatory source document</div>
-                    </div>
+    # 1. Seamlessly shift Chatbot to left area, and limit Footer so it NEVER overlaps the Right Sidebar
+    st.markdown("""
+    <style>
+    @media (min-width: 1024px) {
+        /* Shift Chatbot Canvas to left area */
+        .block-container,
+        div[data-testid="stMainBlockContainer"] {
+            margin-left: auto !important;
+            margin-right: 480px !important;
+            max-width: 820px !important;
+            width: calc(100% - 480px) !important;
+        }
+
+        /* Footer Container STOPS at the Right Sidebar (460px from right) */
+        div[data-testid="stBottom"],
+        footer[data-testid="stBottom"] {
+            left: 0 !important;
+            right: 460px !important;
+            width: calc(100% - 460px) !important;
+            max-width: calc(100% - 460px) !important;
+            z-index: 998 !important;
+        }
+
+        /* Center the Chat Input Pill inside the left chat footer */
+        div[data-testid="stChatInput"] {
+            max-width: 760px !important;
+            margin: 0 auto !important;
+        }
+
+        /* Completely disable backdrop so chat is 100% readable & interactive */
+        .drawer-backdrop,
+        #right-drawer-backdrop {
+            display: block !important;
+            position: fixed !important;
+            top: 88px !important;
+            left: 0 !important;
+            right: 460px !important; /* Leaves the right sidebar open and clickable */
+            bottom: 0 !important;
+            background: transparent !important; /* Or rgba(0, 0, 0, 0.15) if you want a subtle tint */
+            opacity: 0 !important;
+            z-index: 996 !important;
+            cursor: pointer !important;
+}
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Backdrop overlay for mobile viewport (<1024px)
+    st.markdown('<div class="drawer-backdrop" id="right-drawer-backdrop"></div>', unsafe_allow_html=True)
+
+    with st.container(key="right_popup_drawer_wrap"):
+        # Header row: Title & badge on left, Close button on right
+        col_hdr_left, col_hdr_close = st.columns([0.84, 0.16], vertical_alignment="center")
+        with col_hdr_left:
+            st.markdown(f"""
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="right-sidebar-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#059669" style="width: 18px; height: 18px;">
+                        <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+                    </svg>
+                </div>
+                <span style="font-size: 1.02rem; font-weight: 700; color: #111827;">Sources & References</span>
+                {badge_html}
+            </div>
+            <div style="font-size: 0.78rem; color: #64748B; margin-top: 4px;">Official regulatory documents and cited pages</div>
+            """, unsafe_allow_html=True)
+
+        with col_hdr_close:
+            if st.button("✕", key=f"{key_prefix}_close_btn", help="Close sources sidebar"):
+                st.session_state.show_right_sidebar = False
+                st.session_state.active_source_msg_idx = None
+                st.rerun()
+
+        st.markdown("<div style='height: 1px; background: #E5E7EB; margin: 14px 0 16px 0;'></div>", unsafe_allow_html=True)
+
+        if not cited_sources and not other_sources:
+            st.markdown("""
+            <div class="right-sidebar-empty-state">
+                <div class="right-sidebar-empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#059669" style="width: 24px; height: 24px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                </div>
+                <div style="font-weight: 600; font-size: 0.90rem; color: #1E293B; margin-bottom: 4px;">No Active Citations</div>
+                <div style="font-size: 0.78rem; color: #64748B; line-height: 1.45; margin-bottom: 16px;">
+                    Ask any question about NRB directives, rules, or limits. Verified official sources and cited pages will appear in this panel.
+                </div>
+                <div style="background-color: #F8FAFC; border: 1px dashed #E2E8F0; border-radius: 8px; padding: 10px 12px; text-align: left; font-size: 0.75rem; color: #475569;">
+                    <div style="font-weight: 600; color: #0F172A; margin-bottom: 4px;">Direct Page Links</div>
+                    <div>Citations link directly to the exact page of the official PDF document on file.</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            if cited_sources:
+                st.markdown("""
+                <div style="font-size: 0.70rem; font-weight: 700; color: #059669; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" style="width: 13px; height: 13px;">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                    </svg>
+                    Primary Cited Sources
                 </div>
                 """, unsafe_allow_html=True)
-            with col_btn:
-                st.link_button(
-                    f"Open page {pg_num} ↗", 
-                    f"/app/static/{safe_filename}#page={pg_num}",
-                    use_container_width=True
-                )
 
-            if snippet_text:
-                with st.expander("View extracted text"):
-                    escaped_text = html.escape(snippet_text)
-                    st.markdown(
-                        f'<div class="extracted-text-box">{escaped_text}</div>',
-                        unsafe_allow_html=True
-                    )
+                for idx, c in enumerate(cited_sources):
+                    if isinstance(c, dict):
+                        src_name = c['source']
+                        pg_num = c['page']
+                        snippet_text = c.get('text', '').strip()
+                    else:
+                        src_name = str(c).replace("**", "")
+                        pg_num = 1
+                        snippet_text = ""
 
-    # Render all other retrieved candidate reference pages
-    if other_sources:
-        cited_keys = {(c['source'], c['page']) for c in cited_sources if isinstance(c, dict)}
-        remaining = [c for c in other_sources if (c['source'], c['page']) not in cited_keys]
-        if remaining:
-            def other_sort_key(c):
-                src = c['source']
-                ym = re.search(r'(20[78][0-9]|20[12][0-9])', src)
-                yr = int(ym.group(1)) if ym else 0
-                target_match = 0
-                if target_doc:
-                    if isinstance(target_doc, (list, set, tuple)) and src in target_doc:
-                        target_match = 0
-                    elif isinstance(target_doc, str) and src == target_doc:
-                        target_match = 0
-                elif target_years and yr in target_years:
-                    target_match = 0
-                else:
-                    target_match = 1
-                return (target_match, -yr if not target_years else 0, c.get('page', 0))
-
-            remaining.sort(key=other_sort_key)
-
-            with st.expander(f"Other reference pages ({len(remaining)})"):
-                for idx, c in enumerate(remaining):
-                    src_name = c['source']
-                    pg_num = c['page']
-                    snippet_text = c.get('text', '').strip()
                     safe_filename = urllib.parse.quote(src_name)
 
-                    col_info, col_btn = st.columns([3.6, 1.2])
-                    with col_info:
-                        st.markdown(f"""
-                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; flex-shrink: 0;">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                            </svg>
-                            <span style="font-weight: 600; color: #0F172A; font-size: 0.88rem;">{src_name}</span>
-                            <span style="color: #64748B; font-size: 0.82rem;">· Page {pg_num}</span>
+                    st.markdown(f"""
+                    <div class="right-sidebar-source-item" style="margin-bottom: 6px;">
+                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                            <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; color: #0F172A; font-size: 0.84rem; word-break: break-word; line-height: 1.3;">{src_name}</div>
+                                <div style="display: flex; align-items: center; gap: 6px; margin-top: 3px;">
+                                    <span style="background: #ECFDF5; color: #065F46; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; border: 1px solid #A7F3D0;">Page {pg_num}</span>
+                                    <span style="color: #64748B; font-size: 0.72rem;">Verified directive</span>
+                                </div>
+                            </div>
                         </div>
-                        """, unsafe_allow_html=True)
-                    with col_btn:
-                        st.link_button(
-                            f"Open page {pg_num} ↗", 
-                            f"/app/static/{safe_filename}#page={pg_num}",
-                            use_container_width=True
-                        )
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    st.link_button(
+                        f"Open Page {pg_num} ↗", 
+                        f"/app/static/{safe_filename}#page={pg_num}",
+                        use_container_width=True,
+                        key=f"{key_prefix}_link_{idx}_{pg_num}"
+                    )
 
                     if snippet_text:
-                        with st.expander("View extracted text"):
+                        with st.expander("View extracted text", key=f"{key_prefix}_exp_{idx}_{pg_num}", expanded=False):
                             escaped_text = html.escape(snippet_text)
                             st.markdown(
-                                f'<div class="extracted-text-box">{escaped_text}</div>',
+                                f'<div class="extracted-text-box" style="font-size: 0.80rem; max-height: 180px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; background: #F8FAFC; padding: 8px 10px; border-radius: 6px; border: 1px solid #E2E8F0; color: #334155;">{escaped_text}</div>',
                                 unsafe_allow_html=True
                             )
+                    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+
+            if other_sources:
+                cited_keys = {(c['source'], c['page']) for c in cited_sources if isinstance(c, dict)}
+                remaining = [c for c in other_sources if (c['source'], c['page']) not in cited_keys]
+                if remaining:
+                    def other_sort_key(c):
+                        src = c['source']
+                        ym = re.search(r'(20[78][0-9]|20[12][0-9])', src)
+                        yr = int(ym.group(1)) if ym else 0
+                        target_match = 0
+                        if target_doc:
+                            if isinstance(target_doc, (list, set, tuple)) and src in target_doc:
+                                target_match = 0
+                            elif isinstance(target_doc, str) and src == target_doc:
+                                target_match = 0
+                        elif target_years and yr in target_years:
+                            target_match = 0
+                        else:
+                            target_match = 1
+                        return (target_match, -yr if not target_years else 0, c.get('page', 0))
+
+                    remaining.sort(key=other_sort_key)
+
+                    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+                    with st.expander(f"Other reference pages ({len(remaining)})", key=f"{key_prefix}_other_exp", expanded=False):
+                        for idx, c in enumerate(remaining):
+                            src_name = c['source']
+                            pg_num = c['page']
+                            safe_filename = urllib.parse.quote(src_name)
+
+                            st.markdown(f"""
+                            <div style="padding: 6px 0 2px 0; border-bottom: 1px solid #F1F5F9; font-size: 0.80rem;">
+                                <div style="font-weight: 500; color: #1E293B; word-break: break-word;">{src_name}</div>
+                                <div style="color: #64748B; font-size: 0.74rem;">Page {pg_num}</div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                            st.link_button(
+                                f"Open Page {pg_num} ↗", 
+                                f"/app/static/{safe_filename}#page={pg_num}",
+                                use_container_width=True,
+                                key=f"{key_prefix}_rem_{idx}_{pg_num}"
+                            )
+
+# Backward-compatibility alias
+render_verified_sources = render_right_sources_panel
 
 # 5. Live Repository State (Fast cached source metadata without heavy vector loading)
 @st.cache_data(ttl=60, show_spinner=False)
@@ -259,6 +354,7 @@ all_disk_files = [f for f in os.listdir("File_System") if f.lower().endswith((".
 # PAGE 1: REGULATORY ASSISTANT (/)
 # ==========================================
 def render_assistant_page():
+
     # Top Unified Institutional Navbar (Logo Left, Title Centered, Badge Right)
     st.markdown(f"""
     <div class="institutional-navbar">
@@ -363,6 +459,8 @@ def render_assistant_page():
                     "latency": None
                 }
             ]
+            st.session_state.active_source_msg_idx = None
+            st.session_state.show_right_sidebar = False
             st.rerun()
 
     # Chat History in Session State
@@ -404,19 +502,33 @@ def render_assistant_page():
                 if msg.get("latency"):
                     st.caption(f"⚡ {msg['latency']}")
                 if msg.get("sources") or msg.get("other_sources"):
-                    render_verified_sources(
-                        msg.get("sources", []), 
-                        other_sources=msg.get("other_sources", []), 
-                        key_prefix=f"hist_{i}",
-                        target_years=set(msg.get("target_years", [])) if msg.get("target_years") else None,
-                        target_doc=msg.get("target_doc")
-                    )
+                    num_s = len(msg.get("sources", []))
+                    col_ind, col_view = st.columns([0.65, 0.35], vertical_alignment="center")
+                    with col_ind:
+                        st.markdown(f"""
+                        <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #ECFDF5; border: 1px solid #D1FAE5; border-radius: 20px; padding: 4px 12px; margin-top: 6px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" style="width: 14px; height: 14px;">
+                                <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
+                            </svg>
+                            <span style="font-size: 0.80rem; font-weight: 600; color: #065F46;">
+                                {num_s} verified source(s) cited
+                            </span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with col_view:
+                        if st.button("View in sidebar →", key=f"btn_src_{i}", type="secondary"):
+                            st.session_state.show_right_sidebar = True
+                            st.session_state.active_source_msg_idx = i
 
     # Input Box ALWAYS AT BOTTOM OF SCREEN
     active_query = st.chat_input("Ask a question about NRB directives, rules, or limits (उदा: स्वःघोषणासम्बन्धी व्यवस्था)...")
 
     if active_query:
         start_time = time.time()
+        # Reset any active drawer so new query takes focus
+        st.session_state.show_right_sidebar = False
+        st.session_state.active_source_msg_idx = None
+
         st.session_state.messages.append({"role": "user", "content": active_query})
         st.markdown(f"""
         <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
@@ -426,9 +538,17 @@ def render_assistant_page():
         </div>
         """, unsafe_allow_html=True)
 
-        # Automatic Query Year Routing & Document Selection
-        live_table = table if table is not None else get_live_table()
-        with st.spinner("🔍 Retrieving regulatory clauses & analyzing directives..."):
+        # Immediate visual feedback so the UI never feels frozen
+        status_placeholder = st.empty()
+        status_placeholder.markdown("""
+        <div style="display: inline-flex; align-items: center; gap: 8px; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 5px 14px; font-size: 0.80rem; color: #047857; margin-bottom: 12px;">
+            <span class="status-pulse-dot"></span>
+            <span>🔍 Searching regulatory directives and supervision reports...</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+        try:
+            live_table = table if table is not None else get_live_table()
             doc_year_map = build_document_year_map(live_table)
             available_years = set.union(*doc_year_map.values()) if doc_year_map else set()
             matched_years = extract_query_years(active_query, available_years)
@@ -459,6 +579,13 @@ def render_assistant_page():
             search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
             if not search_query.strip():
                 search_query = active_query
+
+            status_placeholder.markdown("""
+            <div style="display: inline-flex; align-items: center; gap: 8px; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 5px 14px; font-size: 0.80rem; color: #047857; margin-bottom: 12px;">
+                <span class="status-pulse-dot"></span>
+                <span>📖 Extracting relevant provisions, clauses, and tables...</span>
+            </div>
+            """, unsafe_allow_html=True)
 
             # Cross-Lingual Dual-Pass Hybrid Retrieval
             translated_terms = expand_query_crosslingual(search_query, groq_client, cache=st.session_state.translation_cache)
@@ -511,22 +638,23 @@ def render_assistant_page():
             context_text = "\n".join(full_page_context)
             system_prompt = build_rag_prompt(context_text)
 
-        # Stream Groq Response to UI (Lovable Shield Avatar Layout)
-        col_av, col_body = st.columns([0.045, 0.955])
-        with col_av:
-            st.markdown("""
-            <div style="width: 34px; height: 34px; border-radius: 50%; background: #064E3B; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25); margin-top: 4px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 18px; height: 18px;">
-                    <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            """, unsafe_allow_html=True)
-        with col_body:
-            response_placeholder = st.empty()
-            full_response = ""
-            active_model_used = None
+            status_placeholder.empty()
 
-            try:
+            # Stream Groq Response to UI (Lovable Shield Avatar Layout)
+            col_av, col_body = st.columns([0.045, 0.955])
+            with col_av:
+                st.markdown("""
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: #064E3B; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25); margin-top: 4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 18px; height: 18px;">
+                        <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_body:
+                response_placeholder = st.empty()
+                full_response = ""
+                active_model_used = None
+
                 stream, active_model_used = call_groq_with_retry(
                     groq_client,
                     messages=[
@@ -562,7 +690,7 @@ def render_assistant_page():
                 latency_str = f"Answered in {elapsed_sec:.2f}s via {active_model_used} on Groq LPU"
                 st.caption(f"⚡ {latency_str}")
 
-                # Extract and display verified sources cited strictly based on answer and target
+                # Extract verified sources cited strictly based on answer and target
                 cited_sources = extract_cited_sources(
                     full_response, 
                     results, 
@@ -585,14 +713,6 @@ def render_assistant_page():
                             'text': full_page_map.get(k, r.get('text', ''))
                         })
 
-                render_verified_sources(
-                    cited_sources, 
-                    other_sources=other_candidates, 
-                    key_prefix=f"curr_{len(st.session_state.messages)}",
-                    target_years=matched_years,
-                    target_doc=effective_doc
-                )
-
                 # Save to Session State
                 st.session_state.messages.append({
                     "role": "assistant",
@@ -604,17 +724,45 @@ def render_assistant_page():
                     "latency": latency_str
                 })
 
-            except Exception as e:
-                st.error(f"⚠️ Error querying Groq: {e}")
+                # Seamlessly mount new message into the uniform messages loop
+                st.rerun()
+
+        except Exception as e:
+            status_placeholder.empty()
+            err_msg = f"⚠️ अनुरोध प्रशोधन गर्दा समस्या आयो ({str(e)})। कृपया पुनः प्रयास गर्नुहोस्।"
+            st.error(err_msg)
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": err_msg,
+                "sources": [],
+                "other_sources": [],
+                "target_years": [],
+                "target_doc": None,
+                "latency": None
+            })
+            st.rerun()
+
+    # Slide-Over Right Sidebar Drawer: ONLY pops up if user clicked "View in sidebar"
+    if st.session_state.get("show_right_sidebar", False):
+        active_idx = st.session_state.get("active_source_msg_idx", None)
+        if active_idx is not None and 0 <= active_idx < len(st.session_state.messages):
+            active_source_msg = st.session_state.messages[active_idx]
+        else:
+            assistant_with_sources = [m for m in st.session_state.messages if m.get("role") == "assistant" and (m.get("sources") or m.get("other_sources"))]
+            active_source_msg = assistant_with_sources[-1] if assistant_with_sources else None
+
+        render_right_sources_panel(active_source_msg, key_prefix="rs_drawer")
 
     # Bottom spacer so the final message and citations are never obscured by the docked input bar
     st.markdown("<div style='height: 110px;'></div>", unsafe_allow_html=True)
-
 
 # ==========================================
 # PAGE 2: DOCUMENT MANAGEMENT & ADMIN (/admin)
 # ==========================================
 def render_admin_page():
+    # Set Admin dashboard canvas width to centered 980px
+    st.markdown("<style>div[data-testid='stMainBlockContainer'], .block-container { max-width: 980px !important; }</style>", unsafe_allow_html=True)
+
     # 0. Automatic Full Database Synchronization on Any File System Changes
     if check_filesystem_out_of_sync():
         with st.spinner("🔄 File system changes detected. Automatically synchronizing database..."):
@@ -655,7 +803,6 @@ def render_admin_page():
                 </div>
                 <div class="navbar-title-content">
                     <h1 class="navbar-title-heading">Document Management & Admin</h1>
-                    <p class="navbar-title-sub">Upload, organize, inspect and synchronize regulatory documents</p>
                 </div>
             </div>
         </div>

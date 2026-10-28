@@ -301,19 +301,44 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
     """
     Extracts verified document citations strictly aligned with the ground-truth source
     that generated the AI response, ordered with primary source first.
+    Robustly handles all markdown variations (bullet lists, bold, multiline, backticks).
     """
     cited = []
     seen = set()
     full_page_map = full_page_map or {}
+    found_matches = []
 
+    # 1. Broad Proximity Search for any known disk document name + Page number in the response
+    known_docs = [f for f in os.listdir("File_System") if f.lower().endswith(('.pdf', '.docx', '.txt'))] if os.path.exists("File_System") else []
+    for fname in known_docs:
+        base_name = os.path.splitext(fname)[0]
+        # Match filename or basename surrounded by word boundary or markdown characters
+        pat = rf'(?:^|[\*\_`\s\(\[\{{])(?:{re.escape(fname)}|{re.escape(base_name)})(?:$|[\*\_`\s\)\]\}}])'
+        for m in re.finditer(pat, response_text, re.IGNORECASE):
+            doc_start = m.start()
+            doc_end = m.end()
+            # Look in a window after the doc name (up to 200 chars) for page indicator
+            window_after = response_text[doc_end:min(len(response_text), doc_end + 200)]
+            pg_match = re.search(r'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*(\d+)', window_after, re.IGNORECASE)
+            if pg_match:
+                page_num = int(pg_match.group(1))
+                found_matches.append((doc_start, fname, page_num))
+            else:
+                # Also check window before (e.g. "Page 22 of directive_2082.pdf")
+                window_before = response_text[max(0, doc_start - 100):doc_start]
+                pg_match_before = re.search(r'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*(\d+)', window_before, re.IGNORECASE)
+                if pg_match_before:
+                    page_num = int(pg_match_before.group(1))
+                    found_matches.append((doc_start, fname, page_num))
+
+    # 2. Standard Regex Patterns for inline citation blocks
     regex_patterns = [
-        r'([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s+(?:clause|section|दफा|खण्ड)\s*[^\n\r]{0,25}?\s*|\s*\n\s*)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)',
-        r'(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s*\n\s*)(([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt)))',
+        r'([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s+(?:clause|section|दफा|खण्ड)\s*[^\n\r]{0,25}?\s*|\s*\n\s*\-?\s*\*\*?)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)',
+        r'(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s*\n\s*\-?\s*\*\*?)(([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt)))',
         r'\[\s*(?:कागजात|doc|document)?\s*[:\-]?\s*([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))\s*\|\s*(?:पृष्ठ|page)\s*[:\-]?\s*(\d+)\s*\]',
-        r'([a-zA-Z0-9_\-]+(?:directive|report)[a-zA-Z0-9_\-]*)(?:\s*[\:\|\-\–\—\(\)\[\]]?\s*|\s*\n\s*)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)'
+        r'([a-zA-Z0-9_\-]+(?:directive|report)[a-zA-Z0-9_\-]*)(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s*\n\s*\-?\s*\*\*?)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)'
     ]
 
-    found_matches = []
     for pat in regex_patterns:
         for m in re.finditer(pat, response_text, re.IGNORECASE):
             g1, g2 = m.group(1), m.group(2)
@@ -353,7 +378,7 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
                 'pos': pos
             })
 
-    # Match against retrieved candidate chunks
+    # 3. Match against retrieved candidate chunks if page was mentioned anywhere in text
     norm_resp = re.sub(r'[\s_\-]+', ' ', response_text.lower())
     for item in retrieved_candidates:
         src = item['source']
@@ -362,7 +387,7 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
         norm_base = re.sub(r'[\s_\-]+', ' ', base_src.lower())
 
         if src.lower() in response_text.lower() or base_src.lower() in response_text.lower() or norm_base in norm_resp:
-            pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*[:\-–—]?\s*{pg}\b'
+            pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*{pg}\b'
             m_pg = re.search(pg_pattern, response_text, re.IGNORECASE)
             if m_pg:
                 key = (src, item['page'])
@@ -376,7 +401,7 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
                         'pos': pos
                     })
 
-    # Fallback to top-1 primary search match if no explicit citation format was matched
+    # 4. Fallback to top-1 primary search match if no explicit citation was found
     if not cited and retrieved_candidates:
         top_item = retrieved_candidates[0]
         key = (top_item['source'], top_item['page'])

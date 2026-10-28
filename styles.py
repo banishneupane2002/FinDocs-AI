@@ -26,7 +26,8 @@ RAW_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
-    html, body, [class*="css"] {
+    html, body {
+        overflow-x: hidden !important;
         font-family: 'Poppins', 'Mukta', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
@@ -34,6 +35,7 @@ RAW_CSS = """
     .stApp {
         background-color: #FFFFFF !important;
         color: #111827 !important;
+        overflow-x: hidden !important;
     }
 
     /* ---------------------------------------------------- */
@@ -44,7 +46,8 @@ RAW_CSS = """
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        width: 100vw !important;
+        width: 100% !important;
+        max-width: 100vw !important;
         height: 88px !important;
         display: flex !important;
         align-items: center !important;
@@ -55,7 +58,10 @@ RAW_CSS = """
         border-bottom: 1.5px solid #E5E7EB !important;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
         box-sizing: border-box !important;
-        transition: height 0.2s ease, padding 0.2s ease !important;
+        transform: translate3d(0, 0, 0) !important;
+        -webkit-transform: translate3d(0, 0, 0) !important;
+        backface-visibility: hidden !important;
+        will-change: transform !important;
     }
 
     .navbar-left {
@@ -80,7 +86,7 @@ RAW_CSS = """
         max-width: 250px !important;
         object-fit: contain !important;
         display: block !important;
-        transition: max-height 0.2s ease, max-width 0.2s ease !important;
+        
     }
 
     .navbar-center {
@@ -110,7 +116,7 @@ RAW_CSS = """
         justify-content: center !important;
         flex-shrink: 0 !important;
         box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25) !important;
-        transition: width 0.2s ease, height 0.2s ease !important;
+        
     }
 
     .navbar-title-content {
@@ -128,7 +134,7 @@ RAW_CSS = """
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        transition: font-size 0.2s ease !important;
+        
     }
 
     .navbar-title-sub {
@@ -139,7 +145,7 @@ RAW_CSS = """
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        transition: font-size 0.2s ease !important;
+        
     }
 
     .navbar-right {
@@ -165,8 +171,7 @@ RAW_CSS = """
         gap: 7px !important;
         flex-shrink: 0 !important;
         white-space: nowrap !important;
-        transition: all 0.2s ease !important;
-    }
+            }
 
     .status-pulse-dot {
         width: 7px !important;
@@ -194,7 +199,7 @@ RAW_CSS = """
         min-width: 21rem !important;
         max-width: 21rem !important;
         position: fixed !important;
-        z-index: 1002 !important;
+        z-index: 1020 !important;
         box-shadow: 8px 0 32px rgba(0, 0, 0, 0.5) !important;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s ease !important;
     }
@@ -453,7 +458,6 @@ RAW_CSS = """
         font-size: 0.84rem !important;
         font-weight: 500 !important;
         padding: 8px 14px !important;
-        transition: all 0.2s ease !important;
     }
     section[data-testid="stSidebar"] button:hover {
         background: #124B2C !important;
@@ -624,7 +628,7 @@ RAW_CSS = """
         border-radius: 14px !important;
         padding: 18px 22px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
         box-sizing: border-box !important;
     }
 
@@ -749,8 +753,7 @@ RAW_CSS = """
         border-radius: 8px !important;
         padding: 6px 18px !important;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-        transition: all 0.2s ease !important;
-    }
+            }
 
     section[data-testid="stFileUploaderDropzone"] button:hover {
         background-color: #ECFDF5 !important;
@@ -769,7 +772,7 @@ RAW_CSS = """
         font-size: 0.95rem !important;
         padding: 12px 24px !important;
         box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
         margin-top: 12px !important;
     }
 
@@ -794,8 +797,7 @@ RAW_CSS = """
         background-repeat: no-repeat !important;
         background-position: 13px center !important;
         background-size: 16px 16px !important;
-        transition: all 0.2s ease !important;
-    }
+            }
 
     div[data-testid="stTextInput"]:has(input[aria-label="Filter documents"]) input:focus,
     div:has(> input[placeholder*="Filter by name"]) input:focus {
@@ -812,7 +814,7 @@ RAW_CSS = """
         margin-bottom: 12px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
         overflow: hidden !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
     }
 
     details[data-testid="stExpander"]:has([data-testid="stIconMaterial"]):hover,
@@ -924,16 +926,234 @@ RAW_CSS = """
     }
 
     /* ---------------------------------------------------- */
+    /* 4.55 RIGHT SOURCES & REFERENCES SLIDE-OVER DRAWER   */
+    /* ---------------------------------------------------- */
+    .drawer-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: rgba(15, 23, 42, 0.35) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 1001 !important;
+        cursor: pointer !important;
+        animation: fadeInBackdrop 0.18s ease forwards !important;
+    }
+
+    @keyframes fadeInBackdrop {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* The Slide-Over Drawer Container */
+    div[class*="st-key-right_popup_drawer_wrap"] {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 480px !important;
+        max-width: 90vw !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        background-color: #FFFFFF !important;
+        border-left: 1.5px solid #E5E7EB !important;
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.18) !important;
+        z-index: 1002 !important;
+        padding: 24px 22px 50px 22px !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+        animation: slideInFromRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0.6;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Sleek Scrollbar for Drawer */
+    div[class*="st-key-right_popup_drawer_wrap"]::-webkit-scrollbar {
+        width: 6px !important;
+    }
+    div[class*="st-key-right_popup_drawer_wrap"]::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
+    div[class*="st-key-right_popup_drawer_wrap"]::-webkit-scrollbar-thumb {
+        background: #CBD5E1 !important;
+        border-radius: 4px !important;
+    }
+    div[class*="st-key-right_popup_drawer_wrap"]::-webkit-scrollbar-thumb:hover {
+        background: #94A3B8 !important;
+    }
+
+    /* Drawer Close Button */
+    div[class*="st-key-right_popup_drawer_wrap"] button[kind="secondary"] {
+        background: #F1F5F9 !important;
+        color: #475569 !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 50% !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        margin-left: auto !important;
+        transition: all 0.15s ease !important;
+    }
+    div[class*="st-key-right_popup_drawer_wrap"] button[kind="secondary"]:hover {
+        background: #FEE2E2 !important;
+        color: #DC2626 !important;
+        border-color: #FECACA !important;
+        transform: scale(1.06) !important;
+    }
+
+    /* Drawer Link Buttons */
+    div[class*="st-key-right_popup_drawer_wrap"] [data-testid="stLinkButton"] a {
+        background-color: #FFFFFF !important;
+        color: #065F46 !important;
+        border: 1.5px solid #10B981 !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.82rem !important;
+        padding: 6px 12px !important;
+        transition: all 0.2s ease !important;
+        text-align: center !important;
+    }
+    div[class*="st-key-right_popup_drawer_wrap"] [data-testid="stLinkButton"] a:hover {
+        background-color: #ECFDF5 !important;
+        border-color: #059669 !important;
+        color: #047857 !important;
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15) !important;
+    }
+
+    /* Drawer Header & Badges */
+    .right-sidebar-icon-box {
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 8px !important;
+        background-color: #ECFDF5 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+
+    .right-sidebar-badge {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        padding: 3px 10px !important;
+        border-radius: 20px !important;
+        background-color: #ECFDF5 !important;
+        color: #059669 !important;
+        border: 1px solid #A7F3D0 !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    .right-sidebar-empty-state {
+        text-align: center !important;
+        padding: 40px 16px !important;
+        color: #64748B !important;
+    }
+
+    .right-sidebar-empty-icon {
+        width: 52px !important;
+        height: 52px !important;
+        border-radius: 50% !important;
+        background-color: #ECFDF5 !important;
+        color: #059669 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-bottom: 14px !important;
+    }
+
+    .right-sidebar-source-item {
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 12px !important;
+        padding: 12px 14px !important;
+        margin-bottom: 8px !important;
+            }
+
+    .right-sidebar-source-item:hover {
+        border-color: #A7F3D0 !important;
+        box-shadow: 0 3px 8px rgba(16, 185, 129, 0.08) !important;
+    }
+
+    /* Chat View in Sidebar Button */
+    button[key*="btn_src_"] {
+        border-radius: 20px !important;
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        padding: 4px 14px !important;
+        border-color: #10B981 !important;
+        color: #065F46 !important;
+        background: #FFFFFF !important;
+        transition: all 0.15s ease !important;
+    }
+    button[key*="btn_src_"]:hover {
+        background: #ECFDF5 !important;
+        color: #047857 !important;
+        border-color: #059669 !important;
+    }
+
+    /* Admin Page Centered Wrapper */
+    .admin-page-wrapper {
+        max-width: 960px !important;
+        margin: 0 auto !important;
+    }
+
+    /* ---------------------------------------------------- */
     /* 4. FLOATING PILL CHAT INPUT BAR                      */
     /* ---------------------------------------------------- */
+    div[data-testid="stBottom"],
+    footer[data-testid="stBottom"],
+    div[data-testid="stBottom"] > div {
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        transform: translate3d(0, 0, 0) !important;
+        -webkit-transform: translate3d(0, 0, 0) !important;
+        transition: none !important;
+    }
+
     div[data-testid="stBottom"] {
         background-color: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
         border-top: 1px solid #F3F4F6 !important;
         padding-top: 12px !important;
         padding-bottom: 16px !important;
         z-index: 999 !important;
+    }
+
+    header[data-testid="stHeader"] {
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        transform: translate3d(0, 0, 0) !important;
+        -webkit-transform: translate3d(0, 0, 0) !important;
+        transition: none !important;
     }
 
     div[data-testid="stBottom"]::after {
@@ -970,7 +1190,7 @@ RAW_CSS = """
         display: flex !important;
         align-items: center !important;
         box-sizing: border-box !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
     }
 
     div[data-testid="stChatInput"] > div:focus-within {
@@ -1126,15 +1346,21 @@ RAW_CSS = """
         max-width: 100% !important;
     }
 
-    /* Chat Section / Hero Section permanently centered in the middle of the viewport */
+    /* Main Canvas: Generous width to house both Chat Stream and Right Sources Sidebar */
     .block-container,
     div[data-testid="stMainBlockContainer"] {
         margin-left: auto !important;
         margin-right: auto !important;
-        max-width: 820px !important;
+        max-width: 860px !important;
         width: 100% !important;
         padding-top: 114px !important;
         padding-bottom: 7.5rem !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    div[data-testid="stColumn"] {
+        overflow: visible !important;
     }
 
     /* Hide Streamlit Deploy button & chrome */
@@ -1164,6 +1390,11 @@ RAW_CSS = """
 
     /* 1. Large Tablet / Laptop (< 1120px) */
     @media (max-width: 1120px) {
+        .right-sidebar-sticky {
+            position: static !important;
+            max-height: none !important;
+            margin-top: 24px !important;
+        }
         .institutional-navbar {
             padding: 0 20px !important;
             height: 84px !important;
@@ -1175,7 +1406,7 @@ RAW_CSS = """
             top: 0 !important;
             height: 100vh !important;
             height: 100dvh !important;
-            z-index: 1002 !important;
+            z-index: 1020 !important;
         }
         .navbar-brand-logo {
             max-height: 44px !important;
@@ -1216,7 +1447,7 @@ RAW_CSS = """
             height: 100dvh !important;
             width: 19.5rem !important;
             min-width: 19.5rem !important;
-            z-index: 1002 !important;
+            z-index: 1020 !important;
         }
         .block-container,
         div[data-testid="stMainBlockContainer"] {
@@ -1271,7 +1502,7 @@ RAW_CSS = """
             width: 86vw !important;
             min-width: 86vw !important;
             max-width: 20rem !important;
-            z-index: 1002 !important;
+            z-index: 1020 !important;
         }
         .block-container,
         div[data-testid="stMainBlockContainer"] {
@@ -1383,11 +1614,30 @@ SIDEBAR_BACKDROP_SCRIPT = """
 
             const isExpanded = sidebar.getAttribute('aria-expanded') === 'true';
             if (isExpanded) {
-                backdrop.style.cssText = 'position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.32)!important;backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important;z-index:1001!important;cursor:pointer!important;display:block!important;opacity:1!important;transition:opacity 0.2s ease!important;';
+                backdrop.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;background:rgba(0,0,0,0.32)!important;z-index:1015!important;cursor:pointer!important;display:block!important;opacity:1!important;transition:opacity 0.2s ease!important;';
             } else {
                 backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
             }
         }
+
+        // 3.5 Click outside right drawer -> Close right drawer
+        function attachRightDrawerClose() {
+            const rightBackdrop = parentDoc.querySelector('.drawer-backdrop') || parentDoc.getElementById('right-drawer-backdrop');
+            if (rightBackdrop && !rightBackdrop._hasCloseListener) {
+                rightBackdrop._hasCloseListener = true;
+                rightBackdrop.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const closeBtn = parentDoc.querySelector('div[class*="st-key-right_popup_drawer_wrap"] button[kind="secondary"]') ||
+                                     parentDoc.querySelector('button[aria-label="Close sources sidebar"]') ||
+                                     parentDoc.querySelector('button[title="Close sources sidebar"]');
+                    if (closeBtn) {
+                        closeBtn.click();
+                    }
+                };
+            }
+        }
+        attachRightDrawerClose();
 
         // 4. Attach MutationObserver to sidebar so backdrop always stays synchronized
         if (parentWin._sidebarObserver) {
@@ -1398,10 +1648,17 @@ SIDEBAR_BACKDROP_SCRIPT = """
         if (sidebar) {
             const observer = new MutationObserver(function() {
                 syncBackdrop();
+                attachRightDrawerClose();
             });
             observer.observe(sidebar, { attributes: true, attributeFilter: ['aria-expanded', 'style', 'class'] });
             parentWin._sidebarObserver = observer;
         }
+
+        // Also observe main document body for right drawer popup
+        const bodyObs = new MutationObserver(function() {
+            attachRightDrawerClose();
+        });
+        bodyObs.observe(parentDoc.body, { childList: true, subtree: true });
 
         // Run sync immediately on load / rerun
         syncBackdrop();
