@@ -82,7 +82,7 @@ def extract_query_years(query: str, available_years: set = None) -> set:
         return set()
 
     if available_years is None:
-        available_years = {2079, 2080, 2081, 2082, 2023, 2024}
+        available_years = {2079, 2080, 2081, 2082, 2023, 2024, 2025}
 
     found_years = set()
 
@@ -91,29 +91,39 @@ def extract_query_years(query: str, available_years: set = None) -> set:
     for m in dev_ranges:
         decade_unit = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(1))
         y1 = int(f"20{decade_unit}")
-        if y1 in available_years:
-            found_years.add(y1)
         if m.group(2):
             unit2 = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(2))
             y2 = int(f"20{unit2}")
+            # Slash range YYYY/YY always targets the closing publication year y2
             if y2 in available_years:
                 found_years.add(y2)
+            elif y1 in available_years:
+                found_years.add(y1)
+        else:
+            if y1 in available_years:
+                found_years.add(y1)
 
-    # 2. Check English year ranges (e.g. 2079/80, 2023/24, 2079-80)
+    # 2. Check English year ranges (e.g. 2079/80, 2023/24, 2024/25)
     en_ranges = re.finditer(r'\b(20[78][0-9]|20[12][0-9])[/-]([0-9]{2})\b', query)
     for m in en_ranges:
         y1 = int(m.group(1))
-        if y1 in available_years:
-            found_years.add(y1)
         y2 = int(str(y1)[:2] + m.group(2))
+        # Slash range YYYY/YY always targets the closing publication year y2
         if y2 in available_years:
             found_years.add(y2)
+        elif y1 in available_years:
+            found_years.add(y1)
 
     # 3. Check standalone English 4-digit years
     standalone_candidates = re.finditer(r'\b(20[78][0-9]|20[12][0-9])\b', query)
     for m in standalone_candidates:
-        candidate = int(m.group(1))
         start_idx, end_idx = m.start(), m.end()
+
+        # Reject if adjacent to '/' or '-' (which means it's part of a fiscal year range e.g. 2024/25)
+        if (start_idx > 0 and query[start_idx-1] in ['/', '-']) or (end_idx < len(query) and query[end_idx] in ['/', '-']):
+            continue
+
+        candidate = int(m.group(1))
 
         # Check if preceded by currency or quantity terms (e.g. "Rs 2000", "रु २०००", "deposit of 2000")
         pre_ctx = query[max(0, start_idx - 15):start_idx].lower()
@@ -140,15 +150,17 @@ def clean_query_for_search(query: str, matched_years: set) -> str:
         return query
 
     yr = list(matched_years)[0]
+    yr_short = str(yr)[2:]
     cleaned = re.sub(
-        rf'\b(?:in|of|from|को|अनुसार|बमोजिम)?\s*{yr}\s*(?:directive|circular|report|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
+        rf'\b(?:in(?:\s+the)?|of(?:\s+the)?|from|को|अनुसार|बमोजिम)?\s*(?:(?:20\d{{2}}|२०[०-९]{{2}})[/-])?(?:{yr}|{yr_short})\s*(?:directive|circular|report|supervision\s*report|सुपरीवेक्षण\s*प्रतिवेदन|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
         '',
         query,
         flags=re.IGNORECASE
     )
     dev_yr_full = "".join(ARABIC_TO_NEP.get(c, c) for c in str(yr))
+    dev_yr_short = "".join(ARABIC_TO_NEP.get(c, c) for c in yr_short)
     cleaned = re.sub(
-        rf'\b(?:in|of|from|को|अनुसार|बमोजिम)?\s*{dev_yr_full}\s*(?:directive|circular|report|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
+        rf'\b(?:in(?:\s+the)?|of(?:\s+the)?|from|को|अनुसार|बमोजिम)?\s*(?:(?:20\d{{2}}|२०[०-९]{{2}})[/-])?(?:{dev_yr_full}|{dev_yr_short})\s*(?:directive|circular|report|supervision\s*report|सुपरीवेक्षण\s*प्रतिवेदन|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
         '',
         cleaned,
         flags=re.IGNORECASE
@@ -187,4 +199,3 @@ def build_document_year_map(table) -> dict:
     except Exception:
         pass
     return doc_map
-

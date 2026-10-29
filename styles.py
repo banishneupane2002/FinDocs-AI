@@ -173,13 +173,77 @@ RAW_CSS = """
         white-space: nowrap !important;
             }
 
+    @keyframes statusPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            transform: scale(0.95);
+        }
+        70% {
+            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            transform: scale(1.05);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            transform: scale(0.95);
+        }
+    }
+
+    @keyframes thinkingBounce {
+        0%, 80%, 100% {
+            transform: translateY(0);
+            opacity: 0.35;
+        }
+        40% {
+            transform: translateY(-4px);
+            opacity: 1;
+        }
+    }
+
     .status-pulse-dot {
-        width: 7px !important;
-        height: 7px !important;
+        width: 8px !important;
+        height: 8px !important;
         border-radius: 50% !important;
         background: #10B981 !important;
         display: inline-block !important;
         flex-shrink: 0 !important;
+        animation: statusPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1) !important;
+    }
+
+    .thinking-dots {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        margin-left: 5px !important;
+        vertical-align: middle !important;
+    }
+
+    .thinking-dot {
+        width: 5px !important;
+        height: 5px !important;
+        background-color: #047857 !important;
+        border-radius: 50% !important;
+        display: inline-block !important;
+        animation: thinkingBounce 1.4s infinite ease-in-out both !important;
+    }
+
+    .thinking-dot:nth-child(1) { animation-delay: -0.32s !important; }
+    .thinking-dot:nth-child(2) { animation-delay: -0.16s !important; }
+    .thinking-dot:nth-child(3) { animation-delay: 0s !important; }
+
+    .system-status-indicator {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 9px !important;
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 20px !important;
+        padding: 6px 15px !important;
+        font-size: 0.82rem !important;
+        color: #047857 !important;
+        font-weight: 500 !important;
+        margin-bottom: 12px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+        transition: all 0.2s ease !important;
     }
 
     .status-badge-text {

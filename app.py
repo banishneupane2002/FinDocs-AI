@@ -529,6 +529,10 @@ def render_assistant_page():
         st.session_state.show_right_sidebar = False
         st.session_state.active_source_msg_idx = None
 
+        # Clean up any interrupted or trailing orphaned user message before appending new query
+        while st.session_state.messages and st.session_state.messages[-1].get("role") == "user":
+            st.session_state.messages.pop()
+
         st.session_state.messages.append({"role": "user", "content": active_query})
         st.markdown(f"""
         <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
@@ -541,7 +545,7 @@ def render_assistant_page():
         # Immediate visual feedback so the UI never feels frozen
         status_placeholder = st.empty()
         status_placeholder.markdown("""
-        <div style="display: inline-flex; align-items: center; gap: 8px; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 5px 14px; font-size: 0.80rem; color: #047857; margin-bottom: 12px;">
+        <div class="system-status-indicator">
             <span class="status-pulse-dot"></span>
             <span>🔍 Searching regulatory directives and supervision reports...</span>
         </div>
@@ -581,7 +585,7 @@ def render_assistant_page():
                 search_query = active_query
 
             status_placeholder.markdown("""
-            <div style="display: inline-flex; align-items: center; gap: 8px; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 5px 14px; font-size: 0.80rem; color: #047857; margin-bottom: 12px;">
+            <div class="system-status-indicator">
                 <span class="status-pulse-dot"></span>
                 <span>📖 Extracting relevant provisions, clauses, and tables...</span>
             </div>
@@ -638,7 +642,12 @@ def render_assistant_page():
             context_text = "\n".join(full_page_context)
             system_prompt = build_rag_prompt(context_text)
 
-            status_placeholder.empty()
+            status_placeholder.markdown("""
+            <div class="system-status-indicator">
+                <span class="status-pulse-dot"></span>
+                <span>🧠 Synthesizing regulatory answer...</span>
+            </div>
+            """, unsafe_allow_html=True)
 
             # Stream Groq Response to UI (Lovable Shield Avatar Layout)
             col_av, col_body = st.columns([0.045, 0.955])
@@ -655,6 +664,19 @@ def render_assistant_page():
                 full_response = ""
                 active_model_used = None
 
+                # Immediate visible thinking badge inside response area
+                response_placeholder.markdown("""
+                <div class="system-status-indicator" style="margin-top: 4px;">
+                    <span class="status-pulse-dot"></span>
+                    <span>System is thinking & analyzing regulatory directives</span>
+                    <span class="thinking-dots">
+                        <span class="thinking-dot"></span>
+                        <span class="thinking-dot"></span>
+                        <span class="thinking-dot"></span>
+                    </span>
+                </div>
+                """, unsafe_allow_html=True)
+
                 stream, active_model_used = call_groq_with_retry(
                     groq_client,
                     messages=[
@@ -666,15 +688,30 @@ def render_assistant_page():
                     stream=True
                 )
 
+                first_token_received = False
                 for chunk in stream:
                     choice = chunk.choices[0]
                     token = choice.delta.content or ""
                     if token:
+                        if not first_token_received:
+                            first_token_received = True
+                            status_placeholder.empty()
                         full_response += token
                         response_placeholder.markdown(full_response + "▌")
                     elif not full_response:
-                        response_placeholder.markdown("🧠 *Analyzing regulatory directives...* ▌")
+                        response_placeholder.markdown("""
+                        <div class="system-status-indicator" style="margin-top: 4px;">
+                            <span class="status-pulse-dot"></span>
+                            <span>System is thinking & analyzing regulatory directives</span>
+                            <span class="thinking-dots">
+                                <span class="thinking-dot"></span>
+                                <span class="thinking-dot"></span>
+                                <span class="thinking-dot"></span>
+                            </span>
+                        </div>
+                        """, unsafe_allow_html=True)
 
+                status_placeholder.empty()
                 if full_response.strip():
                     response_placeholder.markdown(full_response)
                 else:

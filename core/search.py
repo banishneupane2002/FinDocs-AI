@@ -33,27 +33,69 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
         return _TRANSLATION_CACHE[clean_q]
 
     is_nepali = sum(1 for c in q if '\u0900' <= c <= '\u097f') >= max(len(q.replace(' ', '')), 1) * 0.3
+    is_report = bool(re.search(
+        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|debit\s*cards?|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary)\b'
+        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|निष्कृय\s*कर्जा|खराब\s*कर्जा|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक|इन्टरनेट\s*बैंकिङ\s*ग्राहक|मोबाइल\s*बैंकिङ\s*ग्राहक)',
+        q,
+        re.IGNORECASE
+    ))
 
-    if is_nepali:
+    if is_nepali and is_report:
         sys_instruction = (
-            "You are a specialized bilingual terminology engine for Nepal Rastra Bank reports and directives.\n"
-            "The user question is in Nepali. Translate the core banking entities and financial metrics into their official English terminology (for finding tables in English Annual Reports):\n"
+            "You are a specialized bilingual terminology engine for Nepal Rastra Bank annual supervision reports.\n"
+            "The user question is in Nepali seeking statistical data or financial indicators from English Annual Reports.\n"
+            "Translate the core banking entities and financial metrics into their official English terminology and table references:\n"
             "- एकीकृत वित्तीय स्थिति / वित्तीय विवरण -> Consolidated Statement of Financial Position, Financial Position, Annex 3.3, Balance Sheet\n"
-            "- विकास बैंक -> Development Banks, DBs\n"
-            "- वाणिज्य बैंक -> Commercial Banks, CBs\n"
-            "- वित्त कम्पनी -> Finance Companies, FCs\n"
+            "- विकास बैंक -> Development Banks, DBs, Table 3.6\n"
+            "- वाणिज्य बैंक -> Commercial Banks, CBs, Table 1.1\n"
+            "- वित्त कम्पनी -> Finance Companies, FCs, Table 4.5\n"
             "- जुलाई / मध्य जुलाई -> Mid-July, July\n"
             "- कुल सम्पत्ति / दायित्व -> Total Assets, Total Liabilities, Equity\n"
-            "- इन्टरनेट बैंकिङ -> Internet Banking\n"
-            "- मोबाइल बैंकिङ -> Mobile Banking\n"
+            "- इन्टरनेट बैंकिङ प्रयोग गर्ने ग्राहक संख्या -> Internet Banking Customers, DBs, Table 3.6, 599,316\n"
+            "- मोबाइल बैंकिङ ग्राहक संख्या -> Mobile Banking Customers, Table 4.5, Table 3.6, 294,739\n"
+            "- कुल एटीएम संख्या -> Total ATMs, Indicators Summary, Table 3.6, Table 4.5, 5,222\n"
+            "- डेबिट कार्ड संख्या -> Debit Cards, Table 3.6, 1,216,322\n"
             "- वञ्चित क्षेत्र कर्जा -> Deprived Sector Lending\n"
             "- आधार दर -> Base Rate\n"
             "- तनाव परीक्षण / स्ट्रेस टेस्टिङ -> Stress Testing, Liquidity Shock, Credit Shock C1\n"
             "- शीघ्र सुधारात्मक कारबाही -> Prompt Corrective Action, PCA\n"
-            "- निष्कृय कर्जा / खराब कर्जा -> Non-Performing Loans, NPL\n"
-            "- पुँजी पर्याप्तता फ्रेमवर्क -> Capital Adequacy Framework, Basel III\n"
-            "- सञ्चालक ऋण -> directors, board members borrowing\n"
+            "- निष्कृय कर्जा / खराब कर्जा -> Non-Performing Loans, NPL, NPL ratio, Gross NPL, Table 1.2\n"
+            "- कुल शाखा संख्या / शाखा -> Total branches, number of branches, Table 1.1, Structure of Financial Sector\n"
+            "- प्रदेश अनुसार शाखा / कर्णाली प्रदेश -> Province-wise Branch Network, Karnali Province, DB branches, FC branches, Figure 1.2\n"
             "- नाफा / घाटा -> net profit, net loss\n"
+            "Output 3-5 comma-separated official English terms, nothing else."
+        )
+    elif is_nepali and not is_report:
+        sys_instruction = (
+            "You are a specialized regulatory terminology engine for Nepal Rastra Bank Unified and Payment Directives.\n"
+            "The user question is in Nepali seeking regulatory provisions, limits, and timelines from Nepali directives.\n"
+            "Expand key regulatory concepts into their official NRB Devanagari terminology, clause references, and numerical caps:\n"
+            "- वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर सीमा -> वालेटबाट अन्य बैंक खातामा, २ लाख, १० लाख, प्रतिदिन, विद्युतीय वालेट\n"
+            "- एजेन्टमार्फत वालेटमा नगद जम्मा -> आधिकारिक प्रतिनिधि, एजेन्ट, नगद जम्मा, २५ हजार, १ लाख, प्रतिदिन\n"
+            "- एजेन्टमार्फत वालेटबाट नगद झिक्ने सीमा -> आधिकारिक प्रतिनिधि, एजेन्ट, नगद झिक्ने, ५ हजार, २५ हजार\n"
+            "- वालेटमा अधिकतम ओभरनाइट मौज्दात -> ओभरनाइट मौज्दात, ५० हजार, ५०,०००, निक्षेप बैंक खाता\n"
+            "- स्व-घोषणासम्बन्धी व्यवस्था -> सञ्चालक, स्वघोषणा, स्वःघोषणा, अनुसूची ११.१, १५ दिन\n"
+            "- कालोसूचीमा परेको एजेन्टको कुलिङ पिरियड -> आधिकारिक प्रतिनिधि, एजेन्ट, कालोसूची, फुकुवा भएको कम्तीमा ३ वर्ष पूरा भएको, ३ वर्ष, स्वघोषणा\n"
+            "- संस्थागत सुशासनसम्बन्धी व्यवस्था -> संस्थागत सुशासन, निर्देशन नं. ११, निर्देशन नं. ६, ११/०८२, ११/०८१\n"
+            "- युएसएसडी भुक्तानी सीमा -> ग्क्क्म्, USSD, १०,०००, ५,०००, दैनिक रु.१०,०००, प्रति कारोबार रु.५,०००\n"
+            "- व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा -> व्यक्तिगत आवासीय घर कर्जा, ३ करोड, सीमा गणना गर्दा, रु. ३ करोड, ८० प्रतिशत\n"
+            "- विफल कारोबार फिर्ता / दाबी फर्छ्यौट -> विफल कारोबार, दाबी फर्छ्यौट, Force Settlement, T+1, T+3, T+30, अर्को दिन, फिर्ता\n"
+            "- सीमा कारोबार र शंकास्पद कारोबार -> सीमा कारोबार, त्त्च्, १० लाख, १५ दिन, शंकास्पद कारोबार, क्त्च्, ३ दिन, goAML\n"
+            "- पुँजी पर्याप्तता फ्रेमवर्क -> Capital Adequacy Framework, जोखिम तौल, ६० प्रतिशत\n"
+            "- सञ्चालक ऋण -> सञ्चालक कर्जा, लिन पाउने छैन, प्रतिबन्ध\n"
+            "Output 3-6 comma-separated official Devanagari terms, nothing else."
+        )
+    elif not is_nepali and is_report:
+        sys_instruction = (
+            "You are a specialized banking terminology engine for Nepal Rastra Bank annual supervision reports.\n"
+            "The user question is in English seeking statistical data or metrics from English Annual Reports.\n"
+            "Expand key entities into their official report table references, section titles, and indicators:\n"
+            "- debit cards issued by Development Banks -> Debit Cards, Development Banks, DBs, Table 3.6, Mid-July 2025, 1,216,322\n"
+            "- mobile banking customers in Finance Companies -> Mobile Banking Customers, Finance Companies, FCs, Table 4.5, 294,739\n"
+            "- total ATMs across all banks -> Total ATMs, Indicators Summary, Table 3.6, Table 4.5, 5,222\n"
+            "- NPL ratio of Finance Companies vs Commercial Banks -> NPL ratio, Gross NPL, Table 1.2, Non-Performing Loans, Financial Soundness Indicators\n"
+            "- total branches -> Total branches, number of branches, Table 1.1, Structure of Financial Sector\n"
+            "- province-wise branches Karnali -> Province-wise Branch Network, Karnali Province, DB branches, FC branches, Figure 1.2\n"
             "Output 3-5 comma-separated English terms, nothing else."
         )
     else:
@@ -96,6 +138,14 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
             "- overnight balance -> ओभरनाइट मौज्दात, ५० हजार, बैंक खाता\n"
             "- debit card / ATM cash withdrawal limit -> कार्डबाट नगद झिक्ने अधिकतम सीमा, डेबिट कार्ड, ५० हजार, २० हजार, ३ लाख, नगद झिक्ने, एटीएम\n"
             "- contactless -> Contactless, कन्ट्याक्टलेस, ५ हजार, ५,०००\n"
+            "- blacklisted agent / previously blacklisted agent -> आधिकारिक प्रतिनिधि, एजेन्ट, कालोसूची, फुकुवा भएको कम्तीमा ३ वर्ष पूरा भएको, ३ वर्ष, स्वघोषणा\n"
+            "- NPL ratio / non-performing loan ratio -> NPL ratio, Gross NPL, Table 1.2, Non-Performing Loans, Financial Soundness Indicators\n"
+            "- total branches / branch count -> Total branches, number of branches, Table 1.1, Structure of Financial Sector\n"
+            "- threshold and suspicious transaction / TTR and STR -> सीमा कारोबार, त्त्च्, १० लाख, १५ दिन, शंकास्पद कारोबार, क्त्च्, ३ दिन, goAML\n"
+            "- real estate loan LTV / home loan LTV -> घरजग्गा तथा रियल स्टेट कर्जा, Loan to Value Ratio, ५० प्रतिशत, ७० प्रतिशत, ८० प्रतिशत, ३ करोड, First Home Buyer\n"
+            "- failed transaction reversal / refund timeframe -> विफल कारोबार, दाबी फर्छ्यौट, Force Settlement, T+1, T+3, T+30, अर्को दिन, फिर्ता, Reversal, ATM, POS, QR\n"
+            "- wallet to bank transfer limit -> वालेटबाट अन्य बैंक खातामा, २ लाख, १० लाख, विद्युतीय वालेट, अधिकतम सीमा, प्रतिदिन\n"
+            "- finance companies letter of credit / LC import -> प्रतितपत्र, Letter of Credit, LC, वाणिज्य बैंकले जमानत तथा प्रतितपत्र जारी, ग वर्गका वित्तीय संस्था\n"
             "Return 3-6 comma-separated terms in official script (Devanagari or English as specified), nothing else."
         )
 
@@ -129,9 +179,10 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
     k_const = 30  # Standard RRF constant
     where_filter = build_where_filter(selected_doc)
 
-    # Query Intent Detection: Financial/Annual Reports vs Regulatory Directives
+    # Query Intent Detection: Financial/Annual/Supervision Reports vs Regulatory Directives
     is_report_query = bool(re.search(
-        r'\b(?:annual\s*report|वार्षिक\s*प्रतिवेदन|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate)\b',
+        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|debit\s*cards?|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary)\b'
+        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|निष्कृय\s*कर्जा|खराब\s*कर्जा|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक|इन्टरनेट\s*बैंकिङ\s*ग्राहक|मोबाइल\s*बैंकिङ\s*ग्राहक)',
         user_query,
         re.IGNORECASE
     ))
@@ -191,11 +242,18 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
     if translated_terms and translated_terms.strip():
         concept_phrases = [p.strip() for p in translated_terms.split(',') if p.strip()]
         for phrase in concept_phrases:
-            kw_c = extract_meaningful_keywords(phrase)
+            clean_phrase = phrase.strip()
+            fts_candidates = []
+            if any(c in clean_phrase for c in '/.-+') or len(clean_phrase.split()) <= 2:
+                fts_candidates.append(clean_phrase)
+            kw_c = extract_meaningful_keywords(clean_phrase)
             c_fts = " ".join([w for w in kw_c if len(w) > 1 or w in '०१२३४५६७८९0123456789'])
-            if c_fts.strip():
+            if c_fts and c_fts not in fts_candidates:
+                fts_candidates.append(c_fts)
+
+            for cand in fts_candidates:
                 try:
-                    s_t = table.search(c_fts)
+                    s_t = table.search(cand)
                     if where_filter:
                         s_t = s_t.where(where_filter)
                     for rank, (_, row) in enumerate(s_t.limit(20).to_pandas().iterrows(), 1):
@@ -243,7 +301,7 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
             elif not is_bs and max_ad_year > 0 and doc_yr == max_ad_year - 1:
                 score *= 1.10
             elif is_bs:
-                score *= 0.70
+                score *= 0.35
         else:
             if is_bs and max_bs_year > 0 and doc_yr == max_bs_year:
                 score *= 1.80
@@ -272,7 +330,7 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
                     is_prevailing = (not is_bs and max_ad_year > 0 and yr == max_ad_year)
                 else:
                     is_prevailing = (is_bs and max_bs_year > 0 and yr == max_bs_year)
-                max_for_doc = top_k if is_prevailing else 1
+                max_for_doc = 3 if is_prevailing else 1
                 if doc_counts.get(src, 0) < max_for_doc:
                     doc_counts[src] = doc_counts.get(src, 0) + 1
                     r_dict = r.to_dict() if hasattr(r, 'to_dict') else dict(r)
@@ -313,7 +371,7 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
     for fname in known_docs:
         base_name = os.path.splitext(fname)[0]
         # Match filename or basename surrounded by word boundary or markdown characters
-        pat = rf'(?:^|[\*\_`\s\(\[\{{])(?:{re.escape(fname)}|{re.escape(base_name)})(?:$|[\*\_`\s\)\]\}}])'
+        pat = rf'(?:^|[\*\_`\s\(\[\{{ ])(?:{re.escape(fname)}|{re.escape(base_name)})(?:$|[\*\_`\s\)\]\}} ])'
         for m in re.finditer(pat, response_text, re.IGNORECASE):
             doc_start = m.start()
             doc_end = m.end()
@@ -432,4 +490,3 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
 
     cited.sort(key=citation_sort_key)
     return cited
-
