@@ -1,13 +1,15 @@
 """
-Best Finance Company Ltd. Institutional UI Stylesheet (Lovable Exact Replica)
-Theme Palette:
-- Sidebar Background: #062517 (Deep Forest Green)
-- Sidebar Accents: #10B981, #6EE7B7, #A7F3D0
+Best Finance Company Ltd. Institutional UI Stylesheet
+Official Brand Guidelines:
+- Primary Brand Blue: #1c75bb (Corporate Blue)
+- Primary Brand Green: #00a54f (Corporate Green / Compliance)
+- Typography:
+  - English Headings: Helvetica Bold - 39px
+  - Nepali Headings: Aakriti Bold - 48px
 - Canvas Background: #FFFFFF (Clean Pure White)
-- Primary Brand Accent: #00A94F / #047857 / #10B981
-- User Chat Bubble: #083820 (Dark Forest Pill)
-- Card Borders: #E5E7EB / #D1FAE5
-- Typography: Poppins, Mukta, Inter, sans-serif
+- User Chat Bubble: #1c75bb (Best Finance Blue Pill)
+- Assistant Avatar: Dual-tone Gradient (#1c75bb -> #00a54f)
+- Sidebar: #0B2238 (Deep Corporate Navy Blue)
 """
 
 import os
@@ -25,10 +27,78 @@ TOGGLE_ICON_B64 = _get_toggle_icon_b64()
 RAW_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
-    
+
+    /* Local / System Fonts for Helvetica Bold and Aakriti Bold */
+    @font-face {
+        font-family: 'Helvetica Bold';
+        src: local('Helvetica Bold'), local('Helvetica-Bold'), local('HelveticaNeue-Bold'), local('Helvetica Neue Bold');
+        font-weight: 700;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Aakriti Bold';
+        src: local('Aakriti Bold'), local('Aakriti-Bold'), local('Aakriti');
+        font-weight: 700;
+        font-style: normal;
+    }
+
+    :root {
+        /* Best Finance Company Ltd. Brand Guidelines */
+        --brand-blue: #1c75bb;
+        --brand-green: #00a54f;
+        --brand-blue-hover: #155d96;
+        --brand-blue-light: #EBF4FC;
+        --brand-blue-border: #BAE0F8;
+        --brand-green-hover: #008740;
+        --brand-green-light: #ECFDF5;
+        --brand-green-border: #A7F3D0;
+        --sidebar-bg: #0B2238;
+        --sidebar-border: #143657;
+
+        /* Typography */
+        --font-helvetica-bold: 'Helvetica Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        --font-aakriti-bold: 'Aakriti Bold', 'Aakriti', 'Mukta', 'Poppins', sans-serif;
+        --font-body: 'Helvetica Neue', Helvetica, 'Mukta', 'Poppins', Arial, sans-serif;
+    }
+
     html, body {
         overflow-x: hidden !important;
-        font-family: 'Poppins', 'Mukta', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: var(--font-body) !important;
+    }
+
+    /* Company Typography Rules */
+    /* English Headings: Helvetica Bold - 39px */
+    .brand-title-en, .en-title-39, .stMarkdown h1 {
+        font-family: var(--font-helvetica-bold) !important;
+        font-size: 39px !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+        letter-spacing: -0.015em !important;
+        color: #111827 !important;
+    }
+
+    /* Nepali Headings: Aakriti Bold - 48px */
+    .brand-title-np, .np-title-48 {
+        font-family: var(--font-aakriti-bold) !important;
+        font-size: 48px !important;
+        font-weight: 700 !important;
+        line-height: 1.25 !important;
+        color: #111827 !important;
+    }
+
+    .stMarkdown h2 {
+        font-family: var(--font-helvetica-bold) !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #1c75bb !important;
+    }
+
+    .stMarkdown h3 {
+        font-family: var(--font-helvetica-bold) !important;
+        font-size: 1.22rem !important;
+        font-weight: 700 !important;
+        color: #0F172A !important;
     }
     
     /* Global Clean White Canvas */
@@ -110,13 +180,12 @@ RAW_CSS = """
         width: 40px !important;
         height: 40px !important;
         border-radius: 50% !important;
-        background: #064E3B !important;
+        background: linear-gradient(135deg, #1c75bb 0%, #00a54f 100%) !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         flex-shrink: 0 !important;
-        box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25) !important;
-        
+        box-shadow: 0 2px 8px rgba(28, 117, 187, 0.30) !important;
     }
 
     .navbar-title-content {
@@ -126,7 +195,8 @@ RAW_CSS = """
 
     .navbar-title-heading {
         margin: 0 !important;
-        font-size: 1.25rem !important;
+        font-family: var(--font-helvetica-bold) !important;
+        font-size: 1.35rem !important;
         font-weight: 700 !important;
         color: #111827 !important;
         letter-spacing: -0.01em !important;
@@ -134,7 +204,6 @@ RAW_CSS = """
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        
     }
 
     .navbar-title-sub {
@@ -161,7 +230,7 @@ RAW_CSS = """
     .navbar-status-badge {
         background: #ECFDF5 !important;
         border: 1px solid #A7F3D0 !important;
-        color: #047857 !important;
+        color: #008740 !important;
         padding: 6px 14px !important;
         border-radius: 9999px !important;
         font-size: 0.80rem !important;
@@ -175,15 +244,15 @@ RAW_CSS = """
 
     @keyframes statusPulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            box-shadow: 0 0 0 0 rgba(0, 165, 79, 0.7);
             transform: scale(0.95);
         }
         70% {
-            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            box-shadow: 0 0 0 6px rgba(0, 165, 79, 0);
             transform: scale(1.05);
         }
         100% {
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            box-shadow: 0 0 0 0 rgba(0, 165, 79, 0);
             transform: scale(0.95);
         }
     }
@@ -203,7 +272,7 @@ RAW_CSS = """
         width: 8px !important;
         height: 8px !important;
         border-radius: 50% !important;
-        background: #10B981 !important;
+        background: #00a54f !important;
         display: inline-block !important;
         flex-shrink: 0 !important;
         animation: statusPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1) !important;
@@ -220,7 +289,7 @@ RAW_CSS = """
     .thinking-dot {
         width: 5px !important;
         height: 5px !important;
-        background-color: #047857 !important;
+        background-color: #008740 !important;
         border-radius: 50% !important;
         display: inline-block !important;
         animation: thinkingBounce 1.4s infinite ease-in-out both !important;
@@ -239,7 +308,7 @@ RAW_CSS = """
         border-radius: 20px !important;
         padding: 6px 15px !important;
         font-size: 0.82rem !important;
-        color: #047857 !important;
+        color: #008740 !important;
         font-weight: 500 !important;
         margin-bottom: 12px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
@@ -254,8 +323,8 @@ RAW_CSS = """
     /* 1. SIDEBAR: FULL-HEIGHT OVERLAY DRAWER               */
     /* ---------------------------------------------------- */
     section[data-testid="stSidebar"] {
-        background-color: #062517 !important;
-        border-right: 1px solid #133D27 !important;
+        background-color: #0B2238 !important;
+        border-right: 1px solid #143657 !important;
         top: 0 !important;
         height: 100vh !important;
         height: 100dvh !important;
@@ -287,7 +356,7 @@ RAW_CSS = """
     }
 
     section[data-testid="stSidebar"] hr {
-        border-color: #133D27 !important;
+        border-color: #143657 !important;
         margin: 16px 0 !important;
     }
 
@@ -314,8 +383,9 @@ RAW_CSS = """
     }
 
     section[data-testid="stSidebar"] a[data-testid="stPageLink-NavLink"][aria-current="page"] {
-        background-color: rgba(16, 185, 129, 0.16) !important;
-        border: 1px solid rgba(16, 185, 129, 0.35) !important;
+        background-color: rgba(28, 117, 187, 0.25) !important;
+        border: 1px solid rgba(28, 117, 187, 0.50) !important;
+        border-left: 3px solid #00a54f !important;
         color: #FFFFFF !important;
         font-weight: 600 !important;
     }
@@ -336,9 +406,9 @@ RAW_CSS = """
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] > div > div,
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div:has(> input),
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] {
-        background-color: #0B331E !important;
-        background: #0B331E !important;
-        border: 1px solid #1A4D31 !important;
+        background-color: #103352 !important;
+        background: #103352 !important;
+        border: 1px solid #1C4B75 !important;
         border-radius: 8px !important;
         box-shadow: none !important;
     }
@@ -348,8 +418,8 @@ RAW_CSS = """
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] input[type="text"],
     section[data-testid="stSidebar"] input.react-aria-Input,
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] [data-baseweb="select"] input {
-        background-color: #0B331E !important;
-        background: #0B331E !important;
+        background-color: #103352 !important;
+        background: #103352 !important;
         color: #ABDECA !important;
         -webkit-text-fill-color: #ABDECA !important;
         font-weight: 600 !important;
@@ -372,8 +442,8 @@ RAW_CSS = """
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] button,
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] button[aria-label="Open"],
     section[data-testid="stSidebar"] div[data-testid="stSelectbox"] [aria-label="Open"] {
-        background-color: #0B331E !important;
-        background: #0B331E !important;
+        background-color: #103352 !important;
+        background: #103352 !important;
         border: none !important;
         box-shadow: none !important;
         color: #6EE7B7 !important;
@@ -433,9 +503,9 @@ RAW_CSS = """
     div[data-baseweb="popover"] ul,
     div[data-baseweb="popover"] ul[role="listbox"],
     ul[role="listbox"] {
-        background-color: #062517 !important;
-        background: #062517 !important;
-        border: 1px solid #1A4D31 !important;
+        background-color: #0B2238 !important;
+        background: #0B2238 !important;
+        border: 1px solid #1C4B75 !important;
         border-radius: 8px !important;
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
         padding: 4px 0 !important;
@@ -450,8 +520,8 @@ RAW_CSS = """
     div[data-baseweb="popover"] [role="option"],
     ul[role="listbox"] li,
     ul[role="listbox"] li[role="option"] {
-        background-color: #062517 !important;
-        background: #062517 !important;
+        background-color: #0B2238 !important;
+        background: #0B2238 !important;
         color: #FFFFFF !important;
         -webkit-text-fill-color: #FFFFFF !important;
         padding: 10px 14px !important;
@@ -488,8 +558,8 @@ RAW_CSS = """
     div[data-baseweb="popover"] li[role="option"][aria-selected="true"],
     ul[role="listbox"] li[aria-selected="true"],
     ul[role="listbox"] li[role="option"][aria-selected="true"] {
-        background-color: #124B2C !important;
-        background: #124B2C !important;
+        background-color: #174266 !important;
+        background: #174266 !important;
         color: #6EE7B7 !important;
         -webkit-text-fill-color: #6EE7B7 !important;
     }
@@ -515,8 +585,8 @@ RAW_CSS = """
 
     /* Sidebar Buttons */
     section[data-testid="stSidebar"] button {
-        background: #0B331E !important;
-        border: 1px solid #1A4D31 !important;
+        background: #103352 !important;
+        border: 1px solid #1C4B75 !important;
         color: #E2E8F0 !important;
         border-radius: 8px !important;
         font-size: 0.84rem !important;
@@ -524,7 +594,7 @@ RAW_CSS = """
         padding: 8px 14px !important;
     }
     section[data-testid="stSidebar"] button:hover {
-        background: #124B2C !important;
+        background: #174266 !important;
         border-color: #10B981 !important;
         color: #FFFFFF !important;
         box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2) !important;
@@ -544,7 +614,7 @@ RAW_CSS = """
 
     /* Markdown Blockquotes as Exact Clause Callouts */
     blockquote {
-        border-left: 3px solid #10B981 !important;
+        border-left: 3px solid #00a54f !important;
         padding-left: 14px !important;
         margin: 12px 0 !important;
         color: #374151 !important;
@@ -778,7 +848,7 @@ RAW_CSS = """
     }
 
     section[data-testid="stFileUploaderDropzone"]:hover {
-        border-color: #10B981 !important;
+        border-color: #1c75bb !important;
         background-color: #F0FDF4 !important;
     }
 
@@ -822,28 +892,28 @@ RAW_CSS = """
     section[data-testid="stFileUploaderDropzone"] button:hover {
         background-color: #ECFDF5 !important;
         border-color: #10B981 !important;
-        color: #047857 !important;
+        color: #008740 !important;
     }
 
-    /* 4. Full-Width Emerald Primary Ingest Button */
+    /* 4. Primary Brand Blue Button */
     button[data-testid="baseButton-primary"],
     button[kind="primary"] {
-        background-color: #059669 !important;
+        background-color: #1c75bb !important;
         border: none !important;
         border-radius: 10px !important;
         color: #FFFFFF !important;
         font-weight: 600 !important;
         font-size: 0.95rem !important;
         padding: 12px 24px !important;
-        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        box-shadow: 0 2px 8px rgba(28, 117, 187, 0.25) !important;
+        transition: all 0.15s ease !important;
         margin-top: 12px !important;
     }
 
     button[data-testid="baseButton-primary"]:hover,
     button[kind="primary"]:hover {
-        background-color: #047857 !important;
-        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35) !important;
+        background-color: #155d96 !important;
+        box-shadow: 0 4px 14px rgba(28, 117, 187, 0.35) !important;
         transform: translateY(-1px) !important;
     }
 
@@ -1100,7 +1170,7 @@ RAW_CSS = """
     div[class*="st-key-right_popup_drawer_wrap"] [data-testid="stLinkButton"] a:hover {
         background-color: #ECFDF5 !important;
         border-color: #059669 !important;
-        color: #047857 !important;
+        color: #008740 !important;
         box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15) !important;
     }
 
@@ -1171,7 +1241,7 @@ RAW_CSS = """
     }
     button[key*="btn_src_"]:hover {
         background: #ECFDF5 !important;
-        color: #047857 !important;
+        color: #008740 !important;
         border-color: #059669 !important;
     }
 
@@ -1258,8 +1328,8 @@ RAW_CSS = """
     }
 
     div[data-testid="stChatInput"] > div:focus-within {
-        border-color: #10B981 !important;
-        box-shadow: 0 6px 24px rgba(16, 185, 129, 0.16) !important;
+        border-color: #1c75bb !important;
+        box-shadow: 0 6px 24px rgba(28, 117, 187, 0.16) !important;
     }
 
     /* Remove any inner borders from nested elements and textareas */
@@ -1275,9 +1345,9 @@ RAW_CSS = """
         padding: 8px 10px !important;
     }
 
-    /* Circular Green Send Button */
+    /* Circular Brand Blue Send Button */
     div[data-testid="stChatInput"] button {
-        background-color: #10B981 !important;
+        background-color: #1c75bb !important;
         color: #FFFFFF !important;
         border-radius: 50% !important;
         width: 34px !important;
@@ -1292,7 +1362,7 @@ RAW_CSS = """
     }
 
     div[data-testid="stChatInput"] button:hover {
-        background-color: #059669 !important;
+        background-color: #155d96 !important;
         transform: scale(1.05) !important;
     }
 

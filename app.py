@@ -195,7 +195,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
             st.markdown(f"""
             <div style="display: flex; align-items: center; gap: 8px;">
                 <div class="right-sidebar-icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#059669" style="width: 18px; height: 18px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#00a54f" style="width: 18px; height: 18px;">
                         <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
                     </svg>
                 </div>
@@ -235,7 +235,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
             if cited_sources:
                 st.markdown("""
                 <div style="font-size: 0.70rem; font-weight: 700; color: #059669; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" style="width: 13px; height: 13px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#00a54f" style="width: 13px; height: 13px;">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
                     </svg>
                     Primary Cited Sources
@@ -266,7 +266,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
                             <div style="flex: 1; min-width: 0;">
                                 <div style="font-weight: 600; color: #0F172A; font-size: 0.84rem; word-break: break-word; line-height: 1.3;">{src_name}</div>
                                 <div style="display: flex; align-items: center; gap: 6px; margin-top: 3px;">
-                                    <span style="background: #ECFDF5; color: #065F46; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; border: 1px solid #A7F3D0;">Page {pg_num}</span>
+                                    <span style="background: #ECFDF5; color: #008740; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; border: 1px solid #A7F3D0;">Page {pg_num}</span>
                                     <span style="color: #64748B; font-size: 0.72rem;">Verified directive</span>
                                 </div>
                             </div>
@@ -482,7 +482,7 @@ def render_assistant_page():
         if msg["role"] == "user":
             st.markdown(f"""
             <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
-                <div style="background-color: #083820; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(8, 56, 32, 0.16);">
+                <div style="background-color: #1c75bb; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(28, 117, 187, 0.22);">
                     {msg["content"]}
                 </div>
             </div>
@@ -491,7 +491,7 @@ def render_assistant_page():
             col_av, col_body = st.columns([0.045, 0.955])
             with col_av:
                 st.markdown("""
-                <div style="width: 34px; height: 34px; border-radius: 50%; background: #064E3B; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25); margin-top: 4px;">
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #1c75bb 0%, #00a54f 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0, 165, 79, 0.25); margin-top: 4px;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 18px; height: 18px;">
                         <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
                     </svg>
@@ -507,10 +507,10 @@ def render_assistant_page():
                     with col_ind:
                         st.markdown(f"""
                         <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #ECFDF5; border: 1px solid #D1FAE5; border-radius: 20px; padding: 4px 12px; margin-top: 6px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" style="width: 14px; height: 14px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#00a54f" style="width: 14px; height: 14px;">
                                 <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
                             </svg>
-                            <span style="font-size: 0.80rem; font-weight: 600; color: #065F46;">
+                            <span style="font-size: 0.80rem; font-weight: 600; color: #008740;">
                                 {num_s} verified source(s) cited
                             </span>
                         </div>
@@ -536,7 +536,7 @@ def render_assistant_page():
         st.session_state.messages.append({"role": "user", "content": active_query})
         st.markdown(f"""
         <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
-            <div style="background-color: #083820; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(8, 56, 32, 0.16);">
+            <div style="background-color: #1c75bb; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(28, 117, 187, 0.22);">
                 {active_query}
             </div>
         </div>
@@ -653,7 +653,7 @@ def render_assistant_page():
             col_av, col_body = st.columns([0.045, 0.955])
             with col_av:
                 st.markdown("""
-                <div style="width: 34px; height: 34px; border-radius: 50%; background: #064E3B; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25); margin-top: 4px;">
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #1c75bb 0%, #00a54f 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0, 165, 79, 0.25); margin-top: 4px;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="width: 18px; height: 18px;">
                         <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
                     </svg>
@@ -940,7 +940,7 @@ def render_admin_page():
     with st.container(border=True):
         st.markdown("""
         <div style="margin-bottom: 14px;">
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #111827; margin: 0 0 4px 0;">Add new documents</h3>
+            <h3 style="font-family: var(--font-helvetica-bold); font-size: 1.15rem; font-weight: 700; color: #111827; margin: 0 0 4px 0;">Add new documents</h3>
             <p style="font-size: 0.85rem; color: #64748B; margin: 0;">PDF, DOCX or TXT, up to 200 MB each. New files are indexed automatically.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -987,7 +987,7 @@ def render_admin_page():
         st.markdown("""
         <div style="margin-bottom: 6px;">
             <div style="font-size: 0.72rem; font-weight: 700; color: #64748B; letter-spacing: 0.08em; text-transform: uppercase;">Catalogue</div>
-            <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 2px 0 0 0;">Documents by category</h2>
+            <h2 style="font-family: var(--font-helvetica-bold); font-size: 1.25rem; font-weight: 700; color: #111827; margin: 2px 0 0 0;">Documents by category</h2>
         </div>
         """, unsafe_allow_html=True)
     with col_cat_search:
