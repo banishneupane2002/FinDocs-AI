@@ -14,7 +14,15 @@ from sentence_transformers import SentenceTransformer
 from groq import Groq
 
 # 1. Modular Imports from styles and core package
-from styles import CUSTOM_CSS, inject_sidebar_backdrop
+from styles import (
+    CUSTOM_CSS,
+    inject_sidebar_backdrop,
+    USER_CHAT_BUBBLE_COLOR,
+    USER_CHAT_TEXT_COLOR,
+    VERIFIED_SOURCES_BADGE_BG,
+    VERIFIED_SOURCES_BADGE_TEXT,
+    VERIFIED_SOURCES_BADGE_BORDER
+)
 from core import (
     decode_preeti_text,
     extract_query_years,
@@ -136,28 +144,28 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
     target_doc = active_msg.get("target_doc") if active_msg else None
 
     num_cited = len(cited_sources)
-    badge_html = f'<span class="right-sidebar-badge">● {num_cited} Cited</span>' if num_cited > 0 else '<span class="right-sidebar-badge" style="background: #F1F5F9; color: #64748B; border-color: #E2E8F0;">Standby</span>'
+    badge_html = f'<span class="right-sidebar-badge" style="background: #F0F7FD; color: #1c75bb; border-color: #BAE0F8;">● {num_cited} Cited</span>' if num_cited > 0 else '<span class="right-sidebar-badge" style="background: #F8FAFC; color: #64748B; border-color: #E2E8F0;">Standby</span>'
 
     # 1. Seamlessly shift Chatbot to left area, and limit Footer so it NEVER overlaps the Right Sidebar
     st.markdown("""
     <style>
     @media (min-width: 1024px) {
-        /* Shift Chatbot Canvas to left area */
+        /* Shift Chatbot Canvas to left area so user can scroll chat up and down freely */
         .block-container,
         div[data-testid="stMainBlockContainer"] {
             margin-left: auto !important;
-            margin-right: 480px !important;
+            margin-right: 440px !important;
             max-width: 820px !important;
-            width: calc(100% - 480px) !important;
+            width: calc(100% - 440px) !important;
         }
 
-        /* Footer Container STOPS at the Right Sidebar (460px from right) */
+        /* Footer Container STOPS at the Right Sidebar (440px from right) */
         div[data-testid="stBottom"],
         footer[data-testid="stBottom"] {
             left: 0 !important;
-            right: 460px !important;
-            width: calc(100% - 460px) !important;
-            max-width: calc(100% - 460px) !important;
+            right: 440px !important;
+            width: calc(100% - 440px) !important;
+            max-width: calc(100% - 440px) !important;
             z-index: 998 !important;
         }
 
@@ -166,27 +174,16 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
             max-width: 760px !important;
             margin: 0 auto !important;
         }
+    }
 
-        /* Completely disable backdrop so chat is 100% readable & interactive */
-        .drawer-backdrop,
-        #right-drawer-backdrop {
-            display: block !important;
-            position: fixed !important;
-            top: 88px !important;
-            left: 0 !important;
-            right: 460px !important; /* Leaves the right sidebar open and clickable */
-            bottom: 0 !important;
-            background: transparent !important; /* Or rgba(0, 0, 0, 0.15) if you want a subtle tint */
-            opacity: 0 !important;
-            z-index: 996 !important;
-            cursor: pointer !important;
-}
+    /* Completely eliminate any backdrop so the main chat section is 100% scrollable and interactive */
+    .drawer-backdrop,
+    #right-drawer-backdrop {
+        display: none !important;
+        pointer-events: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
-
-    # Backdrop overlay for mobile viewport (<1024px)
-    st.markdown('<div class="drawer-backdrop" id="right-drawer-backdrop"></div>', unsafe_allow_html=True)
 
     with st.container(key="right_popup_drawer_wrap"):
         # Header row: Title & badge on left, Close button on right
@@ -195,7 +192,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
             st.markdown(f"""
             <div style="display: flex; align-items: center; gap: 8px;">
                 <div class="right-sidebar-icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#00a54f" style="width: 18px; height: 18px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1c75bb" style="width: 18px; height: 18px;">
                         <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
                     </svg>
                 </div>
@@ -217,7 +214,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
             st.markdown("""
             <div class="right-sidebar-empty-state">
                 <div class="right-sidebar-empty-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#059669" style="width: 24px; height: 24px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#1c75bb" style="width: 24px; height: 24px;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                     </svg>
                 </div>
@@ -234,8 +231,8 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
         else:
             if cited_sources:
                 st.markdown("""
-                <div style="font-size: 0.70rem; font-weight: 700; color: #059669; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#00a54f" style="width: 13px; height: 13px;">
+                <div style="font-size: 0.70rem; font-weight: 700; color: #1c75bb; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#1c75bb" style="width: 13px; height: 13px;">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
                     </svg>
                     Primary Cited Sources
@@ -258,7 +255,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
                     <div class="right-sidebar-source-item" style="margin-bottom: 6px;">
                         <div style="display: flex; align-items: flex-start; gap: 10px;">
                             <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1c75bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                     <polyline points="14 2 14 8 20 8"></polyline>
                                 </svg>
@@ -266,7 +263,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
                             <div style="flex: 1; min-width: 0;">
                                 <div style="font-weight: 600; color: #0F172A; font-size: 0.84rem; word-break: break-word; line-height: 1.3;">{src_name}</div>
                                 <div style="display: flex; align-items: center; gap: 6px; margin-top: 3px;">
-                                    <span style="background: #ECFDF5; color: #008740; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; border: 1px solid #A7F3D0;">Page {pg_num}</span>
+                                    <span style="background: #F0F7FD; color: #1c75bb; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; border: 1px solid #BAE0F8;">Page {pg_num}</span>
                                     <span style="color: #64748B; font-size: 0.72rem;">Verified directive</span>
                                 </div>
                             </div>
@@ -373,7 +370,7 @@ def render_assistant_page():
                     </svg>
                 </div>
                 <div class="navbar-title-content">
-                    <h1 class="navbar-title-heading">Regulatory & Directive Assistant</h1>
+                    <div class="navbar-title-heading">Regulatory & Directive Assistant</div>
                     </div>
             </div>
         </div>
@@ -389,13 +386,15 @@ def render_assistant_page():
     # Sidebar Filters & Chat Controls (Positioned Below Best Finance Logo)
     with st.sidebar:
         # Page Navigation Links (Directly Below Logo!)
-        st.page_link(assistant_page, label="Regulatory Assistant", icon=":material/chat:")
-        st.page_link(admin_page, label="Document Management", icon=":material/folder:")
+        with st.container(key="nav_active_link"):
+            st.page_link(assistant_page, label="Regulatory Assistant", icon=":material/chat:")
+        with st.container(key="nav_inactive_link"):
+            st.page_link(admin_page, label="Document Management", icon=":material/folder:")
 
         st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
         st.markdown("""
-        <div style="font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; color: #6EE7B7; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 7px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#6EE7B7" style="width: 14px; height: 14px;">
+        <div style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; color: #FFFFFF; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#FFFFFF" style="width: 13px; height: 13px;">
                 <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" />
             </svg>
             Scope & Filter
@@ -482,7 +481,7 @@ def render_assistant_page():
         if msg["role"] == "user":
             st.markdown(f"""
             <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
-                <div style="background-color: #1c75bb; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(28, 117, 187, 0.22);">
+                <div style="background-color: {USER_CHAT_BUBBLE_COLOR}; color: {USER_CHAT_TEXT_COLOR}; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(0, 165, 79, 0.22);">
                     {msg["content"]}
                 </div>
             </div>
@@ -506,11 +505,11 @@ def render_assistant_page():
                     col_ind, col_view = st.columns([0.65, 0.35], vertical_alignment="center")
                     with col_ind:
                         st.markdown(f"""
-                        <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #ECFDF5; border: 1px solid #D1FAE5; border-radius: 20px; padding: 4px 12px; margin-top: 6px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#00a54f" style="width: 14px; height: 14px;">
+                        <div style="display: inline-flex; align-items: center; gap: 6px; background-color: {VERIFIED_SOURCES_BADGE_BG}; border: 1px solid {VERIFIED_SOURCES_BADGE_BORDER}; border-radius: 20px; padding: 4px 12px; margin-top: 6px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="{VERIFIED_SOURCES_BADGE_TEXT}" style="width: 14px; height: 14px;">
                                 <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
                             </svg>
-                            <span style="font-size: 0.80rem; font-weight: 600; color: #008740;">
+                            <span style="font-size: 0.80rem; font-weight: 600; color: {VERIFIED_SOURCES_BADGE_TEXT};">
                                 {num_s} verified source(s) cited
                             </span>
                         </div>
@@ -536,7 +535,7 @@ def render_assistant_page():
         st.session_state.messages.append({"role": "user", "content": active_query})
         st.markdown(f"""
         <div style="display: flex; justify-content: flex-end; margin: 12px 0 16px 0;">
-            <div style="background-color: #1c75bb; color: #FFFFFF; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(28, 117, 187, 0.22);">
+            <div style="background-color: {USER_CHAT_BUBBLE_COLOR}; color: {USER_CHAT_TEXT_COLOR}; border-radius: 24px; padding: 10px 22px; font-weight: 500; font-size: 0.94rem; max-width: 80%; box-shadow: 0 2px 8px rgba(0, 165, 79, 0.22);">
                 {active_query}
             </div>
         </div>
@@ -761,6 +760,10 @@ def render_assistant_page():
                     "latency": latency_str
                 })
 
+                # Automatically slide open the right sidebar with the latest source
+                st.session_state.show_right_sidebar = True
+                st.session_state.active_source_msg_idx = len(st.session_state.messages) - 1
+
                 # Seamlessly mount new message into the uniform messages loop
                 st.rerun()
 
@@ -839,7 +842,7 @@ def render_admin_page():
                     </svg>
                 </div>
                 <div class="navbar-title-content">
-                    <h1 class="navbar-title-heading">Document Management & Admin</h1>
+                    <div class="navbar-title-heading">Document Management & Admin</div>
                 </div>
             </div>
         </div>
@@ -854,12 +857,14 @@ def render_admin_page():
 
     # Sidebar Status (Positioned Below Best Finance Logo)
     with st.sidebar:
-        st.page_link(assistant_page, label="Regulatory Assistant", icon=":material/chat:")
-        st.page_link(admin_page, label="Document Management", icon=":material/folder:")
+        with st.container(key="nav_inactive_link"):
+            st.page_link(assistant_page, label="Regulatory Assistant", icon=":material/chat:")
+        with st.container(key="nav_active_link"):
+            st.page_link(admin_page, label="Document Management", icon=":material/folder:")
 
         st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
         st.markdown("<div style='font-size: 0.88rem; font-weight: 700; color: #FFFFFF; margin-top: 10px;'>Database Synchronization</div>", unsafe_allow_html=True)
-        st.markdown("<div style='color: #6EE7B7; font-size: 0.80rem; font-weight: 600; margin-top: 4px;'>● Auto-Sync Active</div>", unsafe_allow_html=True)
+        st.markdown("<div style='color: #FFFFFF; font-size: 0.80rem; font-weight: 500; margin-top: 4px;'><span style='color: #00a54f;'>●</span> Auto-Sync Active</div>", unsafe_allow_html=True)
         st.caption("The database automatically stays synchronized whenever documents are added, modified, or deleted .")
 
     # Category definitions with human-friendly bilingual titles & material icons
