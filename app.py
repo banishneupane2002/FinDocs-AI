@@ -32,6 +32,7 @@ from core import (
     hybrid_search,
     call_groq_with_retry,
     extract_cited_sources,
+    detect_query_disambiguation,
     build_rag_prompt,
     run_ingestion,
     check_filesystem_out_of_sync,
@@ -497,30 +498,64 @@ def render_assistant_page():
                 </div>
                 """, unsafe_allow_html=True)
             with col_body:
-                st.markdown(msg["content"])
-                if msg.get("latency"):
-                    st.caption(f"⚡ {msg['latency']}")
-                if msg.get("sources") or msg.get("other_sources"):
-                    num_s = len(msg.get("sources", []))
-                    col_ind, col_view = st.columns([0.65, 0.35], vertical_alignment="center")
-                    with col_ind:
-                        st.markdown(f"""
-                        <div style="display: inline-flex; align-items: center; gap: 6px; background-color: {VERIFIED_SOURCES_BADGE_BG}; border: 1px solid {VERIFIED_SOURCES_BADGE_BORDER}; border-radius: 20px; padding: 4px 12px; margin-top: 6px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="{VERIFIED_SOURCES_BADGE_TEXT}" style="width: 14px; height: 14px;">
-                                <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
-                            </svg>
-                            <span style="font-size: 0.80rem; font-weight: 600; color: {VERIFIED_SOURCES_BADGE_TEXT};">
-                                {num_s} verified source(s) cited
-                            </span>
+                if msg.get("clarification_options"):
+                    c_title = msg.get("clarification_title", "स्पष्टीकरण आवश्यक (Clarification)")
+                    c_type = msg.get("clarification_type", "disambiguation")
+                    icon = "🎯" if c_type in ("broad_topic", "intra_chapter") else ("🌐" if c_type == "cross_category" else "💡")
+
+                    st.markdown(f"""
+                    <div class="clarification-card">
+                        <div class="clarification-card-header">
+                            <span style="font-size: 1.1rem;">{icon}</span>
+                            <span class="clarification-card-title">{c_title}</span>
                         </div>
-                        """, unsafe_allow_html=True)
-                    with col_view:
-                        if st.button("View in sidebar →", key=f"btn_src_{i}", type="secondary"):
-                            st.session_state.show_right_sidebar = True
-                            st.session_state.active_source_msg_idx = i
+                        <div class="clarification-card-body">
+                            {msg["content"]}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    opts = msg.get("clarification_options", [])
+                    for opt_idx, opt in enumerate(opts):
+                        btn_key = f"clarif_btn_{i}_{opt_idx}"
+                        if st.button(opt["label"], key=btn_key, use_container_width=True):
+                            st.session_state.pending_query = opt["query"]
+                            if opt.get("category"):
+                                st.session_state.pending_category = opt["category"]
+                            st.rerun()
+
+                    if msg.get("latency"):
+                        st.caption(f"⚡ {msg['latency']}")
+                else:
+                    st.markdown(msg["content"])
+                    if msg.get("latency"):
+                        st.caption(f"⚡ {msg['latency']}")
+                    if msg.get("sources") or msg.get("other_sources"):
+                        num_s = len(msg.get("sources", []))
+                        col_ind, col_view = st.columns([0.65, 0.35], vertical_alignment="center")
+                        with col_ind:
+                            st.markdown(f"""
+                            <div style="display: inline-flex; align-items: center; gap: 6px; background-color: {VERIFIED_SOURCES_BADGE_BG}; border: 1px solid {VERIFIED_SOURCES_BADGE_BORDER}; border-radius: 20px; padding: 4px 12px; margin-top: 6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="{VERIFIED_SOURCES_BADGE_TEXT}" style="width: 14px; height: 14px;">
+                                    <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
+                                </svg>
+                                <span style="font-size: 0.80rem; font-weight: 600; color: {VERIFIED_SOURCES_BADGE_TEXT};">
+                                    {num_s} verified source(s) cited
+                                </span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        with col_view:
+                            if st.button("View in sidebar →", key=f"btn_src_{i}", type="secondary"):
+                                st.session_state.show_right_sidebar = True
+                                st.session_state.active_source_msg_idx = i
 
     # Input Box ALWAYS AT BOTTOM OF SCREEN
+    pending_q = st.session_state.pop("pending_query", None)
+    pending_cat = st.session_state.pop("pending_category", None)
     active_query = st.chat_input("Ask a question about NRB directives, rules, or limits (उदा: स्वःघोषणासम्बन्धी व्यवस्था)...")
+
+    if not active_query and pending_q:
+        active_query = pending_q
 
     if active_query:
         start_time = time.time()
@@ -560,6 +595,22 @@ def render_assistant_page():
             routed_badge = None
 
             if effective_doc is None:
+                target_scope_cat = pending_cat
+                if not target_scope_cat:
+                    if any(k in active_query.lower() for k in ["भुक्तानी प्रणाली निर्देशन", "भुक्तानी निर्देशन", "payment directive"]):
+                        target_scope_cat = "payment"
+                    elif any(k in active_query.lower() for k in ["सुपरीवेक्षण प्रतिवेदन", "वार्षिक प्रतिवेदन", "supervision report"]):
+                        target_scope_cat = "report"
+                    elif any(k in active_query.lower() for k in ["एकीकृत निर्देशन", "unified directive"]):
+                        target_scope_cat = "unified"
+
+                if target_scope_cat:
+                    cat_matched_docs = [d for d in doc_year_map.keys() if categorize_file(d) == target_scope_cat]
+                    if cat_matched_docs:
+                        effective_doc = cat_matched_docs if len(cat_matched_docs) > 1 else cat_matched_docs[0]
+                        routed_badge = f"🎯 Scoped to {CATEGORY_OPTIONS.get(target_scope_cat, target_scope_cat)}"
+
+            if effective_doc is None:
                 if len(matched_years) == 1:
                     target_yr = list(matched_years)[0]
                     matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
@@ -593,6 +644,24 @@ def render_assistant_page():
             # Cross-Lingual Dual-Pass Hybrid Retrieval
             translated_terms = expand_query_crosslingual(search_query, groq_client, cache=st.session_state.translation_cache)
             results = hybrid_search(search_query, live_table, embedding_model, translated_terms=translated_terms, selected_doc=effective_doc, top_k=8)
+
+            # Check if query is ambiguous or needs clarification across directives / sub-topics (0 Groq tokens)
+            is_ambiguous, disambig_info = detect_query_disambiguation(active_query, results, selected_cat=selected_cat)
+            if is_ambiguous and disambig_info:
+                status_placeholder.empty()
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": disambig_info["message"],
+                    "clarification_title": disambig_info.get("title", "स्पष्टीकरण आवश्यक"),
+                    "clarification_type": disambig_info.get("type", "disambiguation"),
+                    "clarification_options": disambig_info.get("options", []),
+                    "sources": [],
+                    "other_sources": [],
+                    "target_years": [],
+                    "target_doc": None,
+                    "latency": "Clarification detected (0 Groq tokens • Deterministic)"
+                })
+                st.rerun()
 
             # For comparative multi-year queries, interleave results across matched documents
             if len(matched_years) > 1:

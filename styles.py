@@ -39,7 +39,7 @@ DROPDOWN_BORDER_COLOR          = "#0F609E"   # Border for "All categories" & "Al
 DROPDOWN_TEXT_COLOR            = "#FFFFFF"   # Text inside the dropdown box
 DROPDOWN_ARROW_COLOR           = "#FFFFFF"   # Dropdown chevron arrow icon color (Zero border, zero outline)
 DROPDOWN_MENU_BACKGROUND       = "#094E83"   # Expanded dropdown menu background
-DROPDOWN_MENU_HOVER_COLOR      = "#094E83"   # Hover & selected item in dropdown menu
+DROPDOWN_MENU_HOVER_COLOR      = "#053B64"   # Hover & selected item in dropdown menu
 
 # 3. Sidebar Action Button ("Clear Chat History")
 CLEAR_CHAT_BUTTON_COLOR        = "#04954aff" # Clear chat history button background
@@ -857,6 +857,69 @@ RAW_CSS = """
         background: #ECFDF5 !important;
         color: #008740 !important;
         border-color: #059669 !important;
+    }
+
+    /* ==========================================================================
+       7.5 CLARIFICATION & DISAMBIGUATION OPTION BUTTONS
+       ========================================================================== */
+    .clarification-card {
+        background-color: #F8FBFE !important;
+        border: 1px solid #BAE0F8 !important;
+        border-left: 4px solid #1c75bb !important;
+        border-radius: 8px 12px 12px 8px !important;
+        padding: 12px 16px !important;
+        margin: 8px 0 12px 0 !important;
+    }
+
+    .clarification-card-header {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .clarification-card-title {
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        color: #1c75bb !important;
+    }
+
+    .clarification-card-body {
+        font-size: 0.92rem !important;
+        color: #374151 !important;
+        line-height: 1.5 !important;
+    }
+
+    div[class*="st-key-clarif_btn_"] button,
+    button[key*="clarif_btn_"] {
+        width: 100% !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        background-color: #FFFFFF !important;
+        color: #1c75bb !important;
+        border: 1.5px solid #BAE0F8 !important;
+        border-radius: 10px !important;
+        padding: 10px 16px !important;
+        font-size: 0.92rem !important;
+        font-weight: 500 !important;
+        margin: 4px 0 !important;
+        transition: all 0.18s ease-in-out !important;
+        box-shadow: 0 1px 3px rgba(28, 117, 187, 0.06) !important;
+    }
+
+    div[class*="st-key-clarif_btn_"] button:hover,
+    button[key*="clarif_btn_"]:hover {
+        background-color: #F0F7FD !important;
+        border-color: #1c75bb !important;
+        color: #094E83 !important;
+        box-shadow: 0 3px 10px rgba(28, 117, 187, 0.16) !important;
+        transform: translateX(3px) !important;
+    }
+
+    div[class*="st-key-clarif_btn_"] button:focus,
+    button[key*="clarif_btn_"]:focus {
+        border-color: #00a54f !important;
+        box-shadow: 0 0 0 2px rgba(0, 165, 79, 0.25) !important;
     }
 
     /* ==========================================================================

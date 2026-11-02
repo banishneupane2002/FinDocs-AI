@@ -26,7 +26,8 @@ from core.search import (
     build_where_filter,
     expand_query_crosslingual,
     hybrid_search,
-    extract_cited_sources
+    extract_cited_sources,
+    detect_query_disambiguation
 )
 from core.ingestion import (
     run_ingestion,
@@ -56,6 +57,7 @@ __all__ = [
     "expand_query_crosslingual",
     "hybrid_search",
     "extract_cited_sources",
+    "detect_query_disambiguation",
     "run_ingestion",
     "delete_document",
     "extract_sample_text_from_file",

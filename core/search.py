@@ -490,3 +490,212 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
 
     cited.sort(key=citation_sort_key)
     return cited
+
+
+# ---------------------------------------------------------------------------
+# 5. INTENT CLARIFICATION & QUERY DISAMBIGUATION (0 GROQ TOKENS, DETERMINISTIC)
+# ---------------------------------------------------------------------------
+
+SPECIFIC_ANCHORS = [
+    # Metrics, ratios, and limits
+    r'\bltv\b', r'loan\s*to\s*value', r'एलटीभी', r'धितो\s*अनुपात',
+    r'\bcrr\b', r'cash\s*reserve', r'अनिवार्य\s*नगद',
+    r'\bslr\b', r'statutory\s*liquidity', r'वैधानिक\s*तरलता',
+    r'\bturnover\b', r'वार्षिक\s*कारोबार', r'[०-९0-9]+\s*(?:करोड|लाख|हजार|crore|lakh|million)',
+    r'kathmandu\s*valley', r'काठमाडौ[ंँ]?\s*उपत्यका',
+    r'residential\s*home\s*loan', r'आवासीय\s*घर\s*कर्जा',
+    r'first\s*home\s*buyer', r'पहिलो\s*घर',
+    r'earthquake', r'भूकम्प',
+    r'working\s*capital', r'चालू\s*पुँजी',
+    r'non-banking\s*asset', r'\bnba\b.*?(?:बिक्री|वर्ष|limit|sale)', r'गैर-?बैंकिङ\s*सम्पत्ति',
+    r'letter\s*of\s*credit', r'\blc\b', r'प्रतितपत्र', r'trust\s*receipt', r'ट्रष्ट\s*रिसिप्ट',
+    r'cooling\s*period', r'कुलिङ\s*पिरियड', r'कालोसूची\s*(?:समय|अवधि|फुकुवा|criteria)',
+    r'debit\s*card', r'डेबिट\s*कार्ड', r'atms?', r'एटीएम',
+    r'base\s*rate', r'आधार\s*दर', r'spread\s*rate', r'स्प्रेड\s*दर',
+    r'stress\s*test', r'तनाव\s*परीक्षण', r'prompt\s*corrective', r'शीघ्र\s*सुधारात्मक',
+    # Specific Directive numbers and explicit category anchors
+    r'निर्देशन\s*नं\.?\s*[०-९0-9]+', r'\bdirective\s*[०-९0-9]+\b',
+    r'एकीकृत\s*निर्देशन', r'unified\s*directive',
+    r'भुक्तानी\s*(?:प्रणाली)?\s*निर्देशन', r'payment\s*directive',
+    r'सुपरीवेक्षण\s*प्रतिवेदन', r'supervision\s*report'
+]
+
+BROAD_TOPICS = {
+    "kyc": {
+        "pattern": r'(?:^|[\s,.\?!])(?:kyc|cdd|केवाईसी|ग्राहक\s*पहिचान)(?:$|[\s,.\?!])',
+        "title": "ग्राहक पहिचान (KYC / Customer Due Diligence)",
+        "message": "नेपाल राष्ट्र बैंकको निर्देशनमा **KYC (ग्राहक पहिचान)** सम्बन्धी व्यवस्था विभिन्न क्षेत्रमा फैलिएको छ। तपाईं विशेष गरी कुन विषयमा जानकारी चाहनुहुन्छ?",
+        "options": [
+            {"label": "📋 ग्राहक पहिचान (KYC) फाराम तथा आवश्यक कागजात", "query": "ग्राहक पहिचान KYC फाराम तथा खाता खोल्दा आवश्यक कागजातहरू के के हुन्?"},
+            {"label": "🛡️ उच्च जोखिम तथा PEPs (Politically Exposed Persons) सम्बन्धी व्यवस्था", "query": "उच्च जोखिम ग्राहक तथा PEPs पहिचान र कारोबार सम्बन्धी व्यवस्था के छ?"},
+            {"label": "⏰ ग्राहक विवरण आवधिक अद्यावधिक (Periodic Updating) गर्ने समयसीमा", "query": "ग्राहक पहिचान KYC विवरण कति समयमा अद्यावधिक (Update) गर्नुपर्छ?"},
+            {"label": "📱 विद्युतीय ग्राहक पहिचान (e-KYC / Video KYC)", "query": "विद्युतीय माध्यमबाट ग्राहक पहिचान e-KYC तथा Video KYC सम्बन्धी व्यवस्था"}
+        ]
+    },
+    "loan": {
+        "pattern": r'(?:^|[\s,.\?!])(?:loan|credit|कर्जा|सापट)(?:$|[\s,.\?!])',
+        "title": "कर्जा तथा सापट सम्बन्धी व्यवस्था (Loans & Advances)",
+        "message": "नेपाल राष्ट्र बैंकको **कर्जा (Loan)** सम्बन्धी निर्देशनहरू विभिन्न शीर्षकमा विभाजित छन्। तपाईं कुन कर्जाको विषयमा सोध्न चाहनुहुन्छ?",
+        "options": [
+            {"label": "🏠 व्यक्तिगत आवासीय घर कर्जा (Personal Residential Loan) सीमा र LTV", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?"},
+            {"label": "💼 चालू पुँजी कर्जा (Working Capital Loan) सीमा र मार्गदर्शन", "query": "चालू पुँजी कर्जा मार्गदर्शनअनुसार कर्जा सीमा कसरी निर्धारण हुन्छ?"},
+            {"label": "🚗 सवारी साधन कर्जा (Auto / Vehicle Loan) LTV सीमा", "query": "सवारी साधन खरिद कर्जाको LTV सीमा के कति छ?"},
+            {"label": "📊 कर्जा नोक्सानी व्यवस्था तथा वर्गीकरण (NPL & Loan Loss Provision)", "query": "कर्जा वर्गीकरण र कर्जा नोक्सानी व्यवस्था Loan Loss Provision दरहरू के के हुन्?"}
+        ]
+    }
+}
+
+UNIFIED_DIRECTIVE_CHAPTERS = {
+    1: {"name": "निर्देशन नं. १: पुँजी कोष (Capital Adequacy Framework)", "keywords": ["पुँजी कोष", "capital adequacy", "risk weight", "जोखिम तौल"]},
+    2: {"name": "निर्देशन नं. २: कर्जा वर्गीकरण तथा नोक्सानी (Loan Classification & NPL)", "keywords": ["कर्जा वर्गीकरण", "npl", "खराब कर्जा", "loan loss"]},
+    3: {"name": "निर्देशन नं. ३: एकल ग्राहक कर्जा सीमा तथा सञ्चालक कर्जा (Single Obligor & Credit Limits)", "keywords": ["एकल ग्राहक", "single obligor", "सञ्चालक कर्जा"]},
+    5: {"name": "निर्देशन नं. ५: जोखिम व्यवस्थापन मार्गदर्शन (Risk Management)", "keywords": ["जोखिम व्यवस्थापन", "risk management"]},
+    6: {"name": "निर्देशन नं. ६: संस्थागत सुशासन तथा सञ्चालक योग्यता (Corporate Governance & Directors)", "keywords": ["संस्थागत सुशासन", "corporate governance", "सञ्चालकको योग्यता"]},
+    7: {"name": "निर्देशन नं. ७: वैधानिक तरलता तथा अनिवार्य नगद (SLR & CRR)", "keywords": ["वैधानिक तरलता", "slr", "अनिवार्य नगद", "crr"]},
+    10: {"name": "निर्देशन नं. १०: गैर-बैंकिङ सम्पत्ति तथा शाखा (NBA & Branch Operations)", "keywords": ["गैर-बैंकिङ सम्पत्ति", "nba", "शाखा कार्यालय"]},
+    11: {"name": "निर्देशन नं. ११: सञ्चालकको भत्ता तथा सुविधा (Board Remuneration & Facilities)", "keywords": ["बैठक भत्ता", "meeting fee", "सञ्चालकको भत्ता"]},
+    12: {"name": "निर्देशन नं. १२: कर्जा सूचना तथा कालोसूची (Credit Information & Blacklisting)", "keywords": ["कर्जा सूचना", "कालोसूची", "blacklist"]},
+    15: {"name": "निर्देशन नं. १५: ब्याजदर तथा स्प्रेड दर (Interest Rates & Base Rate)", "keywords": ["ब्याजदर", "interest rate", "आधार दर"]},
+    19: {"name": "निर्देशन नं. १९: सम्पत्ति शुद्धीकरण तथा ग्राहक पहिचान (AML/CFT & KYC)", "keywords": ["सम्पत्ति शुद्धीकरण", "aml", "kyc", "ग्राहक पहिचान"]}
+}
+
+VERIFIED_SUGGESTION_PROMPTS = [
+    {"label": "🏠 व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा कति हो?"},
+    {"label": "💼 चालू पुँजी कर्जा (Working Capital Loan) सीमा २ करोडभन्दा माथि के छ?", "query": "Working capital loan limit for annual turnover above 2 crore?"},
+    {"label": "📊 Finance Companies को लागि Minimum CRR र SLR कति छ?", "query": "Minimum CRR and SLR requirement for finance companies?"},
+    {"label": "🏢 गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?", "query": "गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?"},
+    {"label": "📜 वित्त कम्पनीले अन्तर्राष्ट्रिय प्रतितपत्र (Import LC) जारी गर्न पाउँछ?", "query": "Can finance companies issue international import Letters of Credit (LC)?"},
+    {"label": "📱 वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर कारोबार सीमा के छ?", "query": "वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर कारोबार सीमा के छ?"}
+]
+
+UNCLEAR_QUERY_PATTERNS = [
+    r'^(?:hi|hello|hey|namaste|नमस्ते|नमस्कार|प्रणाम)(?:\s|$|[?,.!])',
+    r'^(?:what|tell me|explain|how|why|can you|कस्तो|के|किन|कसरी|भन्नुस्|जानकारी)\s*[\?\.]*$',
+    r'^(?:rule|rules|guideline|guidelines|policy|policies|limit|limits|provision|provisions|नियम|नीति|निर्देशन|व्यवस्था|सीमा)\s*[\?\.]*$'
+]
+
+def is_specific_query(query: str) -> bool:
+    """Checks if the query contains concrete regulatory anchors ensuring safe fast-tracking."""
+    q_lower = query.lower()
+    for pat in SPECIFIC_ANCHORS:
+        if re.search(pat, q_lower, re.IGNORECASE):
+            return True
+    return False
+
+def extract_matched_chapters_from_chunks(chunks: list) -> list:
+    """Detects which Unified Directive chapters are represented in retrieved chunks."""
+    matched = []
+    seen = set()
+    nep_map = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}
+    for c in chunks:
+        text = c.get('text', '')
+        m = re.search(r'निर्देशन\s*नं\.?\s*([०-९0-9]+)', text)
+        if m:
+            num_str = "".join(nep_map.get(ch, ch) for ch in m.group(1))
+            try:
+                num = int(num_str)
+                if num in UNIFIED_DIRECTIVE_CHAPTERS and num not in seen:
+                    seen.add(num)
+                    matched.append((num, UNIFIED_DIRECTIVE_CHAPTERS[num]["name"]))
+            except Exception:
+                pass
+    return matched
+
+def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat: str = "all") -> tuple[bool, dict | None]:
+    """
+    Intelligently determines whether a query is broad/ambiguous across directives or sub-topics.
+    Complete 4-Step Decision Tree:
+    1. Specificity Fast-Track (Safe, zero regression)
+    2. Low-Confidence Suggestion (Did you mean?)
+    3. Broad Topic & Cross-Category Ambiguity (Unified vs Payment vs Reports)
+    4. Intra-Document Chapter Disambiguation (Single Document / Category multi-chapter match)
+    Runs 100% locally in Python (0 Groq tokens, < 1ms latency).
+    """
+    clean_q = query.strip()
+    words = clean_q.split()
+
+    # Step 1: Specificity Fast-Track (Never block clear, well-formed queries)
+    if is_specific_query(clean_q):
+        return False, None
+
+    # Step 2: Low-Confidence / Unclear Question Check (Empty results, greeting, or fragmented query)
+    is_unclear = any(re.search(pat, clean_q, re.IGNORECASE) for pat in UNCLEAR_QUERY_PATTERNS)
+    if not retrieved_chunks or len(clean_q) < 3 or is_unclear:
+        return True, {
+            "type": "suggestion",
+            "title": "स्पष्टता आवश्यक (Suggested Prompts)",
+            "message": "तपाईंको प्रश्नअनुसार स्पष्ट नियामकीय व्यवस्था पहिचान हुन सकेन। के तपाईं निम्न प्रमुख नियामकीय विषयबारे जानकारी खोज्दै हुनुहुन्छ?",
+            "options": VERIFIED_SUGGESTION_PROMPTS[:4]
+        }
+
+    # Step 3A: Known Broad Topic patterns (e.g. user types just 'kyc' or 'loan')
+    q_lower = clean_q.lower()
+    for topic_key, topic_data in BROAD_TOPICS.items():
+        if re.search(topic_data["pattern"], q_lower) and len(words) <= 4:
+            return True, {
+                "type": "broad_topic",
+                "title": topic_data["title"],
+                "message": topic_data["message"],
+                "options": topic_data["options"]
+            }
+
+    # Step 3B: Cross-Category Ambiguity (when "All Categories" is selected and matches span multiple categories)
+    if selected_cat == "all" and retrieved_chunks:
+        from core.ingestion import categorize_file
+        top_slice = retrieved_chunks[:6]
+        category_counts = {}
+        for c in top_slice:
+            src = c.get('source', '')
+            cat = categorize_file(src)
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+
+        active_cats = [cat for cat, cnt in category_counts.items() if cnt >= 2 and cat in ('unified', 'payment', 'report')]
+        if len(active_cats) >= 2 and len(words) <= 6:
+            cat_options = []
+            if 'unified' in active_cats:
+                cat_options.append({
+                    "label": "🏦 एकीकृत निर्देशन (Unified Directives - बैंकिङ तथा कर्जा कारोबार)",
+                    "category": "unified",
+                    "query": f"{clean_q} (एकीकृत निर्देशन)"
+                })
+            if 'payment' in active_cats:
+                cat_options.append({
+                    "label": "📱 भुक्तानी प्रणाली निर्देशन (Payment Directives - वालेट, QR तथा कार्ड)",
+                    "category": "payment",
+                    "query": f"{clean_q} (भुक्तानी प्रणाली निर्देशन)"
+                })
+            if 'report' in active_cats:
+                cat_options.append({
+                    "label": "📊 वार्षिक / सुपरीवेक्षण प्रतिवेदन (Supervision & Annual Reports)",
+                    "category": "report",
+                    "query": f"{clean_q} (सुपरीवेक्षण प्रतिवेदन)"
+                })
+
+            if len(cat_options) >= 2:
+                return True, {
+                    "type": "cross_category",
+                    "title": "निर्देशन क्षेत्र छनोट (Select Regulatory Scope)",
+                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका निम्न फरक-फरक निर्देशनहरू अन्तर्गत पर्दछ। तपाईं कुन क्षेत्र सम्बन्धी नियम हेर्न चाहनुहुन्छ?",
+                    "options": cat_options
+                }
+
+    # Step 4: Intra-Document Chapter Disambiguation (Single Document / Category multi-chapter match)
+    # Even if all matches come from 1 category, if it's a short query and matches 2+ chapters:
+    if len(words) <= 4:
+        top_slice = retrieved_chunks[:6]
+        matched_chapters = extract_matched_chapters_from_chunks(top_slice)
+        if len(matched_chapters) >= 2:
+            chapter_options = []
+            for num, name in matched_chapters[:4]:
+                chapter_options.append({
+                    "label": f"📖 {name}",
+                    "query": f"{clean_q} निर्देशन नं. {num}"
+                })
+            return True, {
+                "type": "intra_chapter",
+                "title": "निर्देशन अध्याय छनोट (Select Specific Chapter)",
+                "message": f"एकीकृत निर्देशनभित्र '**{clean_q}**' सम्बन्धी व्यवस्था निम्न फरक-फरक शीर्षकहरूमा उल्लेख छ। तपाईं कुन व्यवस्था हेर्न चाहनुहुन्छ?",
+                "options": chapter_options
+            }
+
+    return False, None
