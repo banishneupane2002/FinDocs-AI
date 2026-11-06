@@ -436,7 +436,7 @@ def render_assistant_page():
             label_visibility="visible"
         )
 
-        st.caption("AI auto-detects the right directive and fiscal year from your question.")
+        st.caption("AI auto-detects the directive and fiscal year from your question if selected 'Auto'.")
 
         if selected_cat == "all" and selected_doc_choice.startswith("All documents"):
             selected_doc = "All Documents"
