@@ -513,6 +513,12 @@ SPECIFIC_ANCHORS = [
     r'debit\s*card', r'डेबिट\s*कार्ड', r'atms?', r'एटीएम',
     r'base\s*rate', r'आधार\s*दर', r'spread\s*rate', r'स्प्रेड\s*दर',
     r'stress\s*test', r'तनाव\s*परीक्षण', r'prompt\s*corrective', r'शीघ्र\s*सुधारात्मक',
+    # Specific compliance, multi-directive, and ratio anchors
+    r'single\s*obligor', r'\bsol\b', r'एकल\s*ग्राहक',
+    r'penal\s*interest', r'पेनाल\s*ब्याज', r'हर्जाना', r'fund\s*diversion', r'दुरुपयोग',
+    r'microfinance', r'लघुवित्त', r'विपन्न\s*वर्ग', r"['\"]?d['\"]?\s*class", r'घ\s*वर्ग',
+    r'tier\s*2', r'पूरक\s*पुँजी', r'supplementary\s*capital', r'watchlist', r'सूक्ष्म\s*निगरानी',
+    r'ceo', r'प्रमुख\s*कार्यकारी', r'fixed\s*deposit', r'मुद्दती\s*(?:रसिद|निक्षेप)', r'premature',
     # Specific Directive numbers and explicit category anchors
     r'निर्देशन\s*नं\.?\s*[०-९0-9]+', r'\bdirective\s*[०-९0-9]+\b',
     r'एकीकृत\s*निर्देशन', r'unified\s*directive',

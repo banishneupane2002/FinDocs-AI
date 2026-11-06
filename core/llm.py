@@ -28,6 +28,10 @@ RULES:
     - State the overall total figure clearly upfront.
     - Provide the breakdown by Class A (Commercial Banks), Class B (Development Banks), and Class C (Finance Companies) as printed in the document.
     - Present the exact printed numbers cleanly without second-guessing or writing rambling paragraphs of speculation.
+12. Multi-Directive Dialectics & Statutory Exceptions:
+    - General Prohibition vs. Statutory Exception: If a general provision prohibits an action (e.g. Directive 8 prohibits investing in other BFI shares, Directive 6 prohibits CEO/Director loans, Directive 15 prohibits premature FD liquidation, or Directive 15 caps penal interest at 2%), ALWAYS verify if another directive or sub-clause provides a specific carve-out, exception, or statutory alternative (e.g. Directive 17 allows investing in 'D' class microfinance shares to meet Deprived Sector Lending targets; Directive 6 allows CEO loans against own Fixed Deposits, Govt securities, Gold/Silver, or employee bylaws; Directive 15/2 permits higher penal interest if funds are diverted/misused; Directive 15 allows up to a 90% loan against the FD receipt instead of premature liquidation). State BOTH the general rule AND the specific exception/alternative clearly.
+    - Multi-Directive Penalties: If a regulatory violation incurs sanctions across multiple directives (e.g. loan exceeding Single Obligor Limit triggers 100% additional loan loss provisioning under Directive 2 AND a 10% credit risk RWE surcharge under Directive 1), present ALL applicable statutory penalties across both directives.
+    - Capital & Provisioning Distinctions: Strictly distinguish between "General Provisions" (Pass/Performing loans eligible for Tier 2 Capital up to 1.25% of RWE) and "Specific Provisions" (Watchlist 5%, Substandard, Doubtful, Loss loans) which can NEVER be included in Tier 2 Capital.
 
 Context from files:
 {context_text}"""
