@@ -523,7 +523,10 @@ SPECIFIC_ANCHORS = [
     r'निर्देशन\s*नं\.?\s*[०-९0-9]+', r'\bdirective\s*[०-९0-9]+\b',
     r'एकीकृत\s*निर्देशन', r'unified\s*directive',
     r'भुक्तानी\s*(?:प्रणाली)?\s*निर्देशन', r'payment\s*directive',
-    r'सुपरीवेक्षण\s*प्रतिवेदन', r'supervision\s*report'
+    r'सुपरीवेक्षण\s*प्रतिवेदन', r'supervision\s*report',
+    # Specific Calendar Dates (Bikram Sambat & Gregorian, both English & Devanagari numerals)
+    r'\b(?:20[5-9][0-9]|२०[५-९][०-९])[/-](?:[0-9]{1,2}|[०-९]{1,2})[/-](?:[0-9]{1,2}|[०-९]{1,2})\b',
+    r'\b(?:20[5-9][0-9]|२०[५-९][०-९])\s+(?:बैशाख|वैशाख|जेठ|ज्येष्ठ|असार|आषाढ|साउन|श्रावण|भदौ|भाद्र|असोज|आश्विन|कात्तिक|कार्तिक|मंसिर|मङ्सिर|पुस|पौष|माघ|फागुन|फाल्गुन|चैत|चैत्र|baisakh|jestha|jeth|ashad|shrawan|bhadra|asoj|kartik|mangsir|poush|magh|falgun|chaitra)\s+(?:[0-9]{1,2}|[०-९]{1,2})\b'
 ]
 
 BROAD_TOPICS = {

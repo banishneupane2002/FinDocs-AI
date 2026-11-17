@@ -8,6 +8,35 @@ PREETI_NUM_MAP = {'!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&
 NEP_TO_ARABIC = {'०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9'}
 ARABIC_TO_NEP = {v: k for k, v in NEP_TO_ARABIC.items()}
 
+NEPALI_MONTHS_MAP = {
+    'बैशाख': 1, 'वैशाख': 1, 'baisakh': 1, 'baishakh': 1,
+    'जेठ': 2, 'ज्येष्ठ': 2, 'jestha': 2, 'jeth': 2,
+    'असार': 3, 'आषाढ': 3, 'ashad': 3, 'asar': 3,
+    'साउन': 4, 'श्रावण': 4, 'shrawan': 4, 'saun': 4,
+    'भदौ': 5, 'भाद्र': 5, 'bhadra': 5, 'bhadau': 5,
+    'असोज': 6, 'आश्विन': 6, 'asoj': 6, 'ashwin': 6,
+    'कात्तिक': 7, 'कार्तिक': 7, 'kartik': 7,
+    'मंसिर': 8, 'मङ्सिर': 8, 'मार्ग': 8, 'mangsir': 8,
+    'पुस': 9, 'पौष': 9, 'poush': 9, 'pus': 9,
+    'माघ': 10, 'magh': 10,
+    'फागुन': 11, 'फाल्गुन': 11, 'falgun': 11, 'fagun': 11,
+    'चैत': 12, 'चैत्र': 12, 'chaitra': 12, 'chait': 12
+}
+
+def parse_nepali_date(query: str):
+    """Parses Bikram Sambat dates in numeric YYYY/MM/DD or textual YYYY Month DD format."""
+    q = query.lower()
+    norm_q = "".join(NEP_TO_ARABIC.get(c, c) for c in q)
+    m1 = re.search(r'\b(20[5-9][0-9])[/-](0?[1-9]|1[0-2])[/-](0?[1-9]|[12][0-9]|3[0-2])\b', norm_q)
+    if m1:
+        return int(m1.group(1)), int(m1.group(2)), int(m1.group(3))
+    for mname, mnum in NEPALI_MONTHS_MAP.items():
+        pat = rf'\b(20[5-9][0-9])\s+{re.escape(mname)}\s+(0?[1-9]|[12][0-9]|3[0-2])\b'
+        m2 = re.search(pat, norm_q)
+        if m2:
+            return int(m2.group(1)), mnum, int(m2.group(2))
+    return None
+
 def detect_document_years(filename: str, sample_text: str = "") -> set:
     """
     Detects all official fiscal or calendar years covered by a document.
@@ -17,7 +46,7 @@ def detect_document_years(filename: str, sample_text: str = "") -> set:
     years = set()
 
     # 1. From Filename
-    for m in re.finditer(r'(20[78][0-9]|20[12][0-9])', filename):
+    for m in re.finditer(r'(20[5-9][0-9]|20[0-4][0-9])', filename):
         years.add(int(m.group(1)))
 
     # 2. Preeti Cover Shift Glyphs (Anchor: follows 'निर्देशन' or cover title)
@@ -28,7 +57,7 @@ def detect_document_years(filename: str, sample_text: str = "") -> set:
         unit = PREETI_NUM_MAP.get(unit_code, NEP_TO_ARABIC.get(unit_code, unit_code))
         try:
             val = int(f"20{decade}{unit}")
-            if 2070 <= val <= 2085:
+            if 2050 <= val <= 2100:
                 years.add(val)
         except Exception:
             pass
@@ -37,12 +66,12 @@ def detect_document_years(filename: str, sample_text: str = "") -> set:
     for m in re.finditer(r'२०([७८][०-९])(?:/([०-९]{2}))?', sample_text):
         decade_unit = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(1))
         y1 = int(f"20{decade_unit}")
-        if 2070 <= y1 <= 2085:
+        if 2050 <= y1 <= 2100:
             years.add(y1)
         if m.group(2):
             unit2 = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(2))
             y2 = int(f"20{unit2}")
-            if 2070 <= y2 <= 2085:
+            if 2050 <= y2 <= 2100:
                 years.add(y2)
 
     # 4. Multi-year English ranges (e.g. 2023/24, 2022-23)
@@ -63,7 +92,7 @@ def detect_document_years(filename: str, sample_text: str = "") -> set:
         arabic = "".join(NEP_TO_ARABIC.get(c, c) for c in raw)
         try:
             val = int(arabic)
-            if 2070 <= val <= 2085 or 2010 <= val <= 2030:
+            if 2050 <= val <= 2100 or 1990 <= val <= 2050:
                 years.add(val)
         except Exception:
             pass
@@ -81,13 +110,27 @@ def extract_query_years(query: str, available_years: set = None) -> set:
     if not query:
         return set()
 
-    if available_years is None:
-        available_years = {2079, 2080, 2081, 2082, 2023, 2024, 2025}
+    import os
+    if available_years is None or not available_years:
+        available_years = set()
+        if os.path.exists("File_System"):
+            for f in os.listdir("File_System"):
+                for m in re.finditer(r'(20[5-9][0-9]|20[0-4][0-9])', f):
+                    available_years.add(int(m.group(1)))
+        if not available_years:
+            available_years = {int(m.group(1)) for m in re.finditer(r'\b(20[5-9][0-9]|20[0-4][0-9])\b', query)}
 
     found_years = set()
 
+    # 0. Check Specific Nepali Date Formats (e.g. 2082/2/12, 2082-02-12, or 2082 jestha 12)
+    dt = parse_nepali_date(query)
+    if dt:
+        yr = dt[0]
+        if yr in available_years:
+            found_years.add(yr)
+
     # 1. Check Devanagari year ranges (e.g. २०७९/८०, २०८०, or Gregorian २०२४, २०२५)
-    dev_ranges = re.finditer(r'२०([०-९]{2})(?:/([०-९]{2}))?', query)
+    dev_ranges = re.finditer(r'२०([०-९]{2})(?:/([०-९]{2}))?(?![/-][०-९])', query)
     for m in dev_ranges:
         decade_unit = "".join(NEP_TO_ARABIC.get(c, c) for c in m.group(1))
         y1 = int(f"20{decade_unit}")
@@ -104,7 +147,7 @@ def extract_query_years(query: str, available_years: set = None) -> set:
                 found_years.add(y1)
 
     # 2. Check English year ranges (e.g. 2079/80, 2023/24, 2024/25)
-    en_ranges = re.finditer(r'\b(20[78][0-9]|20[12][0-9])[/-]([0-9]{2})\b', query)
+    en_ranges = re.finditer(r'\b(20[5-9][0-9]|20[0-4][0-9])[/-]([0-9]{2})\b(?![/-]\d)', query)
     for m in en_ranges:
         y1 = int(m.group(1))
         y2 = int(str(y1)[:2] + m.group(2))
@@ -115,7 +158,7 @@ def extract_query_years(query: str, available_years: set = None) -> set:
             found_years.add(y1)
 
     # 3. Check standalone English 4-digit years
-    standalone_candidates = re.finditer(r'\b(20[78][0-9]|20[12][0-9])\b', query)
+    standalone_candidates = re.finditer(r'\b(20[5-9][0-9]|20[0-4][0-9])\b', query)
     for m in standalone_candidates:
         start_idx, end_idx = m.start(), m.end()
 
@@ -146,14 +189,17 @@ def clean_query_for_search(query: str, matched_years: set) -> str:
     Leaves amounts, random numbers, and unknown numbers completely untouched.
     """
     if not matched_years or len(matched_years) > 1:
-        # If no year matched or multiple years matched (comparative query), do not strip
+        return query
+
+    # If the query contains a specific date (e.g. 2082/2/12 or 2082 jestha 12), preserve the date intact!
+    if re.search(r'\b20[5-9][0-9][/-]\d{1,2}[/-]\d{1,2}\b', query) or any(m in query.lower() for m in NEPALI_MONTHS_MAP):
         return query
 
     yr = list(matched_years)[0]
     yr_short = str(yr)[2:]
     cleaned = re.sub(
         rf'\b(?:in(?:\s+the)?|of(?:\s+the)?|from|को|अनुसार|बमोजिम)?\s*(?:(?:20\d{{2}}|२०[०-९]{{2}})[/-])?(?:{yr}|{yr_short})\s*(?:directive|circular|report|supervision\s*report|सुपरीवेक्षण\s*प्रतिवेदन|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
-        '',
+        ' ',
         query,
         flags=re.IGNORECASE
     )
@@ -161,11 +207,12 @@ def clean_query_for_search(query: str, matched_years: set) -> str:
     dev_yr_short = "".join(ARABIC_TO_NEP.get(c, c) for c in yr_short)
     cleaned = re.sub(
         rf'\b(?:in(?:\s+the)?|of(?:\s+the)?|from|को|अनुसार|बमोजिम)?\s*(?:(?:20\d{{2}}|२०[०-९]{{2}})[/-])?(?:{dev_yr_full}|{dev_yr_short})\s*(?:directive|circular|report|supervision\s*report|सुपरीवेक्षण\s*प्रतिवेदन|निर्देशन|परिपत्र|प्रतिवेदन)?\b',
-        '',
+        ' ',
         cleaned,
         flags=re.IGNORECASE
     )
-    return cleaned.strip() or query
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    return cleaned or query
 
 def prioritize_matching_document(target_yr: int, matching_docs: list) -> str:
     """
