@@ -39,6 +39,7 @@ from core import (
     delete_document,
     get_file_metadata,
     categorize_file,
+    get_unified_directive_for_page,
     MODELS_TO_TRY
 )
 
@@ -702,7 +703,9 @@ def render_assistant_page():
                     full_page_text = decode_preeti_text(full_page_text)
                     full_page_map[sp] = full_page_text
 
-                    full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}]:\n{full_page_text}\n")
+                    dir_info = get_unified_directive_for_page(item['page']) if 'unified' in item['source'].lower() else None
+                    dir_tag = f" | {dir_info[1]}" if dir_info else ""
+                    full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}{dir_tag}]:\n{full_page_text}\n")
                     total_chars += len(full_page_text)
                     if len(seen_pages) >= 5 or total_chars > 12000:
                         break

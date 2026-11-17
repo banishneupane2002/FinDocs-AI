@@ -15,7 +15,8 @@ from core.routing import (
     extract_query_years,
     clean_query_for_search,
     prioritize_matching_document,
-    build_document_year_map
+    build_document_year_map,
+    get_unified_directive_for_page
 )
 from core.llm import (
     MODELS_TO_TRY,

@@ -74,6 +74,41 @@ UNIFIED_DIRECTIVE_PAGE_RANGES_2082 = {
     21: (184, 198),  # Miscellaneous
 }
 
+UNIFIED_DIRECTIVE_NAMES = {
+    1: "निर्देशन नं. १: पुँजी कोष (Capital Adequacy)",
+    2: "निर्देशन नं. २: कर्जा वर्गीकरण तथा नोक्सानी व्यवस्था (Loan Classification & Provisioning)",
+    3: "निर्देशन नं. ३: एकल ग्राहक कर्जा सीमा तथा सञ्चालक कर्जा (Single Obligor Limit)",
+    4: "निर्देशन नं. ४: लेखा नीति तथा वित्तीय विवरण (Accounting Policies)",
+    5: "निर्देशन नं. ५: जोखिम व्यवस्थापन मार्गदर्शन (Risk Management)",
+    6: "निर्देशन नं. ६: संस्थागत सुशासन तथा सञ्चालक योग्यता (Corporate Governance)",
+    7: "निर्देशन नं. ७: सुपरिवेक्षकीय निर्देशन लागू गर्ने कार्यतालिका",
+    8: "निर्देशन नं. ८: लगानी तथा सहायक कम्पनी सम्बन्धी व्यवस्था",
+    9: "निर्देशन नं. ९: तथ्याङ्क विवरण सम्बन्धी व्यवस्था",
+    10: "निर्देशन नं. १०: गैर-बैंकिङ सम्पत्ति तथा शाखा (NBA & Branches)",
+    11: "निर्देशन नं. ११: सह-वित्तीयकरण कर्जा सम्बन्धी व्यवस्था",
+    12: "निर्देशन नं. १२: कर्जा सूचना तथा कालोसूची सम्बन्धी व्यवस्था",
+    13: "निर्देशन नं. १३: अनिवार्य मौज्दात तथा वैधानिक तरलता (CRR & SLR)",
+    14: "निर्देशन नं. १४: शाखा कार्यालय खोल्ने सम्बन्धी व्यवस्था",
+    15: "निर्देशन नं. १५: ब्याजदर सम्बन्धी व्यवस्था (Interest Rates & Fees)",
+    16: "निर्देशन नं. १६: वित्तीय स्रोत संकलन तथा निक्षेप",
+    17: "निर्देशन नं. १७: विपन्न वर्ग तथा तोकिएका क्षेत्रमा कर्जा प्रवाह",
+    18: "निर्देशन नं. १८: स्तरोन्नति, कार्यक्षेत्र विस्तार तथा गाभ्ने/गाभिने",
+    19: "निर्देशन नं. १९: सम्पत्ति शुद्धीकरण तथा आतंकवादी कार्यमा वित्तीय लगानी निवारण (AML/CFT)",
+    20: "निर्देशन नं. २०: वित्तीय ग्राहक संरक्षण तथा वित्तीय साक्षरता",
+    21: "निर्देशन नं. २१: विविध व्यवस्था",
+}
+
+def get_unified_directive_for_page(page: int) -> tuple[int, str] | None:
+    """Returns the official Directive number and name for a given PDF page in Unified Directives."""
+    try:
+        p_val = int(page)
+    except Exception:
+        return None
+    for d_num, (p_start, p_end) in UNIFIED_DIRECTIVE_PAGE_RANGES_2082.items():
+        if p_start <= p_val <= p_end:
+            return d_num, UNIFIED_DIRECTIVE_NAMES.get(d_num, f"निर्देशन नं. {d_num}")
+    return None
+
 def detect_document_years(filename: str, sample_text: str = "") -> set:
     """
     Detects all official fiscal or calendar years covered by a document.
