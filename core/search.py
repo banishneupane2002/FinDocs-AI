@@ -555,17 +555,27 @@ BROAD_TOPICS = {
 }
 
 UNIFIED_DIRECTIVE_CHAPTERS = {
-    1: {"name": "निर्देशन नं. १: पुँजी कोष (Capital Adequacy Framework)", "keywords": ["पुँजी कोष", "capital adequacy", "risk weight", "जोखिम तौल"]},
-    2: {"name": "निर्देशन नं. २: कर्जा वर्गीकरण तथा नोक्सानी (Loan Classification & NPL)", "keywords": ["कर्जा वर्गीकरण", "npl", "खराब कर्जा", "loan loss"]},
-    3: {"name": "निर्देशन नं. ३: एकल ग्राहक कर्जा सीमा तथा सञ्चालक कर्जा (Single Obligor & Credit Limits)", "keywords": ["एकल ग्राहक", "single obligor", "सञ्चालक कर्जा"]},
-    5: {"name": "निर्देशन नं. ५: जोखिम व्यवस्थापन मार्गदर्शन (Risk Management)", "keywords": ["जोखिम व्यवस्थापन", "risk management"]},
-    6: {"name": "निर्देशन नं. ६: संस्थागत सुशासन तथा सञ्चालक योग्यता (Corporate Governance & Directors)", "keywords": ["संस्थागत सुशासन", "corporate governance", "सञ्चालकको योग्यता"]},
-    7: {"name": "निर्देशन नं. ७: वैधानिक तरलता तथा अनिवार्य नगद (SLR & CRR)", "keywords": ["वैधानिक तरलता", "slr", "अनिवार्य नगद", "crr"]},
-    10: {"name": "निर्देशन नं. १०: गैर-बैंकिङ सम्पत्ति तथा शाखा (NBA & Branch Operations)", "keywords": ["गैर-बैंकिङ सम्पत्ति", "nba", "शाखा कार्यालय"]},
-    11: {"name": "निर्देशन नं. ११: सञ्चालकको भत्ता तथा सुविधा (Board Remuneration & Facilities)", "keywords": ["बैठक भत्ता", "meeting fee", "सञ्चालकको भत्ता"]},
-    12: {"name": "निर्देशन नं. १२: कर्जा सूचना तथा कालोसूची (Credit Information & Blacklisting)", "keywords": ["कर्जा सूचना", "कालोसूची", "blacklist"]},
-    15: {"name": "निर्देशन नं. १५: ब्याजदर तथा स्प्रेड दर (Interest Rates & Base Rate)", "keywords": ["ब्याजदर", "interest rate", "आधार दर"]},
-    19: {"name": "निर्देशन नं. १९: सम्पत्ति शुद्धीकरण तथा ग्राहक पहिचान (AML/CFT & KYC)", "keywords": ["सम्पत्ति शुद्धीकरण", "aml", "kyc", "ग्राहक पहिचान"]}
+    1: {"name": "पुँजी कोष तथा जोखिम भारित सम्पत्ति (Capital Adequacy - CAR)", "short": "पुँजी कोष (CAR)", "keywords": ["पुँजी कोष", "capital adequacy", "risk weight", "जोखिम भारित", "tier 1", "tier 2", "प्राथमिक पुँजी", "पूरक पुँजी", "car"]},
+    2: {"name": "कर्जा वर्गीकरण तथा नोक्सानी व्यवस्था (Loan Classification & Provisioning)", "short": "कर्जा वर्गीकरण तथा नोक्सानी", "keywords": ["कर्जा वर्गीकरण", "npl", "खराब कर्जा", "loan loss", "नोक्सानी व्यवस्था", "सूक्ष्म निगरानी", "भाखा नाघेको", "पेनाल ब्याज", "penal interest", "पुनरतालिकीकरण"]},
+    3: {"name": "एकल ग्राहक कर्जा सीमा तथा सञ्चालक कर्जा (Single Obligor Limit)", "short": "एकल ग्राहक कर्जा सीमा (SOL)", "keywords": ["एकल ग्राहक", "single obligor", "sol", "सञ्चालक कर्जा", "पदाधिकारी कर्जा", "कन्सोर्टियम", "सह-वित्तीयकरण"]},
+    4: {"name": "लेखा नीति तथा वित्तीय विवरण (Accounting Policies & Reporting)", "short": "लेखा नीति तथा वित्तीय विवरण", "keywords": ["लेखा नीति", "accounting", "nfrs", "वित्तीय विवरण", "नाफा नोक्सान", "वासलात"]},
+    5: {"name": "जोखिम व्यवस्थापन मार्गदर्शन (Risk Management)", "short": "जोखिम व्यवस्थापन मार्गदर्शन", "keywords": ["जोखिम व्यवस्थापन", "risk management", "credit risk", "market risk", "operational risk", "तरलता जोखिम"]},
+    6: {"name": "संस्थागत सुशासन तथा सञ्चालक योग्यता (Corporate Governance)", "short": "संस्थागत सुशासन तथा योग्यता", "keywords": ["संस्थागत सुशासन", "corporate governance", "सञ्चालकको योग्यता", "कार्यकारी प्रमुख", "ceo", "स्वतन्त्र सञ्चालक", "सञ्चालक समिति"]},
+    7: {"name": "वैधानिक तरलता तथा अनिवार्य नगद (SLR & CRR)", "short": "वैधानिक तरलता (SLR) र अनिवार्य नगद (CRR)", "keywords": ["वैधानिक तरलता", "slr", "अनिवार्य नगद", "crr", "तरलता अनुपात", "liquidity"]},
+    8: {"name": "सेयर तथा धितोपत्र लगानी (Investment in Shares & Securities)", "short": "सेयर तथा धितोपत्र लगानी सीमा", "keywords": ["सेयर लगानी", "धितोपत्र", "securities", "शेयर", "shares", "डिबेन्चर", "म्युचुअल फण्ड", "लगानी सीमा"]},
+    9: {"name": "तथ्याङ्क तथा वित्तीय विवरण पेश गर्ने (Statistical Returns)", "short": "तथ्याङ्क तथा विवरण पेश गर्ने", "keywords": ["तथ्याङ्क", "विवरण पेश", "reporting", "returns", "राष्ट्र बैंकमा पठाउने"]},
+    10: {"name": "गैर-बैंकिङ सम्पत्ति तथा शाखा (NBA & Branch Operations)", "short": "गैर-बैंकिङ सम्पत्ति (NBA) र शाखा", "keywords": ["गैर-बैंकिङ सम्पत्ति", "nba", "शाखा कार्यालय", "शाखा खोल्ने", "लिलाम", "सकार"]},
+    11: {"name": "सञ्चालकको बैठक भत्ता तथा सुविधा (Board Remuneration & Facilities)", "short": "सञ्चालकको बैठक भत्ता तथा सुविधा", "keywords": ["बैठक भत्ता", "meeting fee", "सञ्चालकको भत्ता", "सञ्चालक सुविधा", "भ्रमण भत्ता"]},
+    12: {"name": "कर्जा सूचना तथा कालोसूची (Credit Information & Blacklisting)", "short": "कर्जा सूचना तथा कालोसूची", "keywords": ["कर्जा सूचना", "कालोसूची", "blacklist", "cib", "कालोसूची फुकुवा", "कर्जा अपलेखन"]},
+    13: {"name": "वित्तीय ग्राहक संरक्षण तथा गुनासो सुनुवाइ (Consumer Protection)", "short": "ग्राहक संरक्षण तथा गुनासो सुनुवाइ", "keywords": ["ग्राहक संरक्षण", "consumer protection", "गुनासो सुनुवाइ", "grievance"]},
+    14: {"name": "शाखाविहीन बैंकिङ तथा निक्षेप परिचालन (Branchless Banking & Deposits)", "short": "शाखाविहीन बैंकिङ तथा निक्षेप", "keywords": ["शाखाविहीन", "branchless", "निक्षेप खाता", "deposit", "बचत खाता", "मुद्दती निक्षेप", "ब्याज गणना"]},
+    15: {"name": "ब्याजदर, स्प्रेड दर तथा सेवा शुल्क (Interest Rates, Spread & Fees)", "short": "ब्याजदर, स्प्रेड दर तथा सेवा शुल्क", "keywords": ["ब्याजदर", "interest rate", "आधार दर", "base rate", "स्प्रेड दर", "spread", "सेवा शुल्क", "prepayment fee", "प्रिमियम"]},
+    16: {"name": "वित्तीय साक्षरता (Financial Literacy)", "short": "वित्तीय साक्षरता", "keywords": ["वित्तीय साक्षरता", "financial literacy", "सचेतना"]},
+    17: {"name": "विपन्न वर्ग कर्जा (Deprived Sector Lending)", "short": "विपन्न वर्ग कर्जा", "keywords": ["विपन्न वर्ग", "deprived sector", "घ वर्ग", "लघुवित्त", "microfinance"]},
+    18: {"name": "कर्मचारी सेवा सर्त तथा सुविधा (Employee Bylaws & Facilities)", "short": "कर्मचारी सेवा सर्त तथा सुविधा", "keywords": ["कर्मचारी सेवा", "कर्मचारी सुविधा", "तालिम", "बोनस", "कर्मचारी सापटी"]},
+    19: {"name": "सम्पत्ति शुद्धीकरण तथा ग्राहक पहिचान (AML/CFT & KYC)", "short": "सम्पत्ति शुद्धीकरण (AML) तथा KYC", "keywords": ["सम्पत्ति शुद्धीकरण", "aml", "kyc", "ग्राहक पहिचान", "cdd", "pep", "उच्च जोखिम"]},
+    20: {"name": "वित्तीय मध्यस्थता तथा एजेन्सी (Agent Operations)", "short": "वित्तीय मध्यस्थता तथा एजेन्सी", "keywords": ["वित्तीय मध्यस्थता", "एजेन्ट", "व्यावसायिक प्रतिनिधि"]},
+    21: {"name": "अन्य विविध व्यवस्था (Miscellaneous)", "short": "विविध व्यवस्था", "keywords": ["विविध व्यवस्था", "miscellaneous"]}
 }
 
 VERIFIED_SUGGESTION_PROMPTS = [
@@ -592,9 +602,8 @@ def is_specific_query(query: str) -> bool:
     return False
 
 def extract_matched_chapters_from_chunks(chunks: list) -> list:
-    """Detects which Unified Directive chapters are represented in retrieved chunks."""
-    matched = []
-    seen = set()
+    """Detects which Unified Directive chapters are represented in retrieved chunks using headings and keywords."""
+    chapter_scores = {}
     nep_map = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}
     for c in chunks:
         text = c.get('text', '')
@@ -603,12 +612,18 @@ def extract_matched_chapters_from_chunks(chunks: list) -> list:
             num_str = "".join(nep_map.get(ch, ch) for ch in m.group(1))
             try:
                 num = int(num_str)
-                if num in UNIFIED_DIRECTIVE_CHAPTERS and num not in seen:
-                    seen.add(num)
-                    matched.append((num, UNIFIED_DIRECTIVE_CHAPTERS[num]["name"]))
+                if num in UNIFIED_DIRECTIVE_CHAPTERS:
+                    chapter_scores[num] = chapter_scores.get(num, 0) + 5
             except Exception:
                 pass
-    return matched
+        t_lower = text.lower()
+        for ch_num, ch_data in UNIFIED_DIRECTIVE_CHAPTERS.items():
+            matches = sum(1 for kw in ch_data["keywords"] if kw.lower() in t_lower)
+            if matches > 0:
+                chapter_scores[ch_num] = chapter_scores.get(ch_num, 0) + matches
+
+    sorted_chapters = sorted(chapter_scores.items(), key=lambda x: x[1], reverse=True)
+    return [(num, UNIFIED_DIRECTIVE_CHAPTERS[num]["short"]) for num, score in sorted_chapters if score >= 2]
 
 def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat: str = "all") -> tuple[bool, dict | None]:
     """
@@ -616,7 +631,7 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
     Complete 4-Step Decision Tree:
     1. Specificity Fast-Track (Safe, zero regression)
     2. Low-Confidence Suggestion (Did you mean?)
-    3. Broad Topic & Cross-Category Ambiguity (Unified vs Payment vs Reports)
+    3. Broad Topic & Cross-Category Smart Direct Options (1-Click Combined Category + Chapter)
     4. Intra-Document Chapter Disambiguation (Single Document / Category multi-chapter match)
     Runs 100% locally in Python (0 Groq tokens, < 1ms latency).
     """
@@ -648,56 +663,72 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                 "options": topic_data["options"]
             }
 
-    # Step 3B: Cross-Category Ambiguity (when "All Categories" is selected and matches span multiple categories)
-    if selected_cat == "all" and retrieved_chunks:
+    # Step 3B: Smart Direct Options (Cross-Category & Multi-Chapter Unified in 1 Click)
+    if selected_cat == "all" and retrieved_chunks and len(words) <= 6:
         from core.ingestion import categorize_file
-        top_slice = retrieved_chunks[:6]
-        category_counts = {}
+        top_slice = retrieved_chunks[:8]
+        cat_chunks = {}
         for c in top_slice:
-            src = c.get('source', '')
-            cat = categorize_file(src)
-            category_counts[cat] = category_counts.get(cat, 0) + 1
+            cat = categorize_file(c.get('source', ''), c.get('text', ''))
+            cat_chunks.setdefault(cat, []).append(c)
 
-        active_cats = [cat for cat, cnt in category_counts.items() if cnt >= 2 and cat in ('unified', 'payment', 'report')]
-        if len(active_cats) >= 2 and len(words) <= 6:
-            cat_options = []
-            if 'unified' in active_cats:
-                cat_options.append({
-                    "label": "🏦 एकीकृत निर्देशन (Unified Directives - बैंकिङ तथा कर्जा कारोबार)",
-                    "category": "unified",
-                    "query": f"{clean_q} (एकीकृत निर्देशन)"
-                })
+        active_cats = [cat for cat, chks in cat_chunks.items() if len(chks) >= 2 and cat in ('unified', 'payment', 'report')]
+        if len(active_cats) >= 2:
+            combined_options = []
+
+            # 1. Payment Category Option
             if 'payment' in active_cats:
-                cat_options.append({
+                combined_options.append({
                     "label": "📱 भुक्तानी प्रणाली निर्देशन (Payment Directives - वालेट, QR तथा कार्ड)",
                     "category": "payment",
                     "query": f"{clean_q} (भुक्तानी प्रणाली निर्देशन)"
                 })
+
+            # 2. Supervision / Annual Report Option
             if 'report' in active_cats:
-                cat_options.append({
+                combined_options.append({
                     "label": "📊 वार्षिक / सुपरीवेक्षण प्रतिवेदन (Supervision & Annual Reports)",
                     "category": "report",
                     "query": f"{clean_q} (सुपरीवेक्षण प्रतिवेदन)"
                 })
 
-            if len(cat_options) >= 2:
+            # 3. Unified Directives - Extract specific chapters directly from the document
+            unified_chunks = cat_chunks.get('unified', [])
+            if unified_chunks:
+                matched_chapters = extract_matched_chapters_from_chunks(unified_chunks)
+                if matched_chapters:
+                    slots = max(1, 4 - len(combined_options))
+                    for ch_num, ch_name in matched_chapters[:slots]:
+                        combined_options.append({
+                            "label": f"🏦 एकीकृत निर्देशन (अध्याय {ch_num}): {ch_name}",
+                            "category": "unified",
+                            "query": f"{clean_q} निर्देशन नं. {ch_num}"
+                        })
+                else:
+                    combined_options.append({
+                        "label": "🏦 एकीकृत निर्देशन (Unified Directives - बैंकिङ तथा कर्जा कारोबार)",
+                        "category": "unified",
+                        "query": f"{clean_q} (एकीकृत निर्देशन)"
+                    })
+
+            if len(combined_options) >= 2:
                 return True, {
                     "type": "cross_category",
-                    "title": "निर्देशन क्षेत्र छनोट (Select Regulatory Scope)",
-                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका निम्न फरक-फरक निर्देशनहरू अन्तर्गत पर्दछ। तपाईं कुन क्षेत्र सम्बन्धी नियम हेर्न चाहनुहुन्छ?",
-                    "options": cat_options
+                    "title": "सटीक विषय छनोट (Select Specific Regulation)",
+                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका विभिन्न निर्देशन तथा अध्यायहरूमा समेटिएको छ। कृपया तपाईंले हेर्न चाहनुभएको विषय छनोट गर्नुहोस्:",
+                    "options": combined_options[:4]
                 }
 
     # Step 4: Intra-Document Chapter Disambiguation (Single Document / Category multi-chapter match)
-    # Even if all matches come from 1 category, if it's a short query and matches 2+ chapters:
     if len(words) <= 4:
-        top_slice = retrieved_chunks[:6]
+        top_slice = retrieved_chunks[:8]
         matched_chapters = extract_matched_chapters_from_chunks(top_slice)
         if len(matched_chapters) >= 2:
             chapter_options = []
             for num, name in matched_chapters[:4]:
                 chapter_options.append({
-                    "label": f"📖 {name}",
+                    "label": f"📖 एकीकृत निर्देशन (अध्याय {num}): {name}",
+                    "category": "unified",
                     "query": f"{clean_q} निर्देशन नं. {num}"
                 })
             return True, {
