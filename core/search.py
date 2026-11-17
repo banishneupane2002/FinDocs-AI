@@ -547,7 +547,7 @@ BROAD_TOPICS = {
         "message": "नेपाल राष्ट्र बैंकको **कर्जा (Loan)** सम्बन्धी निर्देशनहरू विभिन्न शीर्षकमा विभाजित छन्। तपाईं कुन कर्जाको विषयमा सोध्न चाहनुहुन्छ?",
         "options": [
             {"label": "🏠 व्यक्तिगत आवासीय घर कर्जा (Personal Residential Loan) सीमा र LTV", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?"},
-            {"label": "💼 चालू पुँजी कर्जा (Working Capital Loan) सीमा र मार्गदर्शन", "query": "चालू पुँजी कर्जा मार्गदर्शनअनुसार कर्जा सीमा कसरी निर्धारण हुन्छ?"},
+            {"label": "🎯 एकल ग्राहक कर्जा सीमा (Single Obligor Limit - SOL) कति प्रतिशत छ?", "query": "एकल ग्राहक कर्जा सीमा Single Obligor Limit कति प्रतिशत तोकिएको छ?"},
             {"label": "🚗 सवारी साधन कर्जा (Auto / Vehicle Loan) LTV सीमा", "query": "सवारी साधन खरिद कर्जाको LTV सीमा के कति छ?"},
             {"label": "📊 कर्जा नोक्सानी व्यवस्था तथा वर्गीकरण (NPL & Loan Loss Provision)", "query": "कर्जा वर्गीकरण र कर्जा नोक्सानी व्यवस्था Loan Loss Provision दरहरू के के हुन्?"}
         ]
@@ -570,7 +570,7 @@ UNIFIED_DIRECTIVE_CHAPTERS = {
 
 VERIFIED_SUGGESTION_PROMPTS = [
     {"label": "🏠 व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा कति हो?"},
-    {"label": "💼 चालू पुँजी कर्जा (Working Capital Loan) सीमा २ करोडभन्दा माथि के छ?", "query": "Working capital loan limit for annual turnover above 2 crore?"},
+    {"label": "🎯 एकल ग्राहक कर्जा सीमा (Single Obligor Limit - SOL) कति प्रतिशत छ?", "query": "एकल ग्राहक कर्जा सीमा Single Obligor Limit कति प्रतिशत तोकिएको छ?"},
     {"label": "📊 Finance Companies को लागि Minimum CRR र SLR कति छ?", "query": "Minimum CRR and SLR requirement for finance companies?"},
     {"label": "🏢 गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?", "query": "गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?"},
     {"label": "📜 वित्त कम्पनीले अन्तर्राष्ट्रिय प्रतितपत्र (Import LC) जारी गर्न पाउँछ?", "query": "Can finance companies issue international import Letters of Credit (LC)?"},
