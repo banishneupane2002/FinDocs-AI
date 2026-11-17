@@ -7,6 +7,7 @@ import re
 from core.lexicon import extract_meaningful_keywords, BANKING_DOMAIN_LEXICON, normalize_devanagari
 from core.preeti import decode_preeti_text
 from core.llm import MODELS_TO_TRY
+from core.routing import extract_target_directive_number, UNIFIED_DIRECTIVE_PAGE_RANGES_2082
 
 _TRANSLATION_CACHE = {}
 
@@ -264,7 +265,8 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
                 except Exception:
                     pass
 
-    # 5. RRF Fusion with Year Recency Boost
+    # 5. RRF Fusion with Year Recency Boost & Directive-Aware Routing
+    target_dir_num = extract_target_directive_number(user_query)
     all_keys = set(d_pri.keys()) | set(d_trans.keys()) | set(s_pri.keys()) | set(s_trans_scores.keys())
     all_sources = [k[0] for k in all_keys]
     bs_years = [get_doc_year(s) for s in all_sources if get_doc_year(s) >= 2050]
@@ -311,6 +313,16 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
                 score *= 0.40
             else:
                 score *= 0.40
+
+        # Directive-Aware Chapter Routing: If user specifically asks for Directive X, lock to that chapter
+        if target_dir_num and target_dir_num in UNIFIED_DIRECTIVE_PAGE_RANGES_2082:
+            if 'unified' in k[0].lower():
+                d_start, d_end = UNIFIED_DIRECTIVE_PAGE_RANGES_2082[target_dir_num]
+                chunk_page = k[1]
+                if d_start <= chunk_page <= d_end:
+                    score *= 3.50  # Strongly boost the exact target directive chapter
+                else:
+                    score *= 0.10  # Suppress wrong directive chapters so they never overshadow the target
 
         rrf_scores[k] = (score, row_obj)
 
@@ -715,7 +727,7 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                 return True, {
                     "type": "cross_category",
                     "title": "सटीक विषय छनोट (Select Specific Regulation)",
-                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका विभिन्न निर्देशन तथा अध्यायहरूमा समेटिएको छ। कृपया तपाईंले हेर्न चाहनुभएको विषय छनोट गर्नुहोस्:",
+                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका विभिन्न निर्देशन तथा अध्यायहरूमा समेटिएको छ। कृपया तपाईंले हेर्न चाहनुभएको विषय छनोट गर्नुहोस् वा (specific) प्रश्न सोध्नुहोस:",
                     "options": combined_options[:4]
                 }
 

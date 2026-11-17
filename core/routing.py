@@ -37,6 +37,43 @@ def parse_nepali_date(query: str):
             return int(m2.group(1)), mnum, int(m2.group(2))
     return None
 
+def extract_target_directive_number(query: str) -> int | None:
+    """Extracts explicit directive number requested by the user, e.g. Directive 2, निर्देशन नं. २, Directive 17."""
+    m = re.search(r'\b(?:directive|निर्देशन|lgb\]\{zg)\s*(?:नं\.?|no\.?|number)?\s*([०-९0-9]+)\b', query, re.IGNORECASE)
+    if m:
+        num_str = "".join(NEP_TO_ARABIC.get(ch, ch) for ch in m.group(1))
+        try:
+            val = int(num_str)
+            if 1 <= val <= 30:
+                return val
+        except Exception:
+            pass
+    return None
+
+UNIFIED_DIRECTIVE_PAGE_RANGES_2082 = {
+    1: (5, 6),       # Capital Adequacy
+    2: (7, 35),      # Loan Classification & Provisioning
+    3: (36, 42),     # Single Obligor Limit
+    4: (43, 48),     # Accounting Policies & Financial Reporting
+    5: (49, 56),     # Risk Management
+    6: (57, 77),     # Corporate Governance
+    7: (78, 80),     # Supervisory Implementation Schedule
+    8: (81, 87),     # Investment & Subsidiaries
+    9: (88, 88),     # Statistical Reporting
+    10: (89, 98),    # Promoter Shares transfer & Non-Banking Assets
+    11: (99, 103),   # Consortium Lending
+    12: (104, 117),  # Credit Information & Blacklisting
+    13: (118, 121),  # CRR & SLR
+    14: (122, 131),  # Branch Network
+    15: (132, 137),  # Interest Rates, Spread & Fees
+    16: (138, 145),  # Financial Resources & Deposits
+    17: (146, 154),  # Deprived Sector & Specified Sector Lending
+    18: (155, 161),  # Upgradation & Mergers
+    19: (162, 177),  # AML / CFT & KYC
+    20: (178, 183),  # Consumer Protection & Financial Literacy
+    21: (184, 198),  # Miscellaneous
+}
+
 def detect_document_years(filename: str, sample_text: str = "") -> set:
     """
     Detects all official fiscal or calendar years covered by a document.
