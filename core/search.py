@@ -35,8 +35,9 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
 
     is_nepali = sum(1 for c in q if '\u0900' <= c <= '\u097f') >= max(len(q.replace(' ', '')), 1) * 0.3
     is_report = bool(re.search(
-        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|debit\s*cards?|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary)\b'
-        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|निष्कृय\s*कर्जा|खराब\s*कर्जा|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक|इन्टरनेट\s*बैंकिङ\s*ग्राहक|मोबाइल\s*बैंकिङ\s*ग्राहक)',
+        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|debit\s*cards?|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary'
+        r'|list\s*of\s*(?:finance\s*companies|finance\s*company|fcs|development\s*banks?|dbs?|commercial\s*banks?|cbs?|banks|bfis|institutions)|(?:finance\s*compan(?:y|ies)|development\s*banks?|commercial\s*banks?|fcs?|dbs?|cbs?)\s*list|names?\s*of\s*(?:finance\s*companies|fcs|development\s*banks|commercial\s*banks)|operating\s*finance\s*companies|annex\s*4\.1|annex\s*3\.1|annex\s*1\.1)\b'
+        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|निष्कृय\s*कर्जा|खराब\s*कर्जा|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक|इन्टरनेट\s*बैंकिङ\s*ग्राहक|मोबाइल\s*बैंकिङ\s*ग्राहक|वित्त\s*कम्पनी(?:हरू)?को\s*सूची|विकास\s*बैंक(?:हरू)?को\s*सूची|वाणिज्य\s*बैंक(?:हरू)?को\s*सूची|बैंक(?:हरू)?को\s*सूची|संस्थाहरूको\s*सूची)',
         q,
         re.IGNORECASE
     ))
@@ -63,6 +64,7 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
             "- निष्कृय कर्जा / खराब कर्जा -> Non-Performing Loans, NPL, NPL ratio, Gross NPL, Table 1.2\n"
             "- कुल शाखा संख्या / शाखा -> Total branches, number of branches, Table 1.1, Structure of Financial Sector\n"
             "- प्रदेश अनुसार शाखा / कर्णाली प्रदेश -> Province-wise Branch Network, Karnali Province, DB branches, FC branches, Figure 1.2\n"
+            "- वित्त कम्पनीहरूको सूची -> List of FCs, Annex 4.1, Table 2.3, Finance Companies, Best Finance Ltd., ICFC, Manjushree\n"
             "- नाफा / घाटा -> net profit, net loss\n"
             "Output 3-5 comma-separated official English terms, nothing else."
         )
@@ -97,6 +99,7 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
             "- NPL ratio of Finance Companies vs Commercial Banks -> NPL ratio, Gross NPL, Table 1.2, Non-Performing Loans, Financial Soundness Indicators\n"
             "- total branches -> Total branches, number of branches, Table 1.1, Structure of Financial Sector\n"
             "- province-wise branches Karnali -> Province-wise Branch Network, Karnali Province, DB branches, FC branches, Figure 1.2\n"
+            "- list of finance companies / finance companies in Nepal -> List of FCs, Annex 4.1, Table 2.3, Finance Companies, Best Finance Ltd., ICFC Finance, 17\n"
             "Output 3-5 comma-separated English terms, nothing else."
         )
     else:
@@ -191,8 +194,9 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
     ))
 
     is_report_query = (not has_directive_intent) and bool(re.search(
-        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary)\b'
-        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक)',
+        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary'
+        r'|list\s*of\s*(?:finance\s*companies|finance\s*company|fcs|development\s*banks?|dbs?|commercial\s*banks?|cbs?|banks|bfis|institutions)|(?:finance\s*compan(?:y|ies)|development\s*banks?|commercial\s*banks?|fcs?|dbs?|cbs?)\s*list|names?\s*of\s*(?:finance\s*companies|fcs|development\s*banks|commercial\s*banks)|operating\s*finance\s*companies|annex\s*4\.1|annex\s*3\.1|annex\s*1\.1)\b'
+        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक|वित्त\s*कम्पनी(?:हरू)?को\s*सूची|विकास\s*बैंक(?:हरू)?को\s*सूची|वाणिज्य\s*बैंक(?:हरू)?को\s*सूची|बैंक(?:हरू)?को\s*सूची|संस्थाहरूको\s*सूची)',
         user_query,
         re.IGNORECASE
     ))
