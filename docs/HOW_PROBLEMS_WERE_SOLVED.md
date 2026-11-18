@@ -614,6 +614,35 @@ Three separate bugs caused this failure:
 
 ---
 
+### 28. False-Positive Clarification Cards & Zero-Token Specificity Fast-Tracking
+
+#### The Problem
+When a user asked a specific regulatory question such as:
+> *"categories of bad loan"*
+or short banking inquiries such as:
+> *"statutory audit timeframe"*, *"promoter share lock-in period"*, *"cash counter security guidelines"*
+
+The UI unexpectedly displayed an interactive clarification card:
+> *"कर्जा तथा सापट सम्बन्धी व्यवस्था: तपाईं कुन कर्जाको विषयमा सोध्न चाहनुहुन्छ? Home Loan? Auto Loan? SOL? NPL?"*
+
+This was a severe false positive:
+1. **The Over-Aggressive Broad Pattern Trap:** In `core/search.py`, `BROAD_TOPICS["loan"]` originally matched any query containing the word `loan` with $\le 4$ words. Asking about "categories of bad loan" was mistakenly classified as an ambiguous query about loans in general.
+2. **The Retrieval-Triggered Disambiguation Flaw:** Step 3B (Cross-Category) and Step 4 (Intra-Chapter) fired whenever a query had $\le 6$ or $\le 4$ words and the top-8 retrieved chunks hit multiple categories or chapters. Because hybrid search naturally retrieves candidates across documents, legitimate 3- to 5-word queries were falsely intercepted.
+
+#### The Technical Solution (0 Groq LLM Tokens, <0.05ms Local Python)
+1. **Three-Tier Specificity Fast-Track (`is_specific_query`):**
+   - **Tier 1 (Domain Anchors):** Comprehensive regex patterns for bad loans, NPL categories (substandard, doubtful, loss), statutory audit, promoter share lock-in, cash counter security, OLF/SLF, compliance officer qualifications, etc.
+   - **Tier 2 (Deterministic Modifier Intersection):** Defined `REGULATORY_MODIFIERS` covering question words (`what`, `how`, `when`, `कति`, `के`, `कसरी`) and regulatory attributes (`category`, `limit`, `timeframe`, `period`, `lock-in`, `audit`, `qualification`, `tenure`, `security`, `frequency`, `criteria`, `प्रकार`, `सीमा`, `अवधि`, `म्याद`, `योग्यता`, `कार्यकाल`, `मापदण्ड`). Any query containing a modifier with $\ge 2$ tokens is fast-tracked directly.
+   - **Tier 3 (Query Phrasing):** Natural questions ($\ge 4$ words) bypass clarification cards automatically.
+2. **Strictly Gating Broad Disambiguation Steps (Step 3B & Step 4):**
+   Clarification cards for Cross-Category (Payment vs Unified) and Intra-Chapter (e.g. Directive 2 vs 15) now **only** trigger for recognized polysemous keywords (`POLYSEMOUS_CROSS_DIRECTIVE_PATTERNS`: `fee`, `fees`, `charges`, `शुल्क`, `ब्याजदर`, `कालोसूची`, `हर्जाना`, `reporting`) or bare 1-2 word queries lacking any regulatory modifier.
+3. **The Result:**
+   - Specific queries (`categories of bad loan`, `statutory audit timeframe`, `promoter share lock-in period`, `cash counter security guidelines`) answer immediately without interrupting the user.
+   - Genuine single-word ambiguous keywords (`loan`, `kyc`, `fee`, `ब्याजदर`, `कालोसूची`) preserve full 1-click option cards.
+   - **100% local deterministic Python execution with 0 Groq LLM tokens and 0 API cost.**
+
+---
+
 ### Summary Checklist
 
 | # | Challenge Solved | Primary Module | Benefit |
@@ -645,4 +674,5 @@ Three separate bugs caused this failure:
 | **25** | Cross-Chapter Misattribution | Directive-Guided Search & Context Headers | Isolates exact chapters and prevents cross-chapter confusion |
 | **26** | Hardcoded Page Ranges | Dynamic Chapter Discovery (`pymupdf`) | 100% dynamic discovery across all past and future PDFs |
 | **27** | Historical ATM Limits & Zero-Maintenance Routing | Multi-Doc Year Locking & Intent Filtering | Prevents historical blindspots without manual keyword lists |
+| **28** | False-Positive Clarification Cards | Zero-Token Specificity Fast-Track | 100% direct answers for specific bank queries without LLM tokens |
 
