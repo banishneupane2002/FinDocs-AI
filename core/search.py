@@ -147,6 +147,8 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
             "- failed transaction reversal / refund timeframe -> विफल कारोबार, दाबी फर्छ्यौट, Force Settlement, T+1, T+3, T+30, अर्को दिन, फिर्ता, Reversal, ATM, POS, QR\n"
             "- wallet to bank transfer limit -> वालेटबाट अन्य बैंक खातामा, २ लाख, १० लाख, विद्युतीय वालेट, अधिकतम सीमा, प्रतिदिन\n"
             "- finance companies letter of credit / LC import -> प्रतितपत्र, Letter of Credit, LC, वाणिज्य बैंकले जमानत तथा प्रतितपत्र जारी, ग वर्गका वित्तीय संस्था\n"
+            "- compliance officer / qualification of compliance officer -> व्यवस्थापकीय तहको कार्यान्वयन अधिकारी, Compliance Officer, AML/CFT, योग्यता, एकाघर परिवार\n"
+            "- directors meeting allowance / meeting allowance -> सञ्चालक समितिको बैठक, बैठक भत्ता, नियमावलीमा तोकिए बमोजिम, भत्ता तथा सुविधा\n"
             "Return 3-6 comma-separated terms in official script (Devanagari or English as specified), nothing else."
         )
 

@@ -698,13 +698,27 @@ def render_assistant_page():
                         full_page_text = item['text']
 
                     full_page_text = decode_preeti_text(full_page_text)
-                    full_page_map[sp] = full_page_text
+
+                    # Targeted Clause Windowing: If page is very long (> 2400 chars), center window around the matched clause
+                    if len(full_page_text) > 2400:
+                        chunk_txt = decode_preeti_text(item.get('text', ''))
+                        pos = full_page_text.find(chunk_txt[:80]) if len(chunk_txt) >= 80 else -1
+                        if pos != -1:
+                            start = max(0, pos - 400)
+                            end = min(len(full_page_text), pos + len(chunk_txt) + 600)
+                            page_excerpt = full_page_text[start:end]
+                        else:
+                            page_excerpt = full_page_text[:2400]
+                    else:
+                        page_excerpt = full_page_text
+
+                    full_page_map[sp] = page_excerpt
 
                     dir_info = get_unified_directive_for_page(item['page'], item['source']) if 'unified' in item['source'].lower() else None
                     dir_tag = f" | {dir_info[1]}" if dir_info else ""
-                    full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}{dir_tag}]:\n{full_page_text}\n")
-                    total_chars += len(full_page_text)
-                    if len(seen_pages) >= 5 or total_chars > 12000:
+                    full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}{dir_tag}]:\n{page_excerpt}\n")
+                    total_chars += len(page_excerpt)
+                    if len(seen_pages) >= 5 or total_chars >= 8000:
                         break
 
             context_text = "\n".join(full_page_context)
