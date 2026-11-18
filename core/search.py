@@ -553,6 +553,16 @@ SPECIFIC_ANCHORS = [
     r'base\s*rate', r'आधार\s*दर', r'spread\s*rate', r'स्प्रेड\s*दर',
     r'stress\s*test', r'तनाव\s*परीक्षण', r'prompt\s*corrective', r'शीघ्र\s*सुधारात्मक',
     # Specific compliance, multi-directive, and ratio anchors
+    r'bad\s*loans?', r'खराब\s*कर्जा',
+    r'\bnpl\b', r'\bnpa\b', r'non-?performing', r'निष्क्रि?य\s*कर्जा',
+    r'substandard', r'कमसल',
+    r'doubtful', r'शंकास्पद',
+    r'pass\s*loans?', r'असल\s*कर्जा',
+    r'loan\s*classification', r'कर्जा\s*वर्गीकरण',
+    r'categories\s*of\s*(?:bad\s*)?loans?', r'प्रकार',
+    r'loan\s*loss\s*provision(?:ing)?', r'कर्जा\s*नोक्सानी\s*व्यवस्था', r'नोक्सानी\s*व्यवस्था',
+    r'restructur(?:ing|ed)', r'पुनर्संरचना',
+    r'reschedul(?:ing|ed)', r'पुनर्तालिकीकरण',
     r'single\s*obligor', r'\bsol\b', r'एकल\s*ग्राहक',
     r'penal\s*interest', r'पेनाल\s*ब्याज', r'हर्जाना', r'fund\s*diversion', r'दुरुपयोग',
     r'microfinance', r'लघुवित्त', r'विपन्न\s*वर्ग', r"['\"]?d['\"]?\s*class", r'घ\s*वर्ग',
@@ -570,7 +580,7 @@ SPECIFIC_ANCHORS = [
 
 BROAD_TOPICS = {
     "kyc": {
-        "pattern": r'(?:^|[\s,.\?!])(?:kyc|cdd|केवाईसी|ग्राहक\s*पहिचान)(?:$|[\s,.\?!])',
+        "pattern": r'^(?:kyc|cdd|केवाईसी|ग्राहक\s*पहिचान|kyc\s*(?:rules?|guidelines?|information)|ग्राहक\s*पहिचान\s*(?:सम्बन्धी|बारेमा|व्यवस्था))(?:\s*\?*)?$',
         "title": "ग्राहक पहिचान (KYC / Customer Due Diligence)",
         "message": "नेपाल राष्ट्र बैंकको निर्देशनमा **KYC (ग्राहक पहिचान)** सम्बन्धी व्यवस्था विभिन्न क्षेत्रमा फैलिएको छ। तपाईं विशेष गरी कुन विषयमा जानकारी चाहनुहुन्छ?",
         "options": [
@@ -581,7 +591,7 @@ BROAD_TOPICS = {
         ]
     },
     "loan": {
-        "pattern": r'(?:^|[\s,.\?!])(?:loan|credit|कर्जा|सापट)(?:$|[\s,.\?!])',
+        "pattern": r'^(?:loan|loans|credit|credits|कर्जा|सापट|ऋण|loans?\s*(?:rules?|policy|information)|कर्जा\s*(?:सम्बन्धी|बारेमा|व्यवस्था|नियम))(?:\s*\?*)?$',
         "title": "कर्जा तथा सापट सम्बन्धी व्यवस्था (Loans & Advances)",
         "message": "नेपाल राष्ट्र बैंकको **कर्जा (Loan)** सम्बन्धी निर्देशनहरू विभिन्न शीर्षकमा विभाजित छन्। तपाईं कुन कर्जाको विषयमा सोध्न चाहनुहुन्छ?",
         "options": [
