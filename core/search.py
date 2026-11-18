@@ -577,6 +577,11 @@ SPECIFIC_ANCHORS = [
     r'prepayment', r'अग्रिम\s*भुक्तानी', r'consortium', r'सह-?वित्तीयकरण',
     r'independent\s*director', r'स्वतन्त्र\s*सञ्चालक', r'tenure', r'कार्यकाल',
     r'compliance\s*officer', r'कम्प्लायन्स', r'qualification', r'योग्यता',
+    r'meeting\s*allowance', r'directors?\s*(?:meeting\s*)?allowance', r'बैठक\s*भत्ता', r'remuneration', r'पारिश्रमिक',
+    r'working\s*capital', r'चालू\s*पुँजी', r'hire\s*purchase', r'हायर\s*पर्चेज',
+    r'home\s*loan', r'housing\s*loan', r'residential\s*(?:home\s*)?loan', r'घर\s*कर्जा',
+    r'crr', r'slr', r'cd\s*ratio', r'credit\s*to\s*deposit', r'कर्जा\s*निक्षेप',
+    r'paid-?up\s*capital', r'चुक्ता\s*पुँजी', r'capital\s*fund', r'पुँजी\s*कोष',
     r'margin\s*lending', r'सेयर\s*धितो', r'loan\s*against\s*shares?',
     # Specific Directive numbers and explicit category anchors
     r'निर्देशन\s*नं\.?\s*[०-९0-9]+', r'\bdirective\s*[०-९0-9]+\b',
@@ -600,12 +605,13 @@ REGULATORY_MODIFIERS = {
     'facility', 'charge', 'charges', 'margin', 'counterfeit', 'security', 'target', 'formula',
     'ceiling', 'floor', 'rule', 'rules', 'percent', 'percentage', 'cooling', 'provision', 'provisioning',
     'mandate', 'process', 'deadline', 'concession', 'exemption', 'spread', 'tenor',
+    'allowance', 'allowances', 'remuneration', 'meeting', 'meetings',
     
     # Nepali regulatory attributes & parameters
     'प्रकार', 'वर्गीकरण', 'सीमा', 'दर', 'अनुपात', 'समयसीमा', 'म्याद', 'अवधि', 'लकइन',
     'लेखापरीक्षण', 'योग्यता', 'कार्यकाल', 'नियुक्ति', 'पटक', 'मापदण्ड', 'प्रक्रिया', 'जरिवाना',
     'हर्जाना', 'सर्त', 'सुविधा', 'मार्जिन', 'धितो', 'सुरक्षा', 'लक्ष्य', 'फाराम',
-    'कागजात', 'छुट', 'पुनर्संरचना', 'पुनर्तालिकीकरण', 'अपलेखन', 'फुकुवा', 'भत्ता'
+    'कागजात', 'छुट', 'पुनर्संरचना', 'पुनर्तालिकीकरण', 'अपलेखन', 'फुकुवा', 'भत्ता', 'पारिश्रमिक'
 }
 
 POLYSEMOUS_CROSS_DIRECTIVE_PATTERNS = [
