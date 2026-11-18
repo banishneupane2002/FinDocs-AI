@@ -529,7 +529,7 @@ def render_assistant_page():
                     if msg.get("latency"):
                         st.caption(f"⚡ {msg['latency']}")
                 else:
-                    st.markdown(msg["content"])
+                    st.markdown(msg["content"], unsafe_allow_html=True)
                     if msg.get("latency"):
                         st.caption(f"⚡ {msg['latency']}")
                     if msg.get("sources") or msg.get("other_sources"):
@@ -779,7 +779,7 @@ def render_assistant_page():
                             first_token_received = True
                             status_placeholder.empty()
                         full_response += token
-                        response_placeholder.markdown(full_response + "▌")
+                        response_placeholder.markdown(full_response + "▌", unsafe_allow_html=True)
                     elif not full_response:
                         response_placeholder.markdown("""
                         <div class="system-status-indicator" style="margin-top: 4px;">
@@ -795,10 +795,10 @@ def render_assistant_page():
 
                 status_placeholder.empty()
                 if full_response.strip():
-                    response_placeholder.markdown(full_response)
+                    response_placeholder.markdown(full_response, unsafe_allow_html=True)
                 else:
                     full_response = "उपलब्ध कागजातमा यो जानकारी फेला परेन / Information not found in the documents."
-                    response_placeholder.markdown(full_response)
+                    response_placeholder.markdown(full_response, unsafe_allow_html=True)
 
                 # Track tokens used in session
                 approx_tokens = (len(system_prompt) + len(active_query) + len(full_response)) // 4
