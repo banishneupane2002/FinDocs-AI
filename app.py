@@ -600,25 +600,11 @@ def render_assistant_page():
                 target_scope_cat = pending_cat
                 if not target_scope_cat:
                     q_lower = active_query.lower()
-                    if any(k in q_lower for k in [
-                        "भुक्तानी प्रणाली निर्देशन", "भुक्तानी निर्देशन", "payment directive",
-                        "atm", "एटीएम", "debit card", "डेबिट कार्ड", "क्रेडिट कार्ड", "credit card",
-                        "वालेट", "wallet", "क्युआर", "qr", "ussd", "ग्क्क्म्", "pos", "पोस",
-                        "कारोबार सीमा", "नगद झिक्ने सीमा", "withdrawal limit", "transaction limit",
-                        "fund transfer", "ibft", "रकमान्तर", "force settlement", "विद्युतीय भुक्तानी",
-                        "mobile banking transfer", "फास्ट ट्रान्सफर", "विफल कारोबार"
-                    ]):
+                    if any(k in q_lower for k in ["भुक्तानी प्रणाली निर्देशन", "भुक्तानी निर्देशन", "payment directive"]):
                         target_scope_cat = "payment"
-                    elif any(k in q_lower for k in [
-                        "सुपरीवेक्षण प्रतिवेदन", "वार्षिक प्रतिवेदन", "supervision report", "annual report",
-                        "npl ratio", "total branches", "total atms", "financial position"
-                    ]):
+                    elif any(k in q_lower for k in ["सुपरीवेक्षण प्रतिवेदन", "वार्षिक प्रतिवेदन", "supervision report", "annual report"]):
                         target_scope_cat = "report"
-                    elif any(k in q_lower for k in [
-                        "एकीकृत निर्देशन", "unified directive", "single obligor", "sol",
-                        "कर्जा वर्गीकरण", "loan classification", "crr", "slr", "पुँजी कोष", "capital adequacy",
-                        "विपन्न वर्ग कर्जा", "deprived sector", "margin lending", "शेयर धितो"
-                    ]):
+                    elif any(k in q_lower for k in ["एकीकृत निर्देशन", "unified directive"]):
                         target_scope_cat = "unified"
 
                 if target_scope_cat:
@@ -627,25 +613,20 @@ def render_assistant_page():
                         effective_doc = cat_matched_docs if len(cat_matched_docs) > 1 else cat_matched_docs[0]
                         routed_badge = f"🎯 Scoped to {CATEGORY_OPTIONS.get(target_scope_cat, target_scope_cat)}"
 
-            if effective_doc is None:
-                if len(matched_years) == 1:
-                    target_yr = list(matched_years)[0]
-                    matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
-                    if matching_docs:
-                        best_doc = prioritize_matching_document(target_yr, matching_docs)
-                        effective_doc = best_doc
-                        routed_badge = f"🎯 Auto-routed to {target_yr} Directives / Reports (`{best_doc}`)"
-                elif len(matched_years) > 1:
-                    yrs_str = ", ".join(str(y) for y in sorted(matched_years))
-                    routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
-            elif isinstance(effective_doc, (list, set, tuple)):
-                if len(matched_years) == 1:
-                    target_yr = list(matched_years)[0]
-                    matching_in_scope = [d for d in effective_doc if target_yr in doc_year_map.get(d, set())]
-                    if matching_in_scope:
-                        best_doc = prioritize_matching_document(target_yr, matching_in_scope)
-                        effective_doc = best_doc
-                        routed_badge = f"🎯 Auto-routed within category to {target_yr} (`{best_doc}`)"
+            # Fiscal Year Auto-Routing: Dynamically locks scope to all primary regulatory documents of target year
+            if len(matched_years) == 1:
+                target_yr = list(matched_years)[0]
+                candidate_pool = effective_doc if isinstance(effective_doc, (list, set, tuple)) else ([effective_doc] if effective_doc else list(doc_year_map.keys()))
+                matching_in_year = [d for d in candidate_pool if target_yr in doc_year_map.get(d, set())]
+                primary_matching = [d for d in matching_in_year if str(target_yr) in d]
+                docs_for_year = primary_matching if primary_matching else matching_in_year
+                if docs_for_year:
+                    effective_doc = docs_for_year if len(docs_for_year) > 1 else docs_for_year[0]
+                    doc_names_str = ", ".join(f"`{d}`" for d in (docs_for_year if isinstance(docs_for_year, list) else [docs_for_year]))
+                    routed_badge = f"🎯 Auto-routed to FY {target_yr} ({doc_names_str})"
+            elif len(matched_years) > 1:
+                yrs_str = ", ".join(str(y) for y in sorted(matched_years))
+                routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
 
             search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
             if not search_query.strip():
