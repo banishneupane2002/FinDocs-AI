@@ -181,9 +181,16 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
     where_filter = build_where_filter(selected_doc)
 
     # Query Intent Detection: Financial/Annual/Supervision Reports vs Regulatory Directives
-    is_report_query = bool(re.search(
-        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|debit\s*cards?|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary)\b'
-        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|निष्कृय\s*कर्जा|खराब\s*कर्जा|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक|इन्टरनेट\s*बैंकिङ\s*ग्राहक|मोबाइल\s*बैंकिङ\s*ग्राहक)',
+    has_directive_intent = bool(re.search(
+        r'\b(?:directive|clause|circular|limit|withdrawal|rules?|provision|guidelines?|eligibility|penalty|fines?|rates?|fees?)\b'
+        r'|(?:निर्देशन|परिपत्र|बुँदा|दफा|व्यवस्था|प्रावधान|सीमा|झिक्ने|नोक्सानी|हर्जाना|नियम|शुल्क|ब्याजदर)',
+        user_query,
+        re.IGNORECASE
+    ))
+
+    is_report_query = (not has_directive_intent) and bool(re.search(
+        r'\b(?:annual\s*report|supervision\s*report|supervision|balance\s*sheet|financial\s*position|financial\s*statement|total\s*assets|total\s*liabilities|commercial\s*bank\s*list|development\s*bank\s*list|growth\s*rate|overall\s*npl|npl\s*ratio|npl\s*percentage|total\s*branch(?:es)?|number\s*of\s*branches|number\s*of\s*customers|mobile\s*banking\s*customers|internet\s*banking\s*customers|total\s*atms?|indicators\s*summary)\b'
+        r'|(?:वार्षिक\s*प्रतिवेदन|सुपरीवेक्षण|कुल\s*शाखा|शाखा\s*संख्या|प्रदेश\s*शाखा|शाखा\s*सञ्जाल|ग्राहक\s*संख्या|ग्राहकसंख्या|प्रयोग\s*गर्ने\s*ग्राहक)',
         user_query,
         re.IGNORECASE
     ))
@@ -202,6 +209,23 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
         k = (row['source'], int(row['page']))
         if k not in d_pri:
             d_pri[k] = (rank, row)
+
+    # 1b. Directive Chapter Guided Dense Search (Guarantees target chapter chunks are in candidate pool)
+    target_dir_num = extract_target_directive_number(user_query)
+    if target_dir_num:
+        cand_docs = [selected_doc] if isinstance(selected_doc, str) and selected_doc != "All Documents" else ([d for d in selected_doc] if isinstance(selected_doc, (list, set, tuple)) else ["Unified_directive_2082.pdf", "directive_2082.pdf"])
+        for c_doc in cand_docs:
+            p_ranges = get_directive_ranges_for_pdf(c_doc)
+            if target_dir_num in p_ranges:
+                p_start, p_end = p_ranges[target_dir_num]
+                try:
+                    c_query = table.search(q_vec).where(f"source = '{c_doc}' AND page >= {p_start} AND page <= {p_end}").limit(20)
+                    for rank, (_, row) in enumerate(c_query.to_pandas().iterrows(), 1):
+                        k = (row['source'], int(row['page']))
+                        if k not in d_pri or d_pri[k][0] > rank:
+                            d_pri[k] = (rank, row)
+                except Exception:
+                    pass
 
     # 2. Translated Dense Search (Cross-Lingual Bridge)
     d_trans = {}
@@ -321,9 +345,11 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
                 d_start, d_end = pdf_ranges[target_dir_num]
                 chunk_page = k[1]
                 if d_start <= chunk_page <= d_end:
-                    score *= 3.50  # Strongly boost the exact target directive chapter
+                    score *= 5.0  # Strongly boost the exact target directive chapter
                 else:
-                    score *= 0.10  # Suppress wrong directive chapters so they never overshadow the target
+                    score *= 0.02  # Suppress wrong directive chapters so they never overshadow the target
+            else:
+                score *= 0.02  # Strongly suppress documents that do not have this directive chapter
 
         rrf_scores[k] = (score, row_obj)
 

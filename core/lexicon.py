@@ -36,6 +36,15 @@ SPECIAL_PREETI = {
     'system': ['क्थकतभफ'],
     'upgrade': ['ग्उनचबमभ'],
     'vulnerabilities': ['ख्गलिभचबदष्ष्ितष्भक'],
+    'debit': ['8]la6'],
+    'डेबिट': ['8]la6'],
+    'atm': ['8]la6', 'ब्त्ः'],
+    'एटीएम': ['8]la6', 'ब्त्ः'],
+    'wallet': ['jfn]6'],
+    'वालेट': ['jfn]6'],
+    'reversal': ['lhkmf'],
+    'फिर्ता': ['lhkmf'],
+    'विफल': ['ljkmn'],
 }
 
 BANKING_DOMAIN_LEXICON = {
