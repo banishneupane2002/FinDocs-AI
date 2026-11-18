@@ -406,54 +406,74 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
     seen = set()
     full_page_map = full_page_map or {}
     found_matches = []
+    matched_spans = []
+
+    nep_map = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}
 
     # 1. Broad Proximity Search for any known disk document name + Page number in the response
     known_docs = [f for f in os.listdir("File_System") if f.lower().endswith(('.pdf', '.docx', '.txt'))] if os.path.exists("File_System") else []
+    # Sort known docs by length descending so longer filenames (e.g. Unified_directive_2082.pdf) are evaluated before shorter sub-names (directive_2082.pdf)
+    known_docs.sort(key=len, reverse=True)
+
     for fname in known_docs:
         base_name = os.path.splitext(fname)[0]
-        # Match filename or basename surrounded by word boundary or markdown characters
-        pat = rf'(?:^|[\*\_`\s\(\[\{{ ])(?:{re.escape(fname)}|{re.escape(base_name)})(?:$|[\*\_`\s\)\]\}} ])'
+        # Strict boundary: must NOT be preceded or succeeded by letters, numbers, or underscores
+        # Prevents 'directive_2082.pdf' from falsely matching as a substring inside 'Unified_directive_2082.pdf'
+        pat = rf'(?<![a-zA-Z0-9_])(?:{re.escape(fname)}|{re.escape(base_name)})(?![a-zA-Z0-9_])'
         for m in re.finditer(pat, response_text, re.IGNORECASE):
             doc_start = m.start()
             doc_end = m.end()
+
+            # Prevent shorter filename from matching inside an already matched longer filename span
+            if any(s <= doc_start and doc_end <= e for s, e in matched_spans):
+                continue
+
             # Look in a window after the doc name (up to 200 chars) for page indicator
             window_after = response_text[doc_end:min(len(response_text), doc_end + 200)]
-            pg_match = re.search(r'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*(\d+)', window_after, re.IGNORECASE)
+            pg_match = re.search(r'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*([०-९0-9]+)', window_after, re.IGNORECASE)
             if pg_match:
-                page_num = int(pg_match.group(1))
+                pg_str = "".join(nep_map.get(c, c) for c in pg_match.group(1))
+                page_num = int(pg_str)
                 found_matches.append((doc_start, fname, page_num))
+                matched_spans.append((doc_start, doc_end))
             else:
                 # Also check window before (e.g. "Page 22 of directive_2082.pdf")
                 window_before = response_text[max(0, doc_start - 100):doc_start]
-                pg_match_before = re.search(r'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*(\d+)', window_before, re.IGNORECASE)
+                pg_match_before = re.search(r'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*([०-९0-9]+)', window_before, re.IGNORECASE)
                 if pg_match_before:
-                    page_num = int(pg_match_before.group(1))
+                    pg_str = "".join(nep_map.get(c, c) for c in pg_match_before.group(1))
+                    page_num = int(pg_str)
                     found_matches.append((doc_start, fname, page_num))
+                    matched_spans.append((doc_start, doc_end))
 
-    # 2. Standard Regex Patterns for inline citation blocks
+    # 2. Standard Regex Patterns for inline citation blocks with strict word boundaries
     regex_patterns = [
-        r'([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s+(?:clause|section|दफा|खण्ड)\s*[^\n\r]{0,25}?\s*|\s*\n\s*\-?\s*\*\*?)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)',
-        r'(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s*\n\s*\-?\s*\*\*?)(([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt)))',
-        r'\[\s*(?:कागजात|doc|document)?\s*[:\-]?\s*([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))\s*\|\s*(?:पृष्ठ|page)\s*[:\-]?\s*(\d+)\s*\]',
-        r'([a-zA-Z0-9_\-]+(?:directive|report)[a-zA-Z0-9_\-]*)(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s*\n\s*\-?\s*\*\*?)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*(\d+)'
+        r'(?<![a-zA-Z0-9_])([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s+(?:clause|section|दफा|खण्ड)\s*[^\n\r]{0,25}?\s*|\s*\n\s*\-?\s*\*\*?)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*([०-९0-9]+)',
+        r'(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*([०-९0-9]+)(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s*\n\s*\-?\s*\*\*?)(?<![a-zA-Z0-9_])(([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt)))',
+        r'\[\s*(?:कागजात|doc|document)?\s*[:\-]?\s*([a-zA-Z0-9_\-\.]+\.(?:pdf|docx|txt))\s*\|\s*(?:पृष्ठ|page)\s*[:\-]?\s*([०-९0-9]+)\s*\]',
+        r'(?<![a-zA-Z0-9_])([a-zA-Z0-9_\-]+(?:directive|report)[a-zA-Z0-9_\-]*)(?:\s*[\:\|\-\–\—\(\)\[\]\*\_]?\s*|\s*\n\s*\-?\s*\*\*?)(?:page|पृष्ठ|p\.?)\s*[:\-]?\s*([०-९0-9]+)'
     ]
 
     for pat in regex_patterns:
         for m in re.finditer(pat, response_text, re.IGNORECASE):
             g1, g2 = m.group(1), m.group(2)
-            if g1.isdigit():
+            if re.match(r'^[०-९0-9]+$', g1):
                 doc_name = g2
-                page_num = int(g1)
+                page_str = "".join(nep_map.get(c, c) for c in g1)
+                page_num = int(page_str)
             else:
                 doc_name = g1
-                page_num = int(g2)
+                page_str = "".join(nep_map.get(c, c) for c in g2)
+                page_num = int(page_str)
 
             if not doc_name.lower().endswith(('.pdf', '.docx', '.txt')):
                 if os.path.exists(os.path.join("File_System", f"{doc_name}.pdf")):
                     doc_name = f"{doc_name}.pdf"
 
             if os.path.exists(os.path.join("File_System", doc_name)):
-                found_matches.append((m.start(), doc_name, page_num))
+                if not any(s <= m.start() and m.end() <= e for s, e in matched_spans):
+                    found_matches.append((m.start(), doc_name, page_num))
+                    matched_spans.append((m.start(), m.end()))
 
     # Sort matches by character position in the AI's response text
     found_matches.sort(key=lambda x: x[0])
@@ -477,28 +497,27 @@ def extract_cited_sources(response_text: str, retrieved_candidates: list, full_p
                 'pos': pos
             })
 
-    # 3. Match against retrieved candidate chunks if page was mentioned anywhere in text
-    norm_resp = re.sub(r'[\s_\-]+', ' ', response_text.lower())
-    for item in retrieved_candidates:
-        src = item['source']
-        pg = str(item['page'])
-        base_src = src.replace('.pdf', '').replace('.docx', '').replace('.txt', '')
-        norm_base = re.sub(r'[\s_\-]+', ' ', base_src.lower())
-
-        if src.lower() in response_text.lower() or base_src.lower() in response_text.lower() or norm_base in norm_resp:
-            pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*{pg}\b'
-            m_pg = re.search(pg_pattern, response_text, re.IGNORECASE)
-            if m_pg:
-                key = (src, item['page'])
-                if key not in seen:
-                    seen.add(key)
-                    pos = m_pg.start()
-                    cited.append({
-                        'source': src,
-                        'page': item['page'],
-                        'text': full_page_map.get(key, item.get('text', '')),
-                        'pos': pos
-                    })
+    # 3. Match against retrieved candidate chunks ONLY if no citations found yet, with strict word boundary
+    if not cited:
+        for item in retrieved_candidates:
+            src = item['source']
+            pg = str(item['page'])
+            base_src = src.replace('.pdf', '').replace('.docx', '').replace('.txt', '')
+            exact_doc_pat = rf'(?<![a-zA-Z0-9_]){re.escape(base_src)}(?![a-zA-Z0-9_])'
+            if re.search(exact_doc_pat, response_text, re.IGNORECASE):
+                pg_pattern = rf'(?:page|पृष्ठ|p\.?)\s*[:\-–—\s\*\_]*{pg}\b'
+                m_pg = re.search(pg_pattern, response_text, re.IGNORECASE)
+                if m_pg:
+                    key = (src, item['page'])
+                    if key not in seen:
+                        seen.add(key)
+                        pos = m_pg.start()
+                        cited.append({
+                            'source': src,
+                            'page': item['page'],
+                            'text': full_page_map.get(key, item.get('text', '')),
+                            'pos': pos
+                        })
 
     # 4. Fallback to top-1 primary search match if no explicit citation was found
     if not cited and retrieved_candidates:
