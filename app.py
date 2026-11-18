@@ -765,7 +765,7 @@ def render_assistant_page():
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": active_query}
                     ],
-                    temperature=0.1,
+                    temperature=0.0,
                     max_tokens=2500,
                     stream=True
                 )
