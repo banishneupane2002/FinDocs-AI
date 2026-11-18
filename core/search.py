@@ -7,7 +7,7 @@ import re
 from core.lexicon import extract_meaningful_keywords, BANKING_DOMAIN_LEXICON, normalize_devanagari
 from core.preeti import decode_preeti_text
 from core.llm import MODELS_TO_TRY
-from core.routing import extract_target_directive_number, UNIFIED_DIRECTIVE_PAGE_RANGES_2082
+from core.routing import extract_target_directive_number, get_directive_ranges_for_pdf
 
 _TRANSLATION_CACHE = {}
 
@@ -137,7 +137,7 @@ def expand_query_crosslingual(q: str, client, cache: dict = None) -> str:
             "- IBFT / fund transfer -> अन्तर बैंक, रकमान्तर, क्ष्धँत्, रु. १०\n"
             "- system audit -> System Audit, क्थकतभफ ब्गमष्त, प्रणाली परीक्षण, १ वर्ष, २ आर्थिक वर्ष\n"
             "- overnight balance -> ओभरनाइट मौज्दात, ५० हजार, बैंक खाता\n"
-            "- debit card / ATM cash withdrawal limit -> कार्डबाट नगद झिक्ने अधिकतम सीमा, डेबिट कार्ड, ५० हजार, २० हजार, ३ लाख, नगद झिक्ने, एटीएम\n"
+            "- debit card / ATM cash withdrawal limit -> कार्डबाट नगद झिक्ने अधिकतम सीमा, डेबिट कार्ड, २५ हजार, १ लाख, ४ लाख, नगद झिक्ने, एटीएम\n"
             "- contactless -> Contactless, कन्ट्याक्टलेस, ५ हजार, ५,०००\n"
             "- blacklisted agent / previously blacklisted agent -> आधिकारिक प्रतिनिधि, एजेन्ट, कालोसूची, फुकुवा भएको कम्तीमा ३ वर्ष पूरा भएको, ३ वर्ष, स्वघोषणा\n"
             "- NPL ratio / non-performing loan ratio -> NPL ratio, Gross NPL, Table 1.2, Non-Performing Loans, Financial Soundness Indicators\n"
@@ -314,10 +314,11 @@ def hybrid_search(user_query: str, table, model, translated_terms: str = "", sel
             else:
                 score *= 0.40
 
-        # Directive-Aware Chapter Routing: If user specifically asks for Directive X, lock to that chapter
-        if target_dir_num and target_dir_num in UNIFIED_DIRECTIVE_PAGE_RANGES_2082:
-            if 'unified' in k[0].lower():
-                d_start, d_end = UNIFIED_DIRECTIVE_PAGE_RANGES_2082[target_dir_num]
+        # Directive-Aware Chapter Routing: If user specifically asks for Directive X, lock to that chapter dynamically
+        if target_dir_num:
+            pdf_ranges = get_directive_ranges_for_pdf(k[0])
+            if target_dir_num in pdf_ranges:
+                d_start, d_end = pdf_ranges[target_dir_num]
                 chunk_page = k[1]
                 if d_start <= chunk_page <= d_end:
                     score *= 3.50  # Strongly boost the exact target directive chapter

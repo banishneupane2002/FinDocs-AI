@@ -44,35 +44,61 @@ def extract_target_directive_number(query: str) -> int | None:
         num_str = "".join(NEP_TO_ARABIC.get(ch, ch) for ch in m.group(1))
         try:
             val = int(num_str)
-            if 1 <= val <= 30:
+            if 1 <= val <= 50:
                 return val
         except Exception:
             pass
     return None
 
-UNIFIED_DIRECTIVE_PAGE_RANGES_2082 = {
-    1: (5, 6),       # Capital Adequacy
-    2: (7, 35),      # Loan Classification & Provisioning
-    3: (36, 42),     # Single Obligor Limit
-    4: (43, 48),     # Accounting Policies & Financial Reporting
-    5: (49, 56),     # Risk Management
-    6: (57, 77),     # Corporate Governance
-    7: (78, 80),     # Supervisory Implementation Schedule
-    8: (81, 87),     # Investment & Subsidiaries
-    9: (88, 88),     # Statistical Reporting
-    10: (89, 98),    # Promoter Shares transfer & Non-Banking Assets
-    11: (99, 103),   # Consortium Lending
-    12: (104, 117),  # Credit Information & Blacklisting
-    13: (118, 121),  # CRR & SLR
-    14: (122, 131),  # Branch Network
-    15: (132, 137),  # Interest Rates, Spread & Fees
-    16: (138, 145),  # Financial Resources & Deposits
-    17: (146, 154),  # Deprived Sector & Specified Sector Lending
-    18: (155, 161),  # Upgradation & Mergers
-    19: (162, 177),  # AML / CFT & KYC
-    20: (178, 183),  # Consumer Protection & Financial Literacy
-    21: (184, 198),  # Miscellaneous
-}
+_PDF_DIRECTIVE_RANGES_CACHE = {}
+
+def get_directive_ranges_for_pdf(pdf_filename: str) -> dict[int, tuple[int, int]]:
+    """
+    Dynamically discovers the exact page ranges for all directives in any Unified or Payment Directives PDF
+    with ZERO hardcoding. Caches results in memory for instantaneous subsequent lookups.
+    """
+    global _PDF_DIRECTIVE_RANGES_CACHE
+    if pdf_filename in _PDF_DIRECTIVE_RANGES_CACHE:
+        return _PDF_DIRECTIVE_RANGES_CACHE[pdf_filename]
+
+    import os
+    pdf_path = os.path.join("File_System", pdf_filename)
+    if not os.path.exists(pdf_path):
+        pdf_path = pdf_filename
+    if not os.path.exists(pdf_path):
+        return {}
+
+    # Matches official chapter titles e.g. O=k|f=lgb]{zg g+= @÷)*@ or c=k|f= lgb]{zg g+= %÷)*! or इ.प्रा. निर्देशन नं. १७/०८२
+    pattern = re.compile(r'(?:[cO]=k\|f=\s*lgb\]\{zg|[अइ]\.प्रा\.\s*निर्देशन|lgb\]\{zg|निर्देशन)\s*(?:g\+=|नं\.?)\s*([!@#$%\^&*()०-९0-9]+)\s*[÷/]\s*([!@#$%\^&*()०-९0-9]+)')
+    directive_starts = {}
+
+    try:
+        import pymupdf
+        doc = pymupdf.open(pdf_path)
+        for page_idx in range(len(doc)):
+            text = doc[page_idx].get_text("text")[:400]
+            m = pattern.search(text)
+            if m:
+                raw_num = m.group(1)
+                num_str = "".join(PREETI_NUM_MAP.get(c, NEP_TO_ARABIC.get(c, c)) for c in raw_num)
+                try:
+                    num = int(num_str)
+                    if 1 <= num <= 50 and num not in directive_starts:
+                        directive_starts[num] = page_idx + 1
+                except Exception:
+                    pass
+        ranges = {}
+        sorted_dirs = sorted(directive_starts.items(), key=lambda x: x[1])
+        for i, (d_num, start_pg) in enumerate(sorted_dirs):
+            if i + 1 < len(sorted_dirs):
+                end_pg = sorted_dirs[i+1][1] - 1
+            else:
+                end_pg = len(doc)
+            ranges[d_num] = (start_pg, end_pg)
+        _PDF_DIRECTIVE_RANGES_CACHE[pdf_filename] = ranges
+        return ranges
+    except Exception:
+        return {}
 
 UNIFIED_DIRECTIVE_NAMES = {
     1: "निर्देशन नं. १: पुँजी कोष (Capital Adequacy)",
@@ -98,13 +124,14 @@ UNIFIED_DIRECTIVE_NAMES = {
     21: "निर्देशन नं. २१: विविध व्यवस्था",
 }
 
-def get_unified_directive_for_page(page: int) -> tuple[int, str] | None:
-    """Returns the official Directive number and name for a given PDF page in Unified Directives."""
+def get_unified_directive_for_page(page: int, pdf_filename: str = "Unified_directive_2082.pdf") -> tuple[int, str] | None:
+    """Returns the official Directive number and name for a given PDF page dynamically."""
     try:
         p_val = int(page)
     except Exception:
         return None
-    for d_num, (p_start, p_end) in UNIFIED_DIRECTIVE_PAGE_RANGES_2082.items():
+    ranges = get_directive_ranges_for_pdf(pdf_filename)
+    for d_num, (p_start, p_end) in ranges.items():
         if p_start <= p_val <= p_end:
             return d_num, UNIFIED_DIRECTIVE_NAMES.get(d_num, f"निर्देशन नं. {d_num}")
     return None
@@ -302,19 +329,36 @@ def prioritize_matching_document(target_yr: int, matching_docs: list) -> str:
 
 _DOC_YEAR_CACHE = {}
 
-def build_document_year_map(table) -> dict:
-    """Builds a cached map of document name -> set of detected fiscal/calendar years."""
+def build_document_year_map(table=None) -> dict:
+    """Builds a cached map of document name -> set of detected fiscal/calendar years dynamically."""
     global _DOC_YEAR_CACHE
     if _DOC_YEAR_CACHE:
         return _DOC_YEAR_CACHE
     doc_map = {}
-    try:
-        df = table.search().where("page <= 3").select(["source", "page", "text"]).to_pandas()
-        for s in df['source'].unique():
-            p1_records = df[df['source'] == s]
-            sample_text = " ".join(p1_records['text'].tolist())
-            doc_map[s] = detect_document_years(s, sample_text)
-        _DOC_YEAR_CACHE = doc_map
-    except Exception:
-        pass
+    import os
+    if os.path.exists("File_System"):
+        try:
+            import pymupdf
+            for f in os.listdir("File_System"):
+                if f.lower().endswith(('.pdf', '.docx', '.txt')):
+                    sample_text = ""
+                    if f.lower().endswith('.pdf'):
+                        try:
+                            doc = pymupdf.open(os.path.join("File_System", f))
+                            sample_text = " ".join([doc[p].get_text("text") for p in range(min(3, len(doc)))])
+                        except Exception:
+                            pass
+                    doc_map[f] = detect_document_years(f, sample_text)
+        except Exception:
+            for f in os.listdir("File_System"):
+                if f.lower().endswith(('.pdf', '.docx', '.txt')):
+                    doc_map[f] = detect_document_years(f)
+    if not doc_map and table is not None:
+        try:
+            df = table.search().select(["source"]).limit(2000).to_pandas()
+            for s in df["source"].unique():
+                doc_map[s] = detect_document_years(s)
+        except Exception:
+            pass
+    _DOC_YEAR_CACHE = doc_map
     return doc_map

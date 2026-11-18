@@ -28,6 +28,7 @@ from core import (
     extract_query_years,
     clean_query_for_search,
     build_document_year_map,
+    prioritize_matching_document,
     expand_query_crosslingual,
     hybrid_search,
     call_groq_with_retry,
@@ -598,11 +599,26 @@ def render_assistant_page():
             if effective_doc is None:
                 target_scope_cat = pending_cat
                 if not target_scope_cat:
-                    if any(k in active_query.lower() for k in ["भुक्तानी प्रणाली निर्देशन", "भुक्तानी निर्देशन", "payment directive"]):
+                    q_lower = active_query.lower()
+                    if any(k in q_lower for k in [
+                        "भुक्तानी प्रणाली निर्देशन", "भुक्तानी निर्देशन", "payment directive",
+                        "atm", "एटीएम", "debit card", "डेबिट कार्ड", "क्रेडिट कार्ड", "credit card",
+                        "वालेट", "wallet", "क्युआर", "qr", "ussd", "ग्क्क्म्", "pos", "पोस",
+                        "कारोबार सीमा", "नगद झिक्ने सीमा", "withdrawal limit", "transaction limit",
+                        "fund transfer", "ibft", "रकमान्तर", "force settlement", "विद्युतीय भुक्तानी",
+                        "mobile banking transfer", "फास्ट ट्रान्सफर", "विफल कारोबार"
+                    ]):
                         target_scope_cat = "payment"
-                    elif any(k in active_query.lower() for k in ["सुपरीवेक्षण प्रतिवेदन", "वार्षिक प्रतिवेदन", "supervision report"]):
+                    elif any(k in q_lower for k in [
+                        "सुपरीवेक्षण प्रतिवेदन", "वार्षिक प्रतिवेदन", "supervision report", "annual report",
+                        "npl ratio", "total branches", "total atms", "financial position"
+                    ]):
                         target_scope_cat = "report"
-                    elif any(k in active_query.lower() for k in ["एकीकृत निर्देशन", "unified directive"]):
+                    elif any(k in q_lower for k in [
+                        "एकीकृत निर्देशन", "unified directive", "single obligor", "sol",
+                        "कर्जा वर्गीकरण", "loan classification", "crr", "slr", "पुँजी कोष", "capital adequacy",
+                        "विपन्न वर्ग कर्जा", "deprived sector", "margin lending", "शेयर धितो"
+                    ]):
                         target_scope_cat = "unified"
 
                 if target_scope_cat:
@@ -616,9 +632,9 @@ def render_assistant_page():
                     target_yr = list(matched_years)[0]
                     matching_docs = [d for d, yrs in doc_year_map.items() if target_yr in yrs]
                     if matching_docs:
-                        effective_doc = matching_docs if len(matching_docs) > 1 else matching_docs[0]
-                        doc_names_str = ", ".join(f"`{d}`" for d in matching_docs)
-                        routed_badge = f"🎯 Auto-routed to {target_yr} Directives / Reports ({doc_names_str})"
+                        best_doc = prioritize_matching_document(target_yr, matching_docs)
+                        effective_doc = best_doc
+                        routed_badge = f"🎯 Auto-routed to {target_yr} Directives / Reports (`{best_doc}`)"
                 elif len(matched_years) > 1:
                     yrs_str = ", ".join(str(y) for y in sorted(matched_years))
                     routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
@@ -627,9 +643,9 @@ def render_assistant_page():
                     target_yr = list(matched_years)[0]
                     matching_in_scope = [d for d in effective_doc if target_yr in doc_year_map.get(d, set())]
                     if matching_in_scope:
-                        effective_doc = matching_in_scope if len(matching_in_scope) > 1 else matching_in_scope[0]
-                        doc_names_str = ", ".join(f"`{d}`" for d in (matching_in_scope if isinstance(matching_in_scope, list) else [matching_in_scope]))
-                        routed_badge = f"🎯 Auto-routed within category to {target_yr} ({doc_names_str})"
+                        best_doc = prioritize_matching_document(target_yr, matching_in_scope)
+                        effective_doc = best_doc
+                        routed_badge = f"🎯 Auto-routed within category to {target_yr} (`{best_doc}`)"
 
             search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
             if not search_query.strip():
@@ -703,7 +719,7 @@ def render_assistant_page():
                     full_page_text = decode_preeti_text(full_page_text)
                     full_page_map[sp] = full_page_text
 
-                    dir_info = get_unified_directive_for_page(item['page']) if 'unified' in item['source'].lower() else None
+                    dir_info = get_unified_directive_for_page(item['page'], item['source']) if 'unified' in item['source'].lower() else None
                     dir_tag = f" | {dir_info[1]}" if dir_info else ""
                     full_page_context.append(f"\n[कागजात: {item['source']} | पृष्ठ: {item['page']}{dir_tag}]:\n{full_page_text}\n")
                     total_chars += len(full_page_text)
