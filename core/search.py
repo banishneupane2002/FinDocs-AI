@@ -657,10 +657,10 @@ BROAD_TOPICS = {
         "title": "ग्राहक पहिचान (KYC / Customer Due Diligence)",
         "message": "नेपाल राष्ट्र बैंकको निर्देशनमा **KYC (ग्राहक पहिचान)** सम्बन्धी व्यवस्था विभिन्न क्षेत्रमा फैलिएको छ। तपाईं विशेष गरी कुन विषयमा जानकारी चाहनुहुन्छ?",
         "options": [
-            {"label": "📋 ग्राहक पहिचान (KYC) फाराम तथा आवश्यक कागजात", "query": "ग्राहक पहिचान KYC फाराम तथा खाता खोल्दा आवश्यक कागजातहरू के के हुन्?"},
-            {"label": "🛡️ उच्च जोखिम तथा PEPs (Politically Exposed Persons) सम्बन्धी व्यवस्था", "query": "उच्च जोखिम ग्राहक तथा PEPs पहिचान र कारोबार सम्बन्धी व्यवस्था के छ?"},
-            {"label": "⏰ ग्राहक विवरण आवधिक अद्यावधिक (Periodic Updating) गर्ने समयसीमा", "query": "ग्राहक पहिचान KYC विवरण कति समयमा अद्यावधिक (Update) गर्नुपर्छ?"},
-            {"label": "📱 विद्युतीय ग्राहक पहिचान (e-KYC / Video KYC)", "query": "विद्युतीय माध्यमबाट ग्राहक पहिचान e-KYC तथा Video KYC सम्बन्धी व्यवस्था"}
+            {"label": "ग्राहक पहिचान (KYC) फाराम तथा आवश्यक कागजात", "query": "ग्राहक पहिचान KYC फाराम तथा खाता खोल्दा आवश्यक कागजातहरू के के हुन्?"},
+            {"label": "उच्च जोखिम तथा PEPs (Politically Exposed Persons) सम्बन्धी व्यवस्था", "query": "उच्च जोखिम ग्राहक तथा PEPs पहिचान र कारोबार सम्बन्धी व्यवस्था के छ?"},
+            {"label": "ग्राहक विवरण आवधिक अद्यावधिक (Periodic Updating) गर्ने समयसीमा", "query": "ग्राहक पहिचान KYC विवरण कति समयमा अद्यावधिक (Update) गर्नुपर्छ?"},
+            {"label": "विद्युतीय ग्राहक पहिचान (e-KYC / Video KYC)", "query": "विद्युतीय माध्यमबाट ग्राहक पहिचान e-KYC तथा Video KYC सम्बन्धी व्यवस्था"}
         ]
     },
     "loan": {
@@ -668,10 +668,10 @@ BROAD_TOPICS = {
         "title": "कर्जा तथा सापट सम्बन्धी व्यवस्था (Loans & Advances)",
         "message": "नेपाल राष्ट्र बैंकको **कर्जा (Loan)** सम्बन्धी निर्देशनहरू विभिन्न शीर्षकमा विभाजित छन्। तपाईं कुन कर्जाको विषयमा सोध्न चाहनुहुन्छ?",
         "options": [
-            {"label": "🏠 व्यक्तिगत आवासीय घर कर्जा (Personal Residential Loan) सीमा र LTV", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?"},
-            {"label": "🎯 एकल ग्राहक कर्जा सीमा (Single Obligor Limit - SOL) कति प्रतिशत छ?", "query": "एकल ग्राहक कर्जा सीमा Single Obligor Limit कति प्रतिशत तोकिएको छ?"},
-            {"label": "🚗 सवारी साधन कर्जा (Auto / Vehicle Loan) LTV सीमा", "query": "सवारी साधन खरिद कर्जाको LTV सीमा के कति छ?"},
-            {"label": "📊 कर्जा नोक्सानी व्यवस्था तथा वर्गीकरण (NPL & Loan Loss Provision)", "query": "कर्जा वर्गीकरण र कर्जा नोक्सानी व्यवस्था Loan Loss Provision दरहरू के के हुन्?"}
+            {"label": "व्यक्तिगत आवासीय घर कर्जा (Personal Residential Loan) सीमा र LTV", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?"},
+            {"label": "एकल ग्राहक कर्जा सीमा (Single Obligor Limit - SOL) कति प्रतिशत छ?", "query": "एकल ग्राहक कर्जा सीमा Single Obligor Limit कति प्रतिशत तोकिएको छ?"},
+            {"label": "सवारी साधन कर्जा (Auto / Vehicle Loan) LTV सीमा", "query": "सवारी साधन खरिद कर्जाको LTV सीमा के कति छ?"},
+            {"label": "कर्जा नोक्सानी व्यवस्था तथा वर्गीकरण (NPL & Loan Loss Provision)", "query": "कर्जा वर्गीकरण र कर्जा नोक्सानी व्यवस्था Loan Loss Provision दरहरू के के हुन्?"}
         ]
     }
 }
@@ -701,12 +701,12 @@ UNIFIED_DIRECTIVE_CHAPTERS = {
 }
 
 VERIFIED_SUGGESTION_PROMPTS = [
-    {"label": "🏠 व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा कति हो?"},
-    {"label": "🎯 एकल ग्राहक कर्जा सीमा (Single Obligor Limit - SOL) कति प्रतिशत छ?", "query": "एकल ग्राहक कर्जा सीमा Single Obligor Limit कति प्रतिशत तोकिएको छ?"},
-    {"label": "📊 Finance Companies को लागि Minimum CRR र SLR कति छ?", "query": "Minimum CRR and SLR requirement for finance companies?"},
-    {"label": "🏢 गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?", "query": "गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?"},
-    {"label": "📜 वित्त कम्पनीले अन्तर्राष्ट्रिय प्रतितपत्र (Import LC) जारी गर्न पाउँछ?", "query": "Can finance companies issue international import Letters of Credit (LC)?"},
-    {"label": "📱 वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर कारोबार सीमा के छ?", "query": "वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर कारोबार सीमा के छ?"}
+    {"label": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा र LTV कति हो?", "query": "व्यक्तिगत आवासीय घर कर्जाको अधिकतम सीमा कति हो?"},
+    {"label": "एकल ग्राहक कर्जा सीमा (Single Obligor Limit - SOL) कति प्रतिशत छ?", "query": "एकल ग्राहक कर्जा सीमा Single Obligor Limit कति प्रतिशत तोकिएको छ?"},
+    {"label": "Finance Companies को लागि Minimum CRR र SLR कति छ?", "query": "Minimum CRR and SLR requirement for finance companies?"},
+    {"label": "गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?", "query": "गैर-बैंकिङ सम्पत्ति (NBA) कति वर्षभित्र बिक्री गर्नुपर्छ?"},
+    {"label": "वित्त कम्पनीले अन्तर्राष्ट्रिय प्रतितपत्र (Import LC) जारी गर्न पाउँछ?", "query": "Can finance companies issue international import Letters of Credit (LC)?"},
+    {"label": "वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर कारोबार सीमा के छ?", "query": "वालेटबाट बैंक खातामा दैनिक फण्ड ट्रान्सफर कारोबार सीमा के छ?"}
 ]
 
 UNCLEAR_QUERY_PATTERNS = [
@@ -743,37 +743,37 @@ def format_document_display_label(source_filename: str) -> str:
     if 'unified' in src_lower:
         yr = re.search(r'20\d{2}', src)
         yr_str = f" {yr.group(0)}" if yr else ""
-        return f"🏦 एकीकृत निर्देशन (Unified Directives{yr_str})"
+        return f"एकीकृत निर्देशन (Unified Directives{yr_str})"
         
     # 2. Payment Directives
     if 'payment' in src_lower or ('directive' in src_lower and 'unified' not in src_lower):
         yr = re.search(r'20\d{2}', src)
         yr_str = f" {yr.group(0)}" if yr else ""
-        return f"📱 भुक्तानी प्रणाली निर्देशन (Payment Directives{yr_str})"
+        return f"भुक्तानी प्रणाली निर्देशन (Payment Directives{yr_str})"
         
     # 3. Supervision & Annual Reports
     if 'report' in src_lower or 'supervision' in src_lower:
         yr = re.search(r'20\d{2}', src)
         yr_str = f" {yr.group(0)}" if yr else ""
-        return f"📊 वार्षिक / सुपरीवेक्षण प्रतिवेदन (Annual Report{yr_str})"
+        return f"वार्षिक / सुपरीवेक्षण प्रतिवेदन (Annual Report{yr_str})"
         
     # 4. Acts & Laws
     if 'bafia' in src_lower or ('bank' in src_lower and 'act' in src_lower):
-        return "📜 बैंक तथा वित्तीय संस्था सम्बन्धी ऐन (BAFIA)"
+        return "बैंक तथा वित्तीय संस्था सम्बन्धी ऐन (BAFIA)"
     if 'nrb_act' in src_lower or 'rastra_bank_act' in src_lower:
-        return "⚖️ नेपाल राष्ट्र बैंक ऐन (NRB Act)"
+        return "नेपाल राष्ट्र बैंक ऐन (NRB Act)"
     if 'act' in src_lower or 'ऐन' in src_lower:
         base = os.path.splitext(src)[0].replace('_', ' ')
-        return f"⚖️ {base}"
+        return f"{base}"
         
     # 5. Circulars
     if 'circular' in src_lower or 'परिपत्र' in src_lower:
         base = os.path.splitext(src)[0].replace('_', ' ')
-        return f"📑 परिपत्र (Circular: {base})"
+        return f"परिपत्र (Circular: {base})"
         
     # 6. Any other general document
     clean_name = os.path.splitext(src)[0].replace('_', ' ').replace('-', ' ').title()
-    return f"📄 {clean_name}"
+    return f"{clean_name}"
 
 def extract_matched_chapters_from_chunks(chunks: list) -> list:
     """Detects which Unified Directive chapters are represented in retrieved chunks using headings and keywords."""
@@ -867,7 +867,7 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
             # Add Payment Option if present
             if 'payment' in active_cats:
                 combined_options.append({
-                    "label": "📱 भुक्तानी प्रणाली निर्देशन (Payment Directives - वालेट, QR तथा कार्ड)",
+                    "label": "भुक्तानी प्रणाली निर्देशन (Payment Directives - वालेट, QR तथा कार्ड)",
                     "category": "payment",
                     "query": f"{clean_q} (भुक्तानी प्रणाली निर्देशन)"
                 })
@@ -875,7 +875,7 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
             # Add Supervision / Annual Report Option if present
             if 'report' in active_cats:
                 combined_options.append({
-                    "label": "📊 वार्षिक / सुपरीवेक्षण प्रतिवेदन (Supervision & Annual Reports)",
+                    "label": "वार्षिक / सुपरीवेक्षण प्रतिवेदन (Supervision & Annual Reports)",
                     "category": "report",
                     "query": f"{clean_q} (सुपरीवेक्षण प्रतिवेदन)"
                 })
@@ -899,13 +899,13 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                     slots = max(1, 4 - len(combined_options))
                     for ch_num, ch_name, _ in matched_chapters[:slots]:
                         combined_options.append({
-                            "label": f"🏦 एकीकृत निर्देशन (अध्याय {ch_num}): {ch_name}",
+                            "label": f"एकीकृत निर्देशन (अध्याय {ch_num}): {ch_name}",
                             "category": "unified",
                             "query": f"{clean_q} निर्देशन नं. {ch_num}"
                         })
                 else:
                     combined_options.append({
-                        "label": "🏦 एकीकृत निर्देशन (Unified Directives - बैंकिङ तथा कर्जा कारोबार)",
+                        "label": "एकीकृत निर्देशन (Unified Directives - बैंकिङ तथा कर्जा कारोबार)",
                         "category": "unified",
                         "query": f"{clean_q} (एकीकृत निर्देशन)"
                     })
@@ -935,7 +935,7 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                 chapter_options = []
                 for num, name, _ in valid_chapters[:4]:
                     chapter_options.append({
-                        "label": f"📖 एकीकृत निर्देशन (अध्याय {num}): {name}",
+                        "label": f"एकीकृत निर्देशन (अध्याय {num}): {name}",
                         "category": "unified",
                         "query": f"{clean_q} निर्देशन नं. {num}"
                     })

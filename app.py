@@ -267,7 +267,6 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
                                 <div style="font-weight: 600; color: #0F172A; font-size: 0.84rem; word-break: break-word; line-height: 1.3;">{src_name}</div>
                                 <div style="display: flex; align-items: center; gap: 6px; margin-top: 3px;">
                                     <span style="background: #F0F7FD; color: #1c75bb; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; border: 1px solid #BAE0F8;">Page {pg_num}</span>
-                                    <span style="color: #64748B; font-size: 0.72rem;">Verified directive</span>
                                 </div>
                             </div>
                         </div>
@@ -502,13 +501,10 @@ def render_assistant_page():
             with col_body:
                 if msg.get("clarification_options"):
                     c_title = msg.get("clarification_title", "स्पष्टीकरण आवश्यक (Clarification)")
-                    c_type = msg.get("clarification_type", "disambiguation")
-                    icon = "🎯" if c_type in ("broad_topic", "intra_chapter") else ("🌐" if c_type == "cross_category" else "💡")
 
                     st.markdown(f"""
                     <div class="clarification-card">
                         <div class="clarification-card-header">
-                            <span style="font-size: 1.1rem;">{icon}</span>
                             <span class="clarification-card-title">{c_title}</span>
                         </div>
                         <div class="clarification-card-body">
@@ -527,11 +523,11 @@ def render_assistant_page():
                             st.rerun()
 
                     if msg.get("latency"):
-                        st.caption(f"⚡ {msg['latency']}")
+                        st.caption(f"{msg['latency']}")
                 else:
                     st.markdown(msg["content"], unsafe_allow_html=True)
                     if msg.get("latency"):
-                        st.caption(f"⚡ {msg['latency']}")
+                        st.caption(f"{msg['latency']}")
                     if msg.get("sources") or msg.get("other_sources"):
                         num_s = len(msg.get("sources", []))
                         col_ind, col_view = st.columns([0.65, 0.35], vertical_alignment="center")
@@ -583,7 +579,7 @@ def render_assistant_page():
         status_placeholder.markdown("""
         <div class="system-status-indicator">
             <span class="status-pulse-dot"></span>
-            <span>🔍 Searching regulatory directives and supervision reports...</span>
+            <span>Searching regulatory directives and supervision reports...</span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -611,7 +607,7 @@ def render_assistant_page():
                     cat_matched_docs = [d for d in doc_year_map.keys() if categorize_file(d) == target_scope_cat]
                     if cat_matched_docs:
                         effective_doc = cat_matched_docs if len(cat_matched_docs) > 1 else cat_matched_docs[0]
-                        routed_badge = f"🎯 Scoped to {CATEGORY_OPTIONS.get(target_scope_cat, target_scope_cat)}"
+                        routed_badge = f"Scoped to {CATEGORY_OPTIONS.get(target_scope_cat, target_scope_cat)}"
 
             # Fiscal Year Auto-Routing: Dynamically locks scope to all primary regulatory documents of target year
             if len(matched_years) == 1:
@@ -623,10 +619,10 @@ def render_assistant_page():
                 if docs_for_year:
                     effective_doc = docs_for_year if len(docs_for_year) > 1 else docs_for_year[0]
                     doc_names_str = ", ".join(f"`{d}`" for d in (docs_for_year if isinstance(docs_for_year, list) else [docs_for_year]))
-                    routed_badge = f"🎯 Auto-routed to FY {target_yr} ({doc_names_str})"
+                    routed_badge = f"Auto-routed to FY {target_yr} ({doc_names_str})"
             elif len(matched_years) > 1:
                 yrs_str = ", ".join(str(y) for y in sorted(matched_years))
-                routed_badge = f"📊 Comparative Multi-Year Query (analyzing across years: {yrs_str})"
+                routed_badge = f"Comparative Multi-Year Query (analyzing across years: {yrs_str})"
 
             search_query = clean_query_for_search(active_query, matched_years) if effective_doc else active_query
             if not search_query.strip():
@@ -635,7 +631,7 @@ def render_assistant_page():
             status_placeholder.markdown("""
             <div class="system-status-indicator">
                 <span class="status-pulse-dot"></span>
-                <span>📖 Extracting relevant provisions, clauses, and tables...</span>
+                <span>Extracting relevant provisions, clauses, and tables...</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -727,7 +723,7 @@ def render_assistant_page():
             status_placeholder.markdown("""
             <div class="system-status-indicator">
                 <span class="status-pulse-dot"></span>
-                <span>🧠 Synthesizing regulatory answer...</span>
+                <span>Synthesizing regulatory answer...</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -807,7 +803,7 @@ def render_assistant_page():
 
                 elapsed_sec = time.time() - start_time
                 latency_str = f"Answered in {elapsed_sec:.2f}s via {active_model_used} on Groq LPU"
-                st.caption(f"⚡ {latency_str}")
+                st.caption(f"{latency_str}")
 
                 # Extract verified sources cited strictly based on answer and target
                 cited_sources = extract_cited_sources(
