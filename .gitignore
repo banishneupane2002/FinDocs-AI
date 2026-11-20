@@ -10,7 +10,7 @@ __pycache__/
 *.so
 
 # LanceDB vector database (generated locally by INGEST.PY)
-lancedb_data/
+# lancedb_data/
 
 # Virtual environments
 venv/

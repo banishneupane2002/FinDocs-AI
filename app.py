@@ -68,6 +68,11 @@ brand_logo_b64 = get_brand_logo_b64()
 
 # 3. Read Groq API Key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    try:
+        GROQ_API_KEY = st.secrets.get("GROQ_API_KEY", "")
+    except Exception:
+        pass
 if not GROQ_API_KEY and os.path.exists(".env"):
     with open(".env", "r", encoding="utf-8") as f:
         for line in f:
