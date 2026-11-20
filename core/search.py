@@ -734,6 +734,47 @@ def is_specific_query(query: str) -> bool:
         return True
     return False
 
+def format_document_display_label(source_filename: str) -> str:
+    """Dynamically converts any filename into a clean, human-readable UI label with emojis."""
+    src = source_filename.strip()
+    src_lower = src.lower()
+    
+    # 1. Unified Directives
+    if 'unified' in src_lower:
+        yr = re.search(r'20\d{2}', src)
+        yr_str = f" {yr.group(0)}" if yr else ""
+        return f"🏦 एकीकृत निर्देशन (Unified Directives{yr_str})"
+        
+    # 2. Payment Directives
+    if 'payment' in src_lower or ('directive' in src_lower and 'unified' not in src_lower):
+        yr = re.search(r'20\d{2}', src)
+        yr_str = f" {yr.group(0)}" if yr else ""
+        return f"📱 भुक्तानी प्रणाली निर्देशन (Payment Directives{yr_str})"
+        
+    # 3. Supervision & Annual Reports
+    if 'report' in src_lower or 'supervision' in src_lower:
+        yr = re.search(r'20\d{2}', src)
+        yr_str = f" {yr.group(0)}" if yr else ""
+        return f"📊 वार्षिक / सुपरीवेक्षण प्रतिवेदन (Annual Report{yr_str})"
+        
+    # 4. Acts & Laws
+    if 'bafia' in src_lower or ('bank' in src_lower and 'act' in src_lower):
+        return "📜 बैंक तथा वित्तीय संस्था सम्बन्धी ऐन (BAFIA)"
+    if 'nrb_act' in src_lower or 'rastra_bank_act' in src_lower:
+        return "⚖️ नेपाल राष्ट्र बैंक ऐन (NRB Act)"
+    if 'act' in src_lower or 'ऐन' in src_lower:
+        base = os.path.splitext(src)[0].replace('_', ' ')
+        return f"⚖️ {base}"
+        
+    # 5. Circulars
+    if 'circular' in src_lower or 'परिपत्र' in src_lower:
+        base = os.path.splitext(src)[0].replace('_', ' ')
+        return f"📑 परिपत्र (Circular: {base})"
+        
+    # 6. Any other general document
+    clean_name = os.path.splitext(src)[0].replace('_', ' ').replace('-', ' ').title()
+    return f"📄 {clean_name}"
+
 def extract_matched_chapters_from_chunks(chunks: list) -> list:
     """Detects which Unified Directive chapters are represented in retrieved chunks using headings and keywords."""
     chapter_scores = {}
@@ -756,16 +797,16 @@ def extract_matched_chapters_from_chunks(chunks: list) -> list:
                 chapter_scores[ch_num] = chapter_scores.get(ch_num, 0) + matches
 
     sorted_chapters = sorted(chapter_scores.items(), key=lambda x: x[1], reverse=True)
-    return [(num, UNIFIED_DIRECTIVE_CHAPTERS[num]["short"]) for num, score in sorted_chapters if score >= 2]
+    return [(num, UNIFIED_DIRECTIVE_CHAPTERS[num]["short"], score) for num, score in sorted_chapters if score >= 2]
 
 def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat: str = "all") -> tuple[bool, dict | None]:
     """
-    Intelligently determines whether a query is broad/ambiguous across directives or sub-topics.
-    Complete 4-Step Decision Tree:
+    Intelligently determines whether a query is broad/ambiguous across directives or sub-topics
+    using Option B: Dynamic Document & Chapter Clustering with Dominance Safeguards.
     1. Specificity Fast-Track (Safe, zero regression)
     2. Low-Confidence Suggestion (Did you mean?)
-    3. Broad Topic & Cross-Category Smart Direct Options (1-Click Combined Category + Chapter)
-    4. Intra-Document Chapter Disambiguation (Single Document / Category multi-chapter match)
+    3. Broad Topic & Dynamic Multi-Document Clustering (1-Click Combined Category + Chapter)
+    4. Intra-Document Chapter Disambiguation (Single Document / Multi-Chapter Split)
     Runs 100% locally in Python (0 Groq tokens, < 1ms latency).
     """
     clean_q = query.strip()
@@ -796,22 +837,34 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                 "options": topic_data["options"]
             }
 
-    # Step 3B: Smart Direct Options (Cross-Category & Multi-Chapter Unified in 1 Click)
-    # Strictly gated to recognized polysemous cross-directive keywords or bare <= 2 word terms
+    # Step 3B: Dynamic Multi-Document & Category Clustering
+    # Gated to polysemous terms or short <= 2 word queries
     is_poly = is_polysemous_cross_category(clean_q)
     if selected_cat == "all" and retrieved_chunks and (is_poly or len(words) <= 2):
         from core.ingestion import categorize_file
         top_slice = retrieved_chunks[:8]
+        
+        # 1. Group by category and source
         cat_chunks = {}
+        doc_chunks = {}
         for c in top_slice:
-            cat = categorize_file(c.get('source', ''), c.get('text', ''))
+            src = c.get('source', '')
+            cat = categorize_file(src, c.get('text', ''))
             cat_chunks.setdefault(cat, []).append(c)
+            if src:
+                doc_chunks.setdefault(src, []).append(c)
 
-        active_cats = [cat for cat, chks in cat_chunks.items() if len(chks) >= 2 and cat in ('unified', 'payment', 'report')]
-        if len(active_cats) >= 2:
+        total_slice = len(top_slice)
+        max_doc_share = max((len(chks) for chks in doc_chunks.values()), default=0) / max(total_slice, 1)
+
+        # 2. Check if multiple distinct document categories share the top results
+        active_cats = [cat for cat, chks in cat_chunks.items() if len(chks) >= 2]
+        
+        # A split exists if there are 2+ active categories AND no single document has >= 70% dominance
+        if len(active_cats) >= 2 and max_doc_share < 0.70:
             combined_options = []
 
-            # 1. Payment Category Option
+            # Add Payment Option if present
             if 'payment' in active_cats:
                 combined_options.append({
                     "label": "📱 भुक्तानी प्रणाली निर्देशन (Payment Directives - वालेट, QR तथा कार्ड)",
@@ -819,7 +872,7 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                     "query": f"{clean_q} (भुक्तानी प्रणाली निर्देशन)"
                 })
 
-            # 2. Supervision / Annual Report Option
+            # Add Supervision / Annual Report Option if present
             if 'report' in active_cats:
                 combined_options.append({
                     "label": "📊 वार्षिक / सुपरीवेक्षण प्रतिवेदन (Supervision & Annual Reports)",
@@ -827,13 +880,24 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                     "query": f"{clean_q} (सुपरीवेक्षण प्रतिवेदन)"
                 })
 
-            # 3. Unified Directives - Extract specific chapters directly from the document
+            # Add Dynamic Act / Other Document Options if present
+            for src, chks in doc_chunks.items():
+                cat = categorize_file(src)
+                if cat not in ('unified', 'payment', 'report') and len(chks) >= 2:
+                    label = format_document_display_label(src)
+                    combined_options.append({
+                        "label": label,
+                        "category": cat,
+                        "query": f"{clean_q} ({os.path.splitext(src)[0]})"
+                    })
+
+            # Add Unified Directives - Extract specific chapters directly from the document
             unified_chunks = cat_chunks.get('unified', [])
             if unified_chunks:
                 matched_chapters = extract_matched_chapters_from_chunks(unified_chunks)
                 if matched_chapters:
                     slots = max(1, 4 - len(combined_options))
-                    for ch_num, ch_name in matched_chapters[:slots]:
+                    for ch_num, ch_name, _ in matched_chapters[:slots]:
                         combined_options.append({
                             "label": f"🏦 एकीकृत निर्देशन (अध्याय {ch_num}): {ch_name}",
                             "category": "unified",
@@ -850,28 +914,36 @@ def detect_query_disambiguation(query: str, retrieved_chunks: list, selected_cat
                 return True, {
                     "type": "cross_category",
                     "title": "सटीक विषय छनोट (Select Specific Regulation)",
-                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका विभिन्न निर्देशन तथा अध्यायहरूमा समेटिएको छ। कृपया तपाईंले हेर्न चाहनुभएको विषय छनोट गर्नुहोस् वा (specific) प्रश्न सोध्नुहोस:",
+                    "message": f"तपाईंको प्रश्न '**{clean_q}**' नेपाल राष्ट्र बैंकका विभिन्न निर्देशन तथा दस्तावेजहरूमा समेटिएको छ। कृपया तपाईंले हेर्न चाहनुभएको विषय छनोट गर्नुहोस् वा (specific) प्रश्न सोध्नुहोस:",
                     "options": combined_options[:4]
                 }
 
-    # Step 4: Intra-Document Chapter Disambiguation (Single Document / Category multi-chapter match)
-    # Strictly gated to bare 1-2 word polysemous queries with multiple candidate chapters
+    # Step 4: Dynamic Intra-Document Chapter Disambiguation (Single Document / Multi-Chapter Split)
     if is_poly or len(words) <= 2:
         top_slice = retrieved_chunks[:8]
         matched_chapters = extract_matched_chapters_from_chunks(top_slice)
-        if len(matched_chapters) >= 2:
-            chapter_options = []
-            for num, name in matched_chapters[:4]:
-                chapter_options.append({
-                    "label": f"📖 एकीकृत निर्देशन (अध्याय {num}): {name}",
-                    "category": "unified",
-                    "query": f"{clean_q} निर्देशन नं. {num}"
-                })
-            return True, {
-                "type": "intra_chapter",
-                "title": "निर्देशन अध्याय छनोट (Select Specific Chapter)",
-                "message": f"एकीकृत निर्देशनभित्र '**{clean_q}**' सम्बन्धी व्यवस्था निम्न फरक-फरक शीर्षकहरूमा उल्लेख छ। तपाईं कुन व्यवस्था हेर्न चाहनुहुन्छ?",
-                "options": chapter_options
-            }
+        
+        # Valid candidate chapters with score >= 2
+        valid_chapters = [(num, name, score) for num, name, score in matched_chapters if score >= 2]
+        if len(valid_chapters) >= 2:
+            total_score = sum(s for _, _, s in valid_chapters)
+            top_score = valid_chapters[0][2]
+            top_share = top_score / max(total_score, 1)
+
+            # Dominance safeguard: if the top chapter has >= 70% share, do NOT show options!
+            if top_share < 0.70:
+                chapter_options = []
+                for num, name, _ in valid_chapters[:4]:
+                    chapter_options.append({
+                        "label": f"📖 एकीकृत निर्देशन (अध्याय {num}): {name}",
+                        "category": "unified",
+                        "query": f"{clean_q} निर्देशन नं. {num}"
+                    })
+                return True, {
+                    "type": "intra_chapter",
+                    "title": "निर्देशन अध्याय छनोट (Select Specific Chapter)",
+                    "message": f"एकीकृत निर्देशनभित्र '**{clean_q}**' सम्बन्धी व्यवस्था निम्न फरक-फरक शीर्षकहरूमा उल्लेख छ। तपाईं कुन व्यवस्था हेर्न चाहनुहुन्छ?",
+                    "options": chapter_options
+                }
 
     return False, None
