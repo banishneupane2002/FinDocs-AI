@@ -1271,16 +1271,21 @@ RAW_CSS = """
     header[data-testid="stHeader"] button,
     header[data-testid="stHeader"] [data-testid="stSidebarCollapseButton"],
     header[data-testid="stHeader"] [data-testid="stExpandSidebarButton"],
-    [data-testid="stExpandSidebarButton"] {
+    header[data-testid="stHeader"] [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stExpandSidebarButton"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarCollapsedControl"] button {
         pointer-events: auto !important;
     }
 
-    /* Floating Sidebar Toggle Button */
-    [data-testid="stExpandSidebarButton"] {
+    /* Floating Sidebar Toggle Button (Supports both legacy stExpandSidebarButton and modern stSidebarCollapsedControl) */
+    [data-testid="stExpandSidebarButton"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarCollapsedControl"] button {
         position: fixed !important;
         top: 104px !important;
         left: 24px !important;
-        z-index: 997 !important;
+        z-index: 1000 !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -1293,22 +1298,30 @@ RAW_CSS = """
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
         transition: transform 0.15s ease, opacity 0.15s ease !important;
     }
 
-    [data-testid="stExpandSidebarButton"]:hover {
+    [data-testid="stExpandSidebarButton"]:hover,
+    [data-testid="stSidebarCollapsedControl"]:hover,
+    [data-testid="stSidebarCollapsedControl"] button:hover {
         transform: scale(1.12) !important;
-        opacity: 0.75 !important;
+        opacity: 0.85 !important;
     }
 
     [data-testid="stExpandSidebarButton"] *,
     [data-testid="stExpandSidebarButton"] svg,
-    [data-testid="stExpandSidebarButton"] span {
+    [data-testid="stExpandSidebarButton"] span,
+    [data-testid="stSidebarCollapsedControl"] button svg,
+    [data-testid="stSidebarCollapsedControl"] button span {
         display: none !important;
         visibility: hidden !important;
     }
 
-    [data-testid="stExpandSidebarButton"]::after {
+    [data-testid="stExpandSidebarButton"]::after,
+    [data-testid="stSidebarCollapsedControl"] button::after,
+    [data-testid="stSidebarCollapsedControl"]::after {
         content: "" !important;
         display: block !important;
         width: 20px !important;
@@ -1318,6 +1331,11 @@ RAW_CSS = """
         background-position: center !important;
         background-size: contain !important;
         visibility: visible !important;
+        cursor: pointer !important;
+    }
+
+    [data-testid="stSidebarCollapsedControl"]:has(button)::after {
+        display: none !important;
     }
 
     section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] button {
@@ -1391,7 +1409,12 @@ RAW_CSS = """
         .navbar-title-heading { font-size: 1.05rem !important; }
         .navbar-title-sub { font-size: 0.78rem !important; }
         .navbar-status-badge { padding: 5px 12px !important; font-size: 0.76rem !important; }
-        [data-testid="stExpandSidebarButton"] { top: 98px !important; left: 20px !important; }
+        [data-testid="stExpandSidebarButton"],
+        [data-testid="stSidebarCollapsedControl"],
+        [data-testid="stSidebarCollapsedControl"] button {
+            top: 98px !important;
+            left: 20px !important;
+        }
     }
 
     /* 2. Tablet / Narrow Viewport (< 880px) */
@@ -1414,13 +1437,17 @@ RAW_CSS = """
         .navbar-title-sub { display: none !important; }
         .navbar-title-container { gap: 10px !important; }
         .navbar-status-badge { padding: 4px 10px !important; font-size: 0.74rem !important; }
-        [data-testid="stExpandSidebarButton"] {
+        [data-testid="stExpandSidebarButton"],
+        [data-testid="stSidebarCollapsedControl"],
+        [data-testid="stSidebarCollapsedControl"] button {
             top: 88px !important;
             left: 16px !important;
             width: 28px !important;
             height: 28px !important;
         }
-        [data-testid="stExpandSidebarButton"]::after {
+        [data-testid="stExpandSidebarButton"]::after,
+        [data-testid="stSidebarCollapsedControl"] button::after,
+        [data-testid="stSidebarCollapsedControl"]::after {
             width: 24px !important;
             height: 24px !important;
         }
@@ -1457,13 +1484,17 @@ RAW_CSS = """
             min-width: 20px !important;
             min-height: 20px !important;
         }
-        [data-testid="stExpandSidebarButton"] {
+        [data-testid="stExpandSidebarButton"],
+        [data-testid="stSidebarCollapsedControl"],
+        [data-testid="stSidebarCollapsedControl"] button {
             top: 76px !important;
             left: 10px !important;
             width: 26px !important;
             height: 26px !important;
         }
-        [data-testid="stExpandSidebarButton"]::after {
+        [data-testid="stExpandSidebarButton"]::after,
+        [data-testid="stSidebarCollapsedControl"] button::after,
+        [data-testid="stSidebarCollapsedControl"]::after {
             width: 22px !important;
             height: 22px !important;
         }

@@ -280,7 +280,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
 
                     st.link_button(
                         f"Open Page {pg_num} ↗", 
-                        f"/app/static/{safe_filename}#page={pg_num}",
+                        f"app/static/{safe_filename}#page={pg_num}",
                         use_container_width=True,
                         key=f"{key_prefix}_link_{idx}_{pg_num}"
                     )
@@ -331,7 +331,7 @@ def render_right_sources_panel(active_msg=None, key_prefix="rs"):
                             """, unsafe_allow_html=True)
                             st.link_button(
                                 f"Open Page {pg_num} ↗", 
-                                f"/app/static/{safe_filename}#page={pg_num}",
+                                f"app/static/{safe_filename}#page={pg_num}",
                                 use_container_width=True,
                                 key=f"{key_prefix}_rem_{idx}_{pg_num}"
                             )
