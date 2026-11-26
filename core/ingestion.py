@@ -13,7 +13,7 @@ def run_ingestion():
     return subprocess.run([sys.executable, "INGEST.PY"], capture_output=True, text=True)
 
 def check_filesystem_out_of_sync(watch_folder: str = "File_System", tracker_file: str = "indexed_files.json") -> bool:
-    """Checks in < 1ms whether files in File_System/ were added, modified, or deleted compared to tracker."""
+    """Checks in < 1ms whether files in File_System/ were added or deleted compared to tracker."""
     if not os.path.exists(watch_folder):
         return False
     indexed_files = {}
@@ -25,24 +25,11 @@ def check_filesystem_out_of_sync(watch_folder: str = "File_System", tracker_file
             indexed_files = {}
 
     supported_exts = (".pdf", ".docx", ".txt")
-    all_files = [f for f in os.listdir(watch_folder) if f.lower().endswith(supported_exts)]
+    disk_files = {f for f in os.listdir(watch_folder) if f.lower().endswith(supported_exts)}
+    tracked_files = set(indexed_files.keys())
 
-    # Check for new or updated files on disk
-    for fname in all_files:
-        fpath = os.path.join(watch_folder, fname)
-        try:
-            mtime = os.path.getmtime(fpath)
-            if fname not in indexed_files or indexed_files[fname] < mtime:
-                return True
-        except Exception:
-            pass
-
-    # Check for files removed from disk
-    for fname in list(indexed_files.keys()):
-        if fname not in all_files:
-            return True
-
-    return False
+    # Only consider out of sync if files were actually added or removed
+    return disk_files != tracked_files
 
 def delete_document(filename: str, live_table=None) -> bool:
     """Safely removes a file from File_System, cleans up LanceDB records, and updates tracker."""

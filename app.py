@@ -896,17 +896,8 @@ def render_admin_page():
                 time.sleep(0.6)
                 st.rerun()
 
-    @st.cache_data(ttl=60, show_spinner=False)
-    def load_admin_data():
-        try:
-            t = get_live_table()
-            return t.to_pandas()
-        except Exception:
-            return None
-
-    df = load_admin_data()
     total_docs = len(all_disk_files)
-    total_chunks = len(df) if df is not None else 0
+    total_chunks = sum(sources_summary.values()) if sources_summary else 0
 
     # Top Unified Institutional Navbar (Responsive: Logo Left, Admin Header Centered, Status Right)
     st.markdown(f"""
@@ -1089,8 +1080,11 @@ def render_admin_page():
 
     filter_words = admin_filter.split() if admin_filter else []
 
-    # Build metadata for all files in File_System
-    all_metadata = [get_file_metadata(f, sources_summary, df=df) for f in all_disk_files]
+    @st.cache_data(ttl=300, show_spinner=False)
+    def load_admin_file_metadata(files_tuple):
+        return [get_file_metadata(f, sources_summary) for f in files_tuple]
+
+    all_metadata = load_admin_file_metadata(tuple(all_disk_files))
     live_table_for_delete = get_live_table()
 
     def doc_matches_filter(doc, words, cat_title=""):
