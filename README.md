@@ -1,3 +1,13 @@
+---
+title: FinDocs AI
+emoji: 🏦
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+app_file: app.py
+pinned: false
+---
+
 # NRB Banking Document Intelligence System (RAG)
 
 An offline-first, dual-language Retrieval-Augmented Generation (RAG) system built for searching, verifying, and querying Nepal Rastra Bank (NRB) Directives, Circulars, and Annual Supervision Reports in both English and official Nepali.
