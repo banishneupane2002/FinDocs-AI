@@ -316,49 +316,46 @@ RAW_CSS = """
     /* ==========================================================================
        3. LEFT SIDEBAR (OVERLAY DRAWER & NAV LINKS)
        ========================================================================== */
-    section[data-testid="stSidebar"],
-    section[data-testid="stSidebar"] > div:first-child {
+    section[data-testid="stSidebar"] {
         background: __SIDEBAR_BG__ !important;
         border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
         top: 0 !important;
         height: 100vh !important;
         height: 100dvh !important;
-        width: 21rem !important;
-        min-width: 21rem !important;
-        max-width: 21rem !important;
         position: fixed !important;
         z-index: 1020 !important;
         box-shadow: 8px 0 32px rgba(28, 117, 187, 0.30) !important;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s ease !important;
     }
 
-    section[data-testid="stSidebar"][aria-expanded="false"],
-    section[data-testid="stSidebar"][aria-expanded="false"] > div:first-child {
-        transform: translateX(-150%) !important;
-        margin-left: -30rem !important;
-        width: 0 !important;
-        min-width: 0 !important;
-        max-width: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    section[data-testid="stSidebar"][aria-expanded="false"] * {
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    section[data-testid="stSidebar"][aria-expanded="true"] {
+    section[data-testid="stSidebar"][aria-expanded="true"],
+    section[data-testid="stSidebar"][aria-expanded="true"] > div:first-child {
+        width: 21rem !important;
+        min-width: 21rem !important;
+        max-width: 21rem !important;
         transform: translateX(0) !important;
         margin-left: 0 !important;
         box-shadow: 6px 0 24px rgba(0, 0, 0, 0.45) !important;
         pointer-events: auto !important;
         visibility: visible !important;
         opacity: 1 !important;
+        display: block !important;
+    }
+
+    section[data-testid="stSidebar"][aria-expanded="false"],
+    section[data-testid="stSidebar"][aria-expanded="false"] > div:first-child,
+    section[data-testid="stSidebar"][aria-expanded="false"] * {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        transform: translateX(-200vw) !important;
+        margin-left: -200vw !important;
+        box-shadow: none !important;
+        border: none !important;
+        pointer-events: none !important;
     }
 
     section[data-testid="stSidebar"] * {
@@ -1439,7 +1436,7 @@ RAW_CSS = """
             padding: 0 16px !important;
             height: 76px !important;
         }
-        section[data-testid="stSidebar"] {
+        section[data-testid="stSidebar"][aria-expanded="true"] {
             width: 19.5rem !important;
             min-width: 19.5rem !important;
         }
@@ -1475,7 +1472,7 @@ RAW_CSS = """
             padding: 0 12px !important;
             height: 66px !important;
         }
-        section[data-testid="stSidebar"] {
+        section[data-testid="stSidebar"][aria-expanded="true"] {
             width: 86vw !important;
             min-width: 86vw !important;
             max-width: 20rem !important;
@@ -1514,6 +1511,21 @@ RAW_CSS = """
             height: 22px !important;
         }
     }
+
+    /* Bulletproof collapse enforcement after all media queries */
+    section[data-testid="stSidebar"][aria-expanded="false"],
+    section[data-testid="stSidebar"][aria-expanded="false"] > div:first-child,
+    section[data-testid="stSidebar"][aria-expanded="false"] * {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        transform: translateX(-200vw) !important;
+        margin-left: -200vw !important;
+        pointer-events: none !important;
+    }
 </style>
 """
 
@@ -1547,121 +1559,142 @@ CUSTOM_CSS = (
 # ==============================================================================
 # High-Reliability Sidebar Backdrop Script (Click outside sidebar to collapse)
 # ==============================================================================
-SIDEBAR_BACKDROP_SCRIPT = """
-<script>
+SIDEBAR_BACKDROP_CORE_JS = """
 (function() {
-    try {
-        const parentDoc = window.parent.document;
-        const parentWin = window.parent;
-        if (!parentDoc || !parentWin) return;
-
-        // Hide iframe element cleanly so it takes 0 visual space
-        if (window.frameElement) {
-            window.frameElement.style.cssText = 'position:absolute!important;width:0!important;height:0!important;opacity:0!important;pointer-events:none!important;border:none!important;';
-            if (window.frameElement.parentElement) {
-                window.frameElement.parentElement.style.cssText = 'height:0!important;min-height:0!important;margin:0!important;padding:0!important;display:none!important;';
+    function getContext() {
+        var doc = document;
+        var win = window;
+        try {
+            if (window.parent && window.parent.document && window.parent.document.querySelector('[data-testid="stSidebar"]')) {
+                doc = window.parent.document;
+                win = window.parent;
             }
+        } catch(e) {}
+        return { doc: doc, win: win };
+    }
+
+    var ctx = getContext();
+    var doc = ctx.doc;
+    var win = ctx.win;
+    if (!doc || !win) return;
+
+    if (window.frameElement) {
+        window.frameElement.style.cssText = 'position:absolute!important;width:0!important;height:0!important;opacity:0!important;pointer-events:none!important;border:none!important;';
+        if (window.frameElement.parentElement) {
+            window.frameElement.parentElement.style.cssText = 'height:0!important;min-height:0!important;margin:0!important;padding:0!important;display:none!important;';
         }
+    }
 
-        function triggerSidebarClose() {
-            const collapseBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
-                                parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]') ||
-                                parentDoc.querySelector('button[aria-label="Close sidebar"]') ||
-                                parentDoc.querySelector('[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]');
-            if (collapseBtn) {
-                collapseBtn.click();
-                collapseBtn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: parentWin }));
-            }
-            const backdrop = parentDoc.getElementById('st-sidebar-backdrop');
-            if (backdrop) {
-                backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
-            }
+    function findCollapseButton() {
+        return doc.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
+               doc.querySelector('[data-testid="stSidebarCollapseButton"]') ||
+               doc.querySelector('button[aria-label="Close sidebar"]') ||
+               doc.querySelector('[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]') ||
+               doc.querySelector('[data-testid="stSidebar"] button');
+    }
+
+    function doClose() {
+        var btn = findCollapseButton();
+        if (btn) {
+            btn.click();
+            btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: win }));
         }
-
-        // Clean up any old listeners or scripts
-        if (parentWin._sidebarAutoCloseHandler) {
-            parentDoc.removeEventListener('pointerdown', parentWin._sidebarAutoCloseHandler, true);
-            delete parentWin._sidebarAutoCloseHandler;
+        var bd = doc.getElementById('st-sidebar-backdrop');
+        if (bd) {
+            bd.style.display = 'none';
+            bd.style.opacity = '0';
+            bd.style.pointerEvents = 'none';
         }
-        const oldScript = parentDoc.getElementById('st-sidebar-autoclose-script');
-        if (oldScript) oldScript.remove();
+    }
 
-        // 1. Ensure backdrop element exists in parent body
-        let backdrop = parentDoc.getElementById('st-sidebar-backdrop');
-        if (!backdrop) {
-            backdrop = parentDoc.createElement('div');
-            backdrop.id = 'st-sidebar-backdrop';
-            parentDoc.body.appendChild(backdrop);
+    if (win._finDocsAutoClose) {
+        doc.removeEventListener('pointerdown', win._finDocsAutoClose, true);
+        doc.removeEventListener('click', win._finDocsAutoClose, true);
+        if (win._finDocsInterval) clearInterval(win._finDocsInterval);
+    }
+
+    var bd = doc.getElementById('st-sidebar-backdrop');
+    if (!bd) {
+        bd = doc.createElement('div');
+        bd.id = 'st-sidebar-backdrop';
+        doc.body.appendChild(bd);
+    }
+
+    bd.onpointerdown = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        doClose();
+    };
+    bd.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        doClose();
+    };
+
+    var clickHandler = function(e) {
+        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        if (!sidebar) return;
+        var isExpanded = sidebar.getAttribute('aria-expanded') === 'true';
+        if (!isExpanded) return;
+
+        if (sidebar.contains(e.target)) return;
+
+        var toggle = doc.querySelector('[data-testid="stSidebarCollapsedControl"], [data-testid="stExpandSidebarButton"]');
+        if (toggle && toggle.contains(e.target)) return;
+
+        doClose();
+    };
+
+    win._finDocsAutoClose = clickHandler;
+    doc.addEventListener('pointerdown', clickHandler, true);
+    doc.addEventListener('click', clickHandler, true);
+
+    function sync() {
+        var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        var backdrop = doc.getElementById('st-sidebar-backdrop');
+        if (!backdrop) return;
+        var isExpanded = sidebar && sidebar.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+            backdrop.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.36)!important;z-index:1015!important;cursor:pointer!important;display:block!important;opacity:1!important;pointer-events:auto!important;transition:opacity 0.2s ease!important;';
+        } else {
+            backdrop.style.cssText = 'display:none!important;opacity:0!important;pointer-events:none!important;';
         }
+    }
 
-        // 2. Click on backdrop -> Collapse the sidebar
-        backdrop.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            triggerSidebarClose();
-        };
+    if (win._finDocsObserver) win._finDocsObserver.disconnect();
+    var sidebar = doc.querySelector('[data-testid="stSidebar"]');
+    if (sidebar) {
+        var obs = new MutationObserver(sync);
+        obs.observe(sidebar, { attributes: true, attributeFilter: ['aria-expanded', 'style', 'class'] });
+        win._finDocsObserver = obs;
+    }
 
-        // 3. Document-level Capture-Phase listener: clicking ANYWHERE outside sidebar collapses it
-        const docClickHandler = function(e) {
-            const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
-            if (!sidebar || sidebar.getAttribute('aria-expanded') !== 'true') return;
-            // If click is inside sidebar, don't close
-            if (sidebar.contains(e.target)) return;
-            // If click is on the sidebar expand/toggle button, don't close
-            const toggleBtn = parentDoc.querySelector('[data-testid="stExpandSidebarButton"], [data-testid="stSidebarCollapsedControl"]');
-            if (toggleBtn && toggleBtn.contains(e.target)) return;
-
-            // Clicked outside (e.g. in the middle of the screen) -> Collapse!
-            triggerSidebarClose();
-        };
-
-        parentWin._sidebarAutoCloseHandler = docClickHandler;
-        parentDoc.addEventListener('pointerdown', docClickHandler, true);
-
-        // 4. Helper to update backdrop display based on sidebar aria-expanded state
-        function syncBackdrop() {
-            const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
-            if (!sidebar) {
-                if (backdrop) {
-                    backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
-                }
-                return;
-            }
-
-            const isExpanded = sidebar.getAttribute('aria-expanded') === 'true';
-            if (isExpanded) {
-                backdrop.style.cssText = 'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.32)!important;z-index:1015!important;cursor:pointer!important;display:block!important;opacity:1!important;pointer-events:auto!important;transition:opacity 0.2s ease!important;';
-            } else {
-                backdrop.style.cssText = 'display:none!important;pointer-events:none!important;opacity:0!important;';
-            }
-        }
-
-        // 5. Attach MutationObserver to sidebar so backdrop always stays synchronized
-        if (parentWin._sidebarObserver) {
-            parentWin._sidebarObserver.disconnect();
-        }
-
-        const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
-        if (sidebar) {
-            const observer = new MutationObserver(function() {
-                syncBackdrop();
-            });
-            observer.observe(sidebar, { attributes: true, attributeFilter: ['aria-expanded', 'style', 'class'] });
-            parentWin._sidebarObserver = observer;
-        }
-
-        // Run sync immediately on load / rerun
-        syncBackdrop();
-
-    } catch (e) {}
+    win._finDocsInterval = setInterval(sync, 350);
+    sync();
 })();
+"""
+
+SIDEBAR_BACKDROP_SCRIPT = f"""
+<script>
+{SIDEBAR_BACKDROP_CORE_JS}
 </script>
 """
 
 def inject_sidebar_backdrop():
     """Injects high-reliability backdrop listener: clicking outside expanded sidebar collapses it."""
-    import streamlit.components.v1 as components
-    components.html(SIDEBAR_BACKDROP_SCRIPT, height=0, width=0)
+    import streamlit as st
+    # 1. Native direct DOM injection in Streamlit >= 1.34 (non-iframed, immune to cross-origin sandbox)
+    if hasattr(st, "html"):
+        try:
+            st.html(f"<script>{SIDEBAR_BACKDROP_CORE_JS}</script>", unsafe_allow_javascript=True)
+        except Exception:
+            pass
+    # 2. components.html iframe injection (fallback)
+    try:
+        import streamlit.components.v1 as components
+        components.html(SIDEBAR_BACKDROP_SCRIPT, height=0, width=0)
+    except Exception:
+        pass
 
 # Backward-compatibility alias
 ensure_sidebar_cleanup = inject_sidebar_backdrop
