@@ -1163,7 +1163,7 @@ def render_admin_page():
                     else:
                         st.markdown("<span style='color: #94A3B8; font-size: 0.80rem; font-style: italic;'>Not indexed</span>", unsafe_allow_html=True)
                 with c4:
-                    st.link_button("View PDF ↗", f"/app/static/{safe_name}", use_container_width=True)
+                    st.link_button("View PDF ↗", f"app/static/{safe_name}", use_container_width=True)
                 with c5:
                     if st.button("Delete", key=f"del_btn_{fname}", help=f"Delete '{fname}' from system and database", type="secondary", use_container_width=True):
                         success = delete_document(fname, live_table=live_table_for_delete)
